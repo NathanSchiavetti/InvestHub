@@ -18,7 +18,7 @@ import Network.Wai.Middleware.Cors
     , simpleCorsResourcePolicy
     , CorsResourcePolicy(..)
     )
-import Network.HTTP.Types.Method (methodGet, methodPost, methodPut, methodDelete, methodOptions)
+import Network.HTTP.Types.Method (methodGet, methodPost, methodPut, methodDelete, methodOptions, methodPatch)
 import Database.PostgreSQL.Simple (Connection)
 import Control.Monad.IO.Class (liftIO)
 import API
@@ -31,9 +31,10 @@ import Repository
 
 corsPolicy :: CorsResourcePolicy
 corsPolicy = simpleCorsResourcePolicy
-    { corsOrigins        = Nothing                  -- Permite qualquer origem
+    { corsOrigins        = Nothing                  
     , corsMethods        = [ methodGet, methodPost
                            , methodPut, methodDelete
+                           , methodPatch            
                            , methodOptions ]
     , corsRequestHeaders = [ "Content-Type"
                            , "Accept"
@@ -111,6 +112,21 @@ handleDeletarDica conn dicId = do
             { errBody = "{ \"erro\": \"Dica não encontrada para excluir\" }" }
         else return (MensagemSucesso "Dica excluída com sucesso")
 
+handleVotarDica :: Connection -> Int -> Handler DicaInvestimento
+handleVotarDica conn dicId = do
+    resultado <- liftIO $ incrementarVoto conn dicId
+    case resultado of   
+        Nothing   -> throwError err404
+            { errBody = "{ \"erro\": \"Dica não encontrada\" }" }
+        Just dica -> return dica
+
+handleRemoverVoto :: Connection -> Int -> Handler DicaInvestimento
+handleRemoverVoto conn dicId = do
+    resultado <- liftIO $ decrementarVoto conn dicId
+    case resultado of
+        Nothing   -> throwError err404
+            { errBody = "{ \"erro\": \"Dica não encontrada\" }" }
+        Just dica -> return dica        
 -- ---------------------------------------------------------------------------
 -- Composição do servidor
 -- ---------------------------------------------------------------------------
@@ -124,6 +140,8 @@ appServer conn =
     :<|> handleCriarDica      conn
     :<|> handleAtualizarDica  conn
     :<|> handleDeletarDica    conn
+    :<|> handleVotarDica      conn
+    :<|> handleRemoverVoto    conn
 
 -- | Cria a aplicação WAI com CORS configurado
 mkApp :: Connection -> Application

@@ -48,6 +48,16 @@ type DicasAPI =
     :<|> "dicas" :> Capture "id" Int
                  :> Delete '[JSON] MensagemSucesso
 
+    -- PATCH /dicas/:id/voto
+    :<|> "dicas" :> Capture "id" Int
+                 :> "voto"
+                 :> Patch '[JSON] DicaInvestimento
+
+    -- PATCH /dicas/:id/remover-voto
+    :<|> "dicas" :> Capture "id" Int
+                 :> "remover-voto"
+                 :> Patch '[JSON] DicaInvestimento         
+
 -- | Proxy para o tipo da API (necessário para Servant)
 dicasAPI :: Proxy DicasAPI
 dicasAPI = Proxy

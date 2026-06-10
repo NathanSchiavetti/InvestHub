@@ -11,6 +11,8 @@ module Repository
     , atualizarDica
     , deletarDica
     , buscarEstatisticas
+    , incrementarVoto
+    , decrementarVoto
     ) where
 
 import Database.PostgreSQL.Simple
@@ -25,27 +27,27 @@ import Control.Exception (try, SomeException)
 
 sqlListarTodas :: Query
 sqlListarTodas =
-    "SELECT id, titulo, descricao, categoria, risco, autor, data_criacao \
+    "SELECT id, titulo, descricao, categoria, risco, autor, data_criacao, votos \
     \ FROM dicas_investimento \
     \ ORDER BY data_criacao DESC"
 
 sqlListarPorCategoria :: Query
 sqlListarPorCategoria =
-    "SELECT id, titulo, descricao, categoria, risco, autor, data_criacao \
+    "SELECT id, titulo, descricao, categoria, risco, autor, data_criacao, votos \
     \ FROM dicas_investimento \
     \ WHERE LOWER(categoria) = LOWER(?) \
     \ ORDER BY data_criacao DESC"
 
 sqlBuscarPorTitulo :: Query
 sqlBuscarPorTitulo =
-    "SELECT id, titulo, descricao, categoria, risco, autor, data_criacao \
+    "SELECT id, titulo, descricao, categoria, risco, autor, data_criacao, votos \
     \ FROM dicas_investimento \
     \ WHERE LOWER(titulo) LIKE LOWER(?) \
     \ ORDER BY data_criacao DESC"
 
 sqlBuscarPorCategoriaETitulo :: Query
 sqlBuscarPorCategoriaETitulo =
-    "SELECT id, titulo, descricao, categoria, risco, autor, data_criacao \
+    "SELECT id, titulo, descricao, categoria, risco, autor, data_criacao, votos \
     \ FROM dicas_investimento \
     \ WHERE LOWER(categoria) = LOWER(?) \
     \   AND LOWER(titulo) LIKE LOWER(?) \
@@ -53,7 +55,7 @@ sqlBuscarPorCategoriaETitulo =
 
 sqlBuscarPorId :: Query
 sqlBuscarPorId =
-    "SELECT id, titulo, descricao, categoria, risco, autor, data_criacao \
+    "SELECT id, titulo, descricao, categoria, risco, autor, data_criacao, votos \
     \ FROM dicas_investimento \
     \ WHERE id = ?"
 
@@ -61,14 +63,14 @@ sqlCriar :: Query
 sqlCriar =
     "INSERT INTO dicas_investimento (titulo, descricao, categoria, risco, autor) \
     \ VALUES (?, ?, ?, ?, ?) \
-    \ RETURNING id, titulo, descricao, categoria, risco, autor, data_criacao"
+    \ RETURNING id, titulo, descricao, categoria, risco, autor, data_criacao, votos"
 
 sqlAtualizar :: Query
 sqlAtualizar =
     "UPDATE dicas_investimento \
     \ SET titulo = ?, descricao = ?, categoria = ?, risco = ?, autor = ? \
     \ WHERE id = ? \
-    \ RETURNING id, titulo, descricao, categoria, risco, autor, data_criacao"
+    \ RETURNING id, titulo, descricao, categoria, risco, autor, data_criacao, votos"
 
 sqlDeletar :: Query
 sqlDeletar = "DELETE FROM dicas_investimento WHERE id = ?"
@@ -79,6 +81,20 @@ sqlEstatisticas =
     \ FROM dicas_investimento \
     \ GROUP BY categoria \
     \ ORDER BY quantidade DESC"
+
+sqlVotar :: Query
+sqlVotar =
+    "UPDATE dicas_investimento \
+    \ SET votos = votos + 1 \
+    \ WHERE id = ? \
+    \ RETURNING id, titulo, descricao, categoria, risco, autor, data_criacao, votos"
+
+incrementarVoto :: Connection -> Int -> IO (Maybe DicaInvestimento)
+incrementarVoto conn dicId = do
+    resultados <- query conn sqlVotar (Only dicId)
+    case resultados of
+        []    -> return Nothing
+        (d:_) -> return (Just d)
 
 -- ---------------------------------------------------------------------------
 -- Funções de acesso ao banco
@@ -144,3 +160,17 @@ deletarDica conn dicId = do
 -- | Retorna estatísticas de quantidade de dicas por categoria
 buscarEstatisticas :: Connection -> IO [Estatistica]
 buscarEstatisticas conn = query_ conn sqlEstatisticas
+
+sqlRemoverVoto :: Query
+sqlRemoverVoto =
+    "UPDATE dicas_investimento \
+    \ SET votos = GREATEST(votos - 1, 0) \
+    \ WHERE id = ? \
+    \ RETURNING id, titulo, descricao, categoria, risco, autor, data_criacao, votos"
+
+decrementarVoto :: Connection -> Int -> IO (Maybe DicaInvestimento)
+decrementarVoto conn dicId = do
+    resultados <- query conn sqlRemoverVoto (Only dicId)
+    case resultados of
+        []    -> return Nothing
+        (d:_) -> return (Just d)

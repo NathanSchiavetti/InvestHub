@@ -26,14 +26,14 @@
 
     <style>
         * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
-        body { background: #0b1120; min-height: 100vh; color: #e5e7eb; }
+        body { background: var(--bg-main); min-height: 100vh; color: var(--text-main); transition: background-color 0.3s, color 0.3s; }
 
         /* Cards */
         .card {
-            background: #111827;
-            border: 1px solid #1f2937;
+            background: var(--bg-card);
+            border: 1px solid var(--border-main);
             border-radius: 14px;
-            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s, background-color 0.3s;
         }
         .card:hover {
             border-color: rgba(34,197,94,0.35);
@@ -51,9 +51,9 @@
 
         /* Pills de categoria */
         .pill {
-            background: #1f2937; border: 1px solid #374151;
+            background: var(--bg-pill); border: 1px solid var(--border-pill);
             border-radius: 999px; cursor: pointer;
-            transition: all 0.15s; color: #9ca3af;
+            transition: all 0.15s; color: var(--text-muted);
             font-size: 12px; font-weight: 600; padding: 5px 13px;
         }
         .pill:hover  { border-color: rgba(34,197,94,0.4); color: #4ade80; }
@@ -69,42 +69,80 @@
 
         /* Inputs */
         input, select, textarea {
-            background: #1f2937; border: 1px solid #374151; color: #e5e7eb;
-            border-radius: 10px; font-size: 14px; transition: border-color 0.2s;
+            background: var(--bg-input); border: 1px solid var(--border-input); color: var(--text-main);
+            border-radius: 10px; font-size: 14px; transition: border-color 0.2s, background-color 0.3s, color 0.3s;
         }
         input:focus, select:focus, textarea:focus { outline: none; border-color: rgba(34,197,94,0.5); box-shadow: 0 0 0 3px rgba(34,197,94,0.08); }
-        input::placeholder, textarea::placeholder { color: #4b5563; }
+        input::placeholder, textarea::placeholder { color: var(--text-muted-darker); }
 
         /* Modal */
-        .overlay { background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); }
-        .modal-box { background: #0f172a; border: 1px solid #1e293b; border-radius: 18px; }
+        .overlay { background: var(--bg-overlay); backdrop-filter: blur(8px); transition: background-color 0.3s; }
+        .modal-box { background: var(--bg-modal); border: 1px solid var(--border-modal); border-radius: 18px; transition: background-color 0.3s, border-color 0.3s; }
 
         /* Skeleton */
-        .skeleton { background: linear-gradient(90deg,#1f2937 25%,#293548 50%,#1f2937 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:14px; }
+        .skeleton { background: linear-gradient(90deg,var(--bg-pill) 25%,var(--border-input) 50%,var(--bg-pill) 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:14px; }
         @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
         /* Scrollbar */
         ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #0b1120; }
-        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg-main); }
+        ::-webkit-scrollbar-thumb { background: var(--border-input); border-radius: 5px; }
 
         /* Divisor */
-        .divider { height:1px; background: linear-gradient(90deg,transparent,#1f2937,transparent); }
+        .divider { height:1px; background: linear-gradient(90deg,transparent,var(--border-main),transparent); }
 
         /* Sort ativo */
-        .sort-btn { background:#1f2937; border:1px solid #374151; border-radius:8px; color:#6b7280; font-size:12px; padding:5px 12px; cursor:pointer; transition:all 0.15s; }
-        .sort-btn:hover { color:#e5e7eb; }
+        .sort-btn { background:var(--bg-pill); border:1px solid var(--border-pill); border-radius:8px; color:var(--text-muted); font-size:12px; padding:5px 12px; cursor:pointer; transition:all 0.15s; }
+        .sort-btn:hover { color:var(--text-main); }
         .sort-btn.active { background:rgba(34,197,94,0.1); border-color:rgba(34,197,94,0.4); color:#4ade80; }
 
         @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
         .fade-in { animation: fadeIn 0.35s ease both; }
+
+        /* Tema Escuro (Padrão) */
+        :root {
+            --bg-main: #0b1120;
+            --bg-card: #111827;
+            --bg-header: #0d1526;
+            --bg-input: #1f2937;
+            --bg-modal: #0f172a;
+            --border-main: #1f2937;
+            --border-input: #374151;
+            --border-pill: #374151;
+            --border-modal: #1e293b;
+            --text-main: #e5e7eb;
+            --text-muted: #6b7280;
+            --text-muted-darker: #4b5563;
+            --text-title: #f9fafb;
+            --bg-overlay: rgba(0,0,0,0.75);
+            --bg-pill: #1f2937;
+        }
+
+        /* Tema Claro */
+        body.light-mode {
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-header: #ffffff;
+            --bg-input: #f1f5f9;
+            --bg-modal: #ffffff;
+            --border-main: #e2e8f0;
+            --border-input: #cbd5e1;
+            --border-pill: #e2e8f0;
+            --border-modal: #e2e8f0;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --text-muted-darker: #94a3b8;
+            --text-title: #0f172a;
+            --bg-overlay: rgba(15,23,42,0.6);
+            --bg-pill: #f1f5f9;
+        }
     </style>
 </head>
 
 <body>
 
 <!-- ══ HEADER ══ -->
-<header style="background:#0d1526;border-bottom:1px solid #1f2937;position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);">
+<header style="background:var(--bg-header);border-bottom:1px solid var(--border-main);position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);transition:background-color 0.3s, border-color 0.3s;">
     <div style="max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px;">
         <div style="display:flex;align-items:center;gap:10px;">
             <div class="btn-green" style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;">
@@ -112,15 +150,20 @@
             </div>
             <div>
                 <div style="font-size:17px;font-weight:800;" class="grad">InvestHub</div>
-                <div style="font-size:11px;color:#4b5563;margin-top:-2px;">Dicas de Investimento</div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:-2px;">Dicas de Investimento</div>
             </div>
         </div>
 
         <div style="display:flex;align-items:center;gap:16px;">
-            <span style="font-size:13px;color:#6b7280;display:flex;align-items:center;gap:6px;">
+            <span style="font-size:13px;color:var(--text-muted);display:flex;align-items:center;gap:6px;">
                 <span style="width:7px;height:7px;background:#22c55e;border-radius:50%;display:inline-block;"></span>
                 <span id="total-dicas">-- dicas</span>
             </span>
+            
+            <button id="btn-theme" class="sort-btn" style="padding:8px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:10px;" onclick="toggleTheme()" title="Alternar Tema">
+                <i data-lucide="sun" style="width:16px;height:16px;"></i>
+            </button>
+
             <button class="btn-green" style="padding:8px 16px;font-size:13px;display:flex;align-items:center;gap:6px;" onclick="abrirModal()">
                 <i data-lucide="plus" style="width:15px;height:15px;"></i> Nova Dica
             </button>
@@ -128,25 +171,24 @@
     </div>
 </header>
 
-<!-- ══ HERO compacto ══ -->
+<!-- ══ HERO ══ -->
 <section style="max-width:1200px;margin:0 auto;padding:40px 24px 28px;">
     <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;">
         <div>
-            <h1 style="font-size:32px;font-weight:800;margin:0 0 6px;">
+            <h1 style="font-size:32px;font-weight:800;margin:0 0 6px;color:var(--text-title);transition:color 0.3s;">
                 Dicas de <span class="grad">Investimento</span>
             </h1>
-            <p style="color:#6b7280;font-size:14px;margin:0;">Explore e gerencie dicas financeiras por categoria e risco.</p>
+            <p style="color:var(--text-muted);font-size:14px;margin:0;">Explore e gerencie dicas financeiras por categoria e risco.</p>
         </div>
-        <!-- Mini stats -->
         <div style="display:flex;gap:24px;">
             <div style="text-align:center;">
                 <div id="stat-total" style="font-size:26px;font-weight:800;" class="grad">--</div>
-                <div style="font-size:11px;color:#4b5563;margin-top:2px;">Dicas</div>
+                <div style="font-size:11px;color:var(--text-muted-darker);margin-top:2px;">Dicas</div>
             </div>
-            <div style="width:1px;background:#1f2937;"></div>
+            <div style="width:1px;background:var(--border-main);transition:background-color 0.3s;"></div>
             <div style="text-align:center;">
                 <div id="stat-cats" style="font-size:26px;font-weight:800;" class="grad">--</div>
-                <div style="font-size:11px;color:#4b5563;margin-top:2px;">Categorias</div>
+                <div style="font-size:11px;color:var(--text-muted-darker);margin-top:2px;">Categorias</div>
             </div>
         </div>
     </div>
@@ -155,51 +197,43 @@
 <!-- ══ FILTROS ══ -->
 <section style="max-width:1200px;margin:0 auto;padding:0 24px 24px;">
     <div class="card" style="padding:18px 20px;">
-        <!-- Busca + Ordenar -->
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
             <div style="position:relative;flex:1;min-width:200px;">
-                <i data-lucide="search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:#4b5563;"></i>
+                <i data-lucide="search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--text-muted-darker);"></i>
                 <input id="input-busca" type="text" placeholder="Buscar por título..."
                     style="width:100%;padding:9px 12px 9px 36px;"
                     oninput="debounceCarregarDicas()">
             </div>
             <div style="display:flex;gap:6px;align-items:center;">
-                <span style="font-size:11px;color:#4b5563;white-space:nowrap;">Ordenar:</span>
+                <span style="font-size:11px;color:var(--text-muted-darker);white-space:nowrap;">Ordenar:</span>
                 <button class="sort-btn active" id="sort-recente" onclick="setSortOrder('recente')">Recentes</button>
                 <button class="sort-btn" id="sort-antigo"  onclick="setSortOrder('antigo')">Antigos</button>
                 <button class="sort-btn" id="sort-az"      onclick="setSortOrder('az')">A→Z</button>
             </div>
-            <button onclick="limparFiltros()" style="display:flex;align-items:center;gap:6px;padding:9px 14px;background:#1f2937;border:1px solid #374151;border-radius:10px;color:#6b7280;font-size:13px;cursor:pointer;" onmouseover="this.style.color='#e5e7eb'" onmouseout="this.style.color='#6b7280'">
+            <button onclick="limparFiltros()" style="display:flex;align-items:center;gap:6px;padding:9px 14px;background:var(--bg-pill);border:1px solid var(--border-pill);border-radius:10px;color:var(--text-muted);font-size:13px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.color='var(--text-main)';this.style.borderColor='rgba(34,197,94,0.4)';" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border-pill)';">
                 <i data-lucide="x" style="width:14px;height:14px;"></i> Limpar
             </button>
         </div>
-
-        <!-- Pills de categoria -->
         <div id="cat-pills" style="display:flex;flex-wrap:wrap;gap:7px;"></div>
     </div>
 </section>
 
-<!-- ══ CONTEÚDO PRINCIPAL: Cards + Gráfico ══ -->
+<!-- ══ CONTEÚDO PRINCIPAL ══ -->
 <main style="max-width:1200px;margin:0 auto;padding:0 24px 60px;display:grid;grid-template-columns:1fr 240px;gap:24px;align-items:start;">
-
-    <!-- Cards -->
     <div>
-        <div style="font-size:13px;color:#4b5563;margin-bottom:14px;" id="resultado-contagem"></div>
-
+        <div style="font-size:13px;color:var(--text-muted-darker);margin-bottom:14px;" id="resultado-contagem"></div>
         <div id="lista-dicas" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;"></div>
 
-        <!-- Loading -->
         <div id="loading" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
             <div class="skeleton" style="height:200px;"></div>
             <div class="skeleton" style="height:200px;"></div>
             <div class="skeleton" style="height:200px;"></div>
         </div>
 
-        <!-- Vazio -->
         <div id="estado-vazio" style="display:none;text-align:center;padding:60px 20px;">
-            <i data-lucide="search-x" style="width:36px;height:36px;color:#374151;margin:0 auto 12px;display:block;"></i>
-            <p style="color:#6b7280;font-size:15px;font-weight:500;">Nenhuma dica encontrada</p>
-            <p style="color:#374151;font-size:13px;margin-top:4px;">Tente outros filtros ou crie uma nova dica</p>
+            <i data-lucide="search-x" style="width:36px;height:36px;color:var(--text-muted-darker);margin:0 auto 12px;display:block;"></i>
+            <p style="color:var(--text-muted);font-size:15px;font-weight:500;">Nenhuma dica encontrada</p>
+            <p style="color:var(--text-muted-darker);font-size:13px;margin-top:4px;">Tente outros filtros ou crie uma nova dica</p>
             <button class="btn-green" style="padding:10px 22px;margin-top:16px;font-size:13px;" onclick="abrirModal()">Criar dica</button>
         </div>
     </div>
@@ -209,7 +243,7 @@
         <div class="card" style="padding:20px;">
             <div style="display:flex;align-items:center;gap:7px;margin-bottom:16px;">
                 <i data-lucide="pie-chart" style="width:15px;height:15px;color:#22c55e;"></i>
-                <span style="font-size:13px;font-weight:600;color:#9ca3af;">Distribuição</span>
+                <span style="font-size:13px;font-weight:600;color:var(--text-main);">Distribuição</span>
             </div>
             <canvas id="chart-categorias" width="200" height="200"></canvas>
             <div id="chart-legenda" style="margin-top:14px;display:flex;flex-direction:column;gap:7px;"></div>
@@ -218,48 +252,48 @@
 </main>
 
 <!-- ══ FOOTER ══ -->
-<footer style="border-top:1px solid #1f2937;background:#0d1526;">
+<footer style="border-top:1px solid var(--border-main);background:var(--bg-header);transition:background-color 0.3s, border-color 0.3s;">
     <div style="max-width:1200px;margin:0 auto;padding:28px 24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;">
         <div style="display:flex;align-items:center;gap:8px;">
             <div class="btn-green" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;">
                 <i data-lucide="trending-up" style="width:14px;height:14px;color:#fff;"></i>
             </div>
             <span style="font-weight:700;font-size:14px;" class="grad">InvestHub</span>
-            <span style="color:#374151;font-size:13px;">· Projeto Acadêmico · Haskell + Servant + PostgreSQL</span>
+            <span style="color:var(--text-muted-darker);font-size:13px;">· Projeto Acadêmico · Haskell + Servant + PostgreSQL</span>
         </div>
         <code style="font-size:12px;color:#22c55e;background:rgba(34,197,94,0.08);padding:4px 10px;border-radius:6px;border:1px solid rgba(34,197,94,0.15);">localhost:8080/dicas</code>
     </div>
 </footer>
 
-<!-- ══ MODAL DETALHES ══ -->
+<!-- Modais (Omitidos p/ encurtar, mesma logica) -->
 <div id="modal-detalhe" class="overlay" style="position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;" onclick="fecharDetalheOverlay(event)">
     <div class="modal-box" style="width:100%;max-width:520px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;">
-        <div style="padding:22px 24px 16px;border-bottom:1px solid #1e293b;">
+        <div style="padding:22px 24px 16px;border-bottom:1px solid var(--border-modal);">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
                 <div style="flex:1;">
                     <div id="detalhe-badges" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px;"></div>
-                    <h2 id="detalhe-titulo" style="font-size:18px;font-weight:700;color:#f9fafb;margin:0;line-height:1.4;"></h2>
+                    <h2 id="detalhe-titulo" style="font-size:18px;font-weight:700;color:var(--text-title);margin:0;line-height:1.4;"></h2>
                 </div>
                 <button onclick="document.getElementById('modal-detalhe').style.display='none'"
-                    style="background:none;border:none;color:#6b7280;cursor:pointer;padding:4px;" onmouseover="this.style.color='#e5e7eb'" onmouseout="this.style.color='#6b7280'">
+                    style="background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'">
                     <i data-lucide="x" style="width:18px;height:18px;"></i>
                 </button>
             </div>
         </div>
         <div style="padding:20px 24px;overflow-y:auto;flex:1;">
-            <p id="detalhe-descricao" style="color:#9ca3af;font-size:14px;line-height:1.7;margin:0 0 20px;"></p>
+            <p id="detalhe-descricao" style="color:var(--text-main);font-size:14px;line-height:1.7;margin:0 0 20px;"></p>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                <div style="background:#111827;border:1px solid #1f2937;border-radius:10px;padding:12px;">
-                    <div style="font-size:11px;color:#4b5563;margin-bottom:4px;">Autor</div>
-                    <div id="detalhe-autor" style="font-size:13px;font-weight:600;color:#e5e7eb;"></div>
+                <div style="background:var(--bg-main);border:1px solid var(--border-main);border-radius:10px;padding:12px;">
+                    <div style="font-size:11px;color:var(--text-muted-darker);margin-bottom:4px;">Autor</div>
+                    <div id="detalhe-autor" style="font-size:13px;font-weight:600;color:var(--text-main);"></div>
                 </div>
-                <div style="background:#111827;border:1px solid #1f2937;border-radius:10px;padding:12px;">
-                    <div style="font-size:11px;color:#4b5563;margin-bottom:4px;">Publicado em</div>
-                    <div id="detalhe-data" style="font-size:13px;font-weight:600;color:#e5e7eb;"></div>
+                <div style="background:var(--bg-main);border:1px solid var(--border-main);border-radius:10px;padding:12px;">
+                    <div style="font-size:11px;color:var(--text-muted-darker);margin-bottom:4px;">Publicado em</div>
+                    <div id="detalhe-data" style="font-size:13px;font-weight:600;color:var(--text-main);"></div>
                 </div>
             </div>
         </div>
-        <div style="padding:16px 24px;border-top:1px solid #1e293b;display:flex;gap:10px;">
+        <div style="padding:16px 24px;border-top:1px solid var(--border-modal);display:flex;gap:10px;">
             <button id="detalhe-btn-editar" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(34,197,94,0.3);background:transparent;color:#4ade80;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;" onmouseover="this.style.background='rgba(34,197,94,0.08)'" onmouseout="this.style.background='transparent'">
                 <i data-lucide="pencil" style="width:14px;height:14px;"></i> Editar
             </button>
@@ -270,31 +304,30 @@
     </div>
 </div>
 
-<!-- ══ MODAL CRIAR/EDITAR ══ -->
 <div id="modal" class="overlay" style="position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;" onclick="fecharModalOverlay(event)">
     <div class="modal-box" style="width:100%;max-width:500px;">
-        <div style="padding:22px 24px 18px;border-bottom:1px solid #1e293b;display:flex;align-items:center;justify-content:space-between;">
+        <div style="padding:22px 24px 18px;border-bottom:1px solid var(--border-modal);display:flex;align-items:center;justify-content:space-between;">
             <div>
-                <h2 id="modal-titulo" style="font-size:16px;font-weight:700;color:#f9fafb;margin:0;">Nova Dica</h2>
-                <p style="font-size:12px;color:#4b5563;margin:3px 0 0;">Preencha todos os campos</p>
+                <h2 id="modal-titulo" style="font-size:16px;font-weight:700;color:var(--text-title);margin:0;">Nova Dica</h2>
+                <p style="font-size:12px;color:var(--text-muted-darker);margin:3px 0 0;">Preencha todos os campos</p>
             </div>
-            <button onclick="fecharModal()" style="background:none;border:none;color:#6b7280;cursor:pointer;" onmouseover="this.style.color='#e5e7eb'" onmouseout="this.style.color='#6b7280'">
+            <button onclick="fecharModal()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'">
                 <i data-lucide="x" style="width:18px;height:18px;"></i>
             </button>
         </div>
         <form id="form-dica" onsubmit="salvarDica(event)" style="padding:20px 24px;display:flex;flex-direction:column;gap:14px;">
             <input type="hidden" id="dica-id">
             <div>
-                <label style="display:block;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Título *</label>
+                <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Título *</label>
                 <input id="campo-titulo" type="text" required maxlength="200" placeholder="Ex: Como investir no Tesouro Direto..." style="width:100%;padding:10px 14px;">
             </div>
             <div>
-                <label style="display:block;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Descrição *</label>
+                <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Descrição *</label>
                 <textarea id="campo-descricao" required rows="4" maxlength="2000" placeholder="Descreva a dica com detalhes..." style="width:100%;padding:10px 14px;resize:none;"></textarea>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                 <div>
-                    <label style="display:block;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Categoria *</label>
+                    <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Categoria *</label>
                     <select id="campo-categoria" required style="width:100%;padding:10px 14px;">
                         <option value="">Selecionar...</option>
                         <option value="Renda Fixa">📊 Renda Fixa</option>
@@ -306,7 +339,7 @@
                     </select>
                 </div>
                 <div>
-                    <label style="display:block;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Risco *</label>
+                    <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Risco *</label>
                     <select id="campo-risco" required style="width:100%;padding:10px 14px;">
                         <option value="">Selecionar...</option>
                         <option value="Baixo">🟢 Baixo</option>
@@ -316,11 +349,11 @@
                 </div>
             </div>
             <div>
-                <label style="display:block;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Autor *</label>
+                <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Autor *</label>
                 <input id="campo-autor" type="text" required maxlength="100" placeholder="Seu nome" style="width:100%;padding:10px 14px;">
             </div>
             <div style="display:flex;gap:10px;padding-top:4px;">
-                <button type="button" onclick="fecharModal()" style="flex:1;padding:11px;border-radius:10px;border:1px solid #374151;background:transparent;color:#9ca3af;font-size:13px;font-weight:600;cursor:pointer;">Cancelar</button>
+                <button type="button" onclick="fecharModal()" style="flex:1;padding:11px;border-radius:10px;border:1px solid var(--border-input);background:transparent;color:var(--text-muted);font-size:13px;font-weight:600;cursor:pointer;">Cancelar</button>
                 <button type="submit" id="btn-salvar" class="btn-green" style="flex:1;padding:11px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;">
                     <i data-lucide="save" style="width:14px;height:14px;"></i>
                     <span id="btn-salvar-texto">Salvar</span>
@@ -330,22 +363,20 @@
     </div>
 </div>
 
-<!-- ══ MODAL DELETE ══ -->
 <div id="modal-delete" class="overlay" style="position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;">
     <div class="modal-box" style="width:100%;max-width:360px;padding:28px 24px;text-align:center;">
         <div style="width:48px;height:48px;border-radius:12px;background:rgba(239,68,68,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
             <i data-lucide="trash-2" style="width:22px;height:22px;color:#f87171;"></i>
         </div>
-        <h3 style="font-size:16px;font-weight:700;margin:0 0 6px;">Excluir Dica?</h3>
-        <p style="color:#6b7280;font-size:13px;margin:0 0 22px;">Essa ação não pode ser desfeita.</p>
+        <h3 style="font-size:16px;font-weight:700;margin:0 0 6px;color:var(--text-title);">Excluir Dica?</h3>
+        <p style="color:var(--text-muted);font-size:13px;margin:0 0 22px;">Essa ação não pode ser desfeita.</p>
         <div style="display:flex;gap:10px;">
-            <button onclick="fecharModalDelete()" style="flex:1;padding:10px;border-radius:10px;border:1px solid #374151;background:transparent;color:#9ca3af;font-size:13px;font-weight:600;cursor:pointer;">Cancelar</button>
+            <button onclick="fecharModalDelete()" style="flex:1;padding:10px;border-radius:10px;border:1px solid var(--border-input);background:transparent;color:var(--text-muted);font-size:13px;font-weight:600;cursor:pointer;">Cancelar</button>
             <button id="btn-confirmar-delete" onclick="confirmarDelete()" style="flex:1;padding:10px;border-radius:10px;background:#dc2626;border:none;color:#fff;font-size:13px;font-weight:600;cursor:pointer;">Excluir</button>
         </div>
     </div>
 </div>
 
-<!-- ══ TOAST ══ -->
 <div id="toast" style="position:fixed;bottom:24px;right:24px;z-index:70;display:none;transition:all 0.3s ease;">
     <div id="toast-inner" style="display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
         <i id="toast-icon" style="width:16px;height:16px;"></i>
@@ -353,11 +384,10 @@
     </div>
 </div>
 
-<!-- ══ SCROLL TOP ══ -->
 <button id="btn-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"
-    style="position:fixed;bottom:24px;left:24px;z-index:40;width:38px;height:38px;border-radius:10px;background:#111827;border:1px solid #1f2937;color:#6b7280;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s;opacity:0;pointer-events:none;"
+    style="position:fixed;bottom:24px;left:24px;z-index:40;width:38px;height:38px;border-radius:10px;background:var(--bg-card);border:1px solid var(--border-main);color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s;opacity:0;pointer-events:none;"
     onmouseover="this.style.color='#4ade80';this.style.borderColor='rgba(34,197,94,0.4)'"
-    onmouseout="this.style.color='#6b7280';this.style.borderColor='#1f2937'">
+    onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border-main)'">
     <i data-lucide="chevron-up" style="width:18px;height:18px;"></i>
 </button>
 
@@ -370,18 +400,46 @@ let catAtiva      = '';
 let ordem         = 'recente';
 let chart         = null;
 
+// CORES DAS CATEGORIAS
+const COR_CATEGORIAS = {
+    'Renda Fixa': '#a855f7',   // Roxo
+    'Ações': '#3b82f6',        // Azul
+    'FIIs': '#eab308',         // Amarelo
+    'Previdência': '#14b8a6',  // Teal
+    'Criptomoedas': '#f97316', // Laranja
+    'Exterior': '#ef4444'      // Vermelho
+};
+
 document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+        document.getElementById('btn-theme').innerHTML = `<i data-lucide="moon" style="width:16px;height:16px;"></i>`;
+    }
+
     lucide.createIcons();
     carregarDicas();
     carregarEstatisticas();
     window.addEventListener('scroll', () => {
         const btn = document.getElementById('btn-top');
         if (window.scrollY > 300) { btn.style.opacity='1'; btn.style.pointerEvents='auto'; }
-        else { btn.style.opacity='0'; btn.style.pointerEvents='none'; }
+        else { btn.style.opacity='0'; pointerEvents='none'; }
     });
 });
 
-// ── API: Dicas ──
+function toggleTheme() {
+    const body = document.body;
+    body.classList.toggle('light-mode');
+    const isLight = body.classList.contains('light-mode');
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    
+    const btn = document.getElementById('btn-theme');
+    btn.innerHTML = `<i data-lucide="${isLight ? 'moon' : 'sun'}" style="width:16px;height:16px;"></i>`;
+    lucide.createIcons();
+    
+    if (window.lastStats) { renderGrafico(window.lastStats); }
+}
+
 async function carregarDicas() {
     mostrarLoading(true);
     document.getElementById('lista-dicas').innerHTML = '';
@@ -413,8 +471,14 @@ async function carregarDicas() {
 
 function ordenar(d) {
     const arr = [...d];
-    if (ordem === 'recente') return arr.sort((a,b) => new Date(b.criacao) - new Date(a.criacao));
-    if (ordem === 'antigo')  return arr.sort((a,b) => new Date(a.criacao) - new Date(b.criacao));
+    if (ordem === 'recente') return arr.sort((a,b) => {
+        const diff = new Date(b.criacao) - new Date(a.criacao);
+        return diff === 0 ? b.id - a.id : diff;
+    });
+    if (ordem === 'antigo')  return arr.sort((a,b) => {
+        const diff = new Date(a.criacao) - new Date(b.criacao);
+        return diff === 0 ? a.id - b.id : diff;
+    });
     if (ordem === 'az')      return arr.sort((a,b) => a.titulo.localeCompare(b.titulo));
     return arr;
 }
@@ -426,49 +490,62 @@ function setSortOrder(o) {
     renderCards(ordenar(todasDicas));
 }
 
-// ── Render cards ──
 function renderCards(dicas) {
     const c = document.getElementById('lista-dicas');
     if (!dicas.length) { document.getElementById('estado-vazio').style.display='block'; return; }
+
+    const curtidas = JSON.parse(localStorage.getItem('minhas_curtidas') || '[]');
 
     c.innerHTML = dicas.map(d => {
         const data = new Date(d.criacao).toLocaleDateString('pt-BR', { day:'2-digit', month:'short', year:'numeric' });
         const badge = {'Baixo':'badge-baixo','Médio':'badge-medio','Alto':'badge-alto'}[d.risco] || 'badge-medio';
         const icon  = {'Renda Fixa':'📊','Ações':'📈','FIIs':'🏢','Previdência':'🛡️','Criptomoedas':'₿','Exterior':'🌎'}[d.categoria] || '💡';
         const preview = d.descricao.length > 110 ? d.descricao.slice(0,110)+'…' : d.descricao;
+        
+        const isLiked = curtidas.includes(d.id);
+        const thumbColor = isLiked ? '#4ade80' : 'var(--text-muted)';
+        const thumbFill = isLiked ? '#4ade80' : 'none';
+        
+        // Cor dinâmica da categoria
+        const catColor = COR_CATEGORIAS[d.categoria] || '#22c55e';
 
         return `<div class="card fade-in" style="padding:18px;display:flex;flex-direction:column;gap:12px;cursor:pointer;" onclick="verDica(${d.id})">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
                 <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
                     <span>${icon}</span>
-                    <span style="font-size:11px;color:#9ca3af;background:#1f2937;border:1px solid #374151;padding:2px 10px;border-radius:999px;">${esc(d.categoria)}</span>
+                    <span style="font-size:11px;color:${catColor};background:${catColor}15;border:1px solid ${catColor}40;padding:2px 10px;border-radius:999px;font-weight:600;">${esc(d.categoria)}</span>
                     <span class="${badge}" style="font-size:11px;font-weight:600;padding:2px 10px;border-radius:999px;">${d.risco}</span>
                 </div>
                 <div style="display:flex;gap:4px;opacity:0;transition:opacity 0.2s;" class="card-actions" onclick="event.stopPropagation()">
-                    <button onclick="editarDica(${d.id})" style="width:28px;height:28px;border-radius:8px;border:none;background:transparent;color:#4b5563;cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Editar" onmouseover="this.style.color='#4ade80';this.style.background='rgba(34,197,94,0.1)'" onmouseout="this.style.color='#4b5563';this.style.background='transparent'">
+                    <button onclick="editarDica(${d.id})" style="width:28px;height:28px;border-radius:8px;border:none;background:transparent;color:var(--text-muted-darker);cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Editar" onmouseover="this.style.color='#4ade80';this.style.background='rgba(34,197,94,0.1)'" onmouseout="this.style.color='var(--text-muted-darker)';this.style.background='transparent'">
                         <i data-lucide="pencil" style="width:13px;height:13px;"></i>
                     </button>
-                    <button onclick="abrirModalDelete(${d.id})" style="width:28px;height:28px;border-radius:8px;border:none;background:transparent;color:#4b5563;cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Excluir" onmouseover="this.style.color='#f87171';this.style.background='rgba(239,68,68,0.1)'" onmouseout="this.style.color='#4b5563';this.style.background='transparent'">
+                    <button onclick="abrirModalDelete(${d.id})" style="width:28px;height:28px;border-radius:8px;border:none;background:transparent;color:var(--text-muted-darker);cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Excluir" onmouseover="this.style.color='#f87171';this.style.background='rgba(239,68,68,0.1)'" onmouseout="this.style.color='var(--text-muted-darker)';this.style.background='transparent'">
                         <i data-lucide="trash-2" style="width:13px;height:13px;"></i>
                     </button>
                 </div>
             </div>
             <div style="flex:1;">
-                <h3 style="font-size:14px;font-weight:700;color:#f9fafb;margin:0 0 6px;line-height:1.4;">${esc(d.titulo)}</h3>
-                <p style="font-size:12px;color:#6b7280;margin:0;line-height:1.6;">${esc(preview)}</p>
+                <h3 style="font-size:14px;font-weight:700;color:var(--text-title);margin:0 0 6px;line-height:1.4;">${esc(d.titulo)}</h3>
+                <p style="font-size:12px;color:var(--text-muted);margin:0;line-height:1.6;">${esc(preview)}</p>
             </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid #1f2937;">
-                <span style="font-size:11px;color:#4b5563;display:flex;align-items:center;gap:5px;">
-                    <i data-lucide="user" style="width:11px;height:11px;"></i>${esc(d.autor)}
-                </span>
-                <span style="font-size:11px;color:#374151;display:flex;align-items:center;gap:5px;">
-                    <i data-lucide="calendar" style="width:11px;height:11px;"></i>${data}
-                </span>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--border-main);">
+                <div style="display:flex;gap:12px;">
+                    <span style="font-size:11px;color:var(--text-muted-darker);display:flex;align-items:center;gap:5px;">
+                        <i data-lucide="user" style="width:11px;height:11px;"></i>${esc(d.autor)}
+                    </span>
+                    <span style="font-size:11px;color:var(--text-muted-darker);display:flex;align-items:center;gap:5px;">
+                        <i data-lucide="calendar" style="width:11px;height:11px;"></i>${data}
+                    </span>
+                </div>
+                
+                <button onclick="event.stopPropagation(); toggleCurtida(${d.id})" style="display:flex;align-items:center;gap:5px;background:none;border:none;color:${thumbColor};font-size:12px;font-weight:600;cursor:pointer;padding:4px 8px;border-radius:6px;transition:all 0.2s;" onmouseover="this.style.color='#4ade80';this.style.background='rgba(34,197,94,0.1)'" onmouseout="this.style.color='${thumbColor}';this.style.background='transparent'">
+                    <i data-lucide="thumbs-up" fill="${thumbFill}" style="width:13px;height:13px;"></i> ${d.votos || 0}
+                </button>
             </div>
         </div>`;
     }).join('');
 
-    // hover para mostrar actions
     c.querySelectorAll('.card').forEach(el => {
         const actions = el.querySelector('.card-actions');
         el.addEventListener('mouseenter', () => actions.style.opacity='1');
@@ -477,12 +554,12 @@ function renderCards(dicas) {
     lucide.createIcons();
 }
 
-// ── Estatísticas + Gráfico ──
 async function carregarEstatisticas() {
     try {
         const res   = await fetch(`${API_URL}/dicas/estatisticas`);
         if (!res.ok) return;
         const stats = await res.json();
+        window.lastStats = stats;
         renderPills(stats);
         renderGrafico(stats);
         animNum('stat-cats', stats.length);
@@ -493,42 +570,57 @@ function renderPills(stats) {
     const icons = {'Renda Fixa':'📊','Ações':'📈','FIIs':'🏢','Previdência':'🛡️','Criptomoedas':'₿','Exterior':'🌎'};
     const c = document.getElementById('cat-pills');
     c.innerHTML = `<button class="pill ${catAtiva===''?'active':''}" onclick="filtrarCat('')">🔍 Todas</button>` +
-        stats.map(s => `<button class="pill ${catAtiva===s.categoria?'active':''}" onclick="filtrarCat('${s.categoria}')">
-            ${icons[s.categoria]||'💡'} ${s.categoria} <span style="color:${catAtiva===s.categoria?'rgba(74,222,128,0.6)':'#374151'};margin-left:3px;">${s.quantidade}</span>
-        </button>`).join('');
+        stats.map(s => {
+            const cor = COR_CATEGORIAS[s.categoria] || '#22c55e';
+            const styleAtivo = catAtiva===s.categoria ? `background:${cor}15; border-color:${cor}60; color:${cor};` : '';
+            return `<button class="pill" style="${styleAtivo}" onclick="filtrarCat('${s.categoria}')">
+                ${icons[s.categoria]||'💡'} ${s.categoria} <span style="color:${catAtiva===s.categoria?cor:'var(--text-muted-darker)'};margin-left:3px;">${s.quantidade}</span>
+            </button>`
+        }).join('');
 }
 
 function renderGrafico(stats) {
     const ctx  = document.getElementById('chart-categorias').getContext('2d');
-    const cores = ['#22c55e','#4ade80','#16a34a','#86efac','#15803d','#bbf7d0'];
+    const isLight = document.body.classList.contains('light-mode');
+    
+    // Usar as cores reais agora!
+    const coresDoGrafico = stats.map(s => COR_CATEGORIAS[s.categoria] || '#22c55e');
+    
     if (chart) chart.destroy();
     chart = new Chart(ctx, {
         type: 'doughnut',
         data: {
             labels: stats.map(s=>s.categoria),
-            datasets: [{ data: stats.map(s=>s.quantidade), backgroundColor: cores, borderColor:'#0b1120', borderWidth:3, hoverOffset:4 }]
+            datasets: [{ data: stats.map(s=>s.quantidade), backgroundColor: coresDoGrafico, borderColor: isLight ? '#ffffff' : '#0b1120', borderWidth:3, hoverOffset:4 }]
         },
         options: {
             responsive:true, maintainAspectRatio:true, cutout:'70%',
-            plugins: { legend:{ display:false }, tooltip:{ backgroundColor:'#111827', titleColor:'#f9fafb', bodyColor:'#9ca3af', borderColor:'#1f2937', borderWidth:1 } }
+            plugins: { 
+                legend:{ display:false }, 
+                tooltip:{ 
+                    backgroundColor: isLight ? '#ffffff' : '#111827', 
+                    titleColor: isLight ? '#0f172a' : '#f9fafb', 
+                    bodyColor: isLight ? '#334155' : '#9ca3af', 
+                    borderColor: isLight ? '#e2e8f0' : '#1f2937', 
+                    borderWidth:1 
+                } 
+            }
         }
     });
 
-    // Legenda customizada
     const leg = document.getElementById('chart-legenda');
     leg.innerHTML = stats.map((s,i) => `
         <div style="display:flex;align-items:center;justify-content:space-between;">
             <div style="display:flex;align-items:center;gap:7px;">
-                <div style="width:9px;height:9px;border-radius:2px;background:${cores[i]};flex-shrink:0;"></div>
-                <span style="font-size:11px;color:#9ca3af;">${s.categoria}</span>
+                <div style="width:9px;height:9px;border-radius:2px;background:${coresDoGrafico[i]};flex-shrink:0;"></div>
+                <span style="font-size:11px;color:var(--text-main);">${s.categoria}</span>
             </div>
-            <span style="font-size:11px;font-weight:600;color:#6b7280;">${s.quantidade}</span>
+            <span style="font-size:11px;font-weight:600;color:var(--text-muted);">${s.quantidade}</span>
         </div>`).join('');
 }
 
 function filtrarCat(cat) { catAtiva=cat; carregarDicas(); carregarEstatisticas(); }
 
-// ── Modal detalhes ──
 async function verDica(id) {
     try {
         const res = await fetch(`${API_URL}/dicas/${id}`);
@@ -536,6 +628,7 @@ async function verDica(id) {
         const d = await res.json();
         const icons = {'Renda Fixa':'📊','Ações':'📈','FIIs':'🏢','Previdência':'🛡️','Criptomoedas':'₿','Exterior':'🌎'};
         const badge = {'Baixo':'badge-baixo','Médio':'badge-medio','Alto':'badge-alto'}[d.risco]||'badge-medio';
+        const catColor = COR_CATEGORIAS[d.categoria] || '#22c55e';
 
         document.getElementById('detalhe-titulo').textContent    = d.titulo;
         document.getElementById('detalhe-descricao').textContent = d.descricao;
@@ -543,7 +636,7 @@ async function verDica(id) {
         document.getElementById('detalhe-data').textContent      = new Date(d.criacao).toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
         document.getElementById('detalhe-badges').innerHTML = `
             <span>${icons[d.categoria]||'💡'}</span>
-            <span style="font-size:11px;color:#9ca3af;background:#1f2937;border:1px solid #374151;padding:2px 10px;border-radius:999px;">${esc(d.categoria)}</span>
+            <span style="font-size:11px;color:${catColor};background:${catColor}15;border:1px solid ${catColor}40;padding:2px 10px;border-radius:999px;font-weight:600;">${esc(d.categoria)}</span>
             <span class="${badge}" style="font-size:11px;font-weight:600;padding:2px 10px;border-radius:999px;">${d.risco}</span>`;
         document.getElementById('detalhe-btn-editar').onclick  = ()=>{ fecharDetalhe(); editarDica(id); };
         document.getElementById('detalhe-btn-excluir').onclick = ()=>{ fecharDetalhe(); abrirModalDelete(id); };
@@ -555,7 +648,6 @@ async function verDica(id) {
 function fecharDetalhe() { document.getElementById('modal-detalhe').style.display='none'; }
 function fecharDetalheOverlay(e) { if(e.target===e.currentTarget) fecharDetalhe(); }
 
-// ── CRUD ──
 async function salvarDica(e) {
     e.preventDefault();
     const id = document.getElementById('dica-id').value;
@@ -647,6 +739,33 @@ function esc(s) { const d=document.createElement('div'); d.appendChild(document.
 document.addEventListener('keydown', e=>{
     if(e.key==='Escape'){ fecharModal(); fecharModalDelete(); fecharDetalhe(); }
 });
+
+// -- NOVO SISTEMA DE CURTIDAS COM LOCALSTORAGE --
+async function toggleCurtida(id) {
+    let curtidas = JSON.parse(localStorage.getItem('minhas_curtidas') || '[]');
+    const isLiked = curtidas.includes(id);
+    const endpoint = isLiked ? 'remover-voto' : 'voto';
+
+    const dica = todasDicas.find(d => d.id === id);
+    if (dica) dica.votos += isLiked ? -1 : 1;
+
+    if (isLiked) {
+        curtidas = curtidas.filter(cId => cId !== id);
+        toast('Curtida removida', 'ok');
+    } else {
+        curtidas.push(id);
+        toast('Dica curtida!', 'ok');
+    }
+    localStorage.setItem('minhas_curtidas', JSON.stringify(curtidas));
+    
+    renderCards(ordenar(todasDicas));
+
+    try {
+        await fetch(`${API_URL}/dicas/${id}/${endpoint}`, { method: 'PATCH' });
+    } catch {
+        // Ignorar erro visual no optimisic UI para não travar a experiência
+    }
+}
 </script>
 </body>
 </html>

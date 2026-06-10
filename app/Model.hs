@@ -74,6 +74,7 @@ data DicaInvestimento = DicaInvestimento
     , dicaRisco     :: String   -- ^ risco
     , dicaAutor     :: String   -- ^ autor
     , dicaCriacao   :: UTCTime  -- ^ criacao
+    , dicaVotos     :: Int
     } deriving (Generic, Show)
 
 -- JSON: { "id": 1, "titulo": "...", "descricao": "...", ... }
@@ -95,6 +96,7 @@ instance FromRow DicaInvestimento where
         <*> field   -- risco
         <*> field   -- autor
         <*> field   -- data_criacao
+        <*> field   -- votos
 
 -- ---------------------------------------------------------------------------
 -- | Payload de criação/atualização — JSON simples sem prefixo
