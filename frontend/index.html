@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvestHub | Dicas de Investimento</title>
+    <meta name="description" content="Plataforma de dicas de investimento com curadoria especializada.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: { 300:'#86efac', 400:'#4ade80', 500:'#22c55e', 600:'#16a34a', 700:'#15803d' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
+        body { background: #0b1120; min-height: 100vh; color: #e5e7eb; }
+
+        /* Cards */
+        .card {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 14px;
+            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            border-color: rgba(34,197,94,0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+        }
+
+        /* Gradiente no texto */
+        .grad { background: linear-gradient(90deg,#22c55e,#4ade80); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+        /* Badges de risco */
+        .badge-baixo { background:rgba(34,197,94,0.12); color:#4ade80; border:1px solid rgba(34,197,94,0.25); }
+        .badge-medio { background:rgba(251,191,36,0.12); color:#fbbf24; border:1px solid rgba(251,191,36,0.25); }
+        .badge-alto  { background:rgba(239,68,68,0.12);  color:#f87171; border:1px solid rgba(239,68,68,0.25); }
+
+        /* Pills de categoria */
+        .pill {
+            background: #1f2937; border: 1px solid #374151;
+            border-radius: 999px; cursor: pointer;
+            transition: all 0.15s; color: #9ca3af;
+            font-size: 12px; font-weight: 600; padding: 5px 13px;
+        }
+        .pill:hover  { border-color: rgba(34,197,94,0.4); color: #4ade80; }
+        .pill.active { background: rgba(34,197,94,0.12); border-color: rgba(34,197,94,0.5); color: #4ade80; }
+
+        /* Botão verde */
+        .btn-green {
+            background: linear-gradient(135deg,#16a34a,#15803d);
+            border-radius: 10px; color: #fff; font-weight: 600;
+            transition: all 0.2s; border: none; cursor: pointer;
+        }
+        .btn-green:hover { background: linear-gradient(135deg,#22c55e,#16a34a); box-shadow: 0 6px 20px rgba(34,197,94,0.3); transform: translateY(-1px); }
+
+        /* Inputs */
+        input, select, textarea {
+            background: #1f2937; border: 1px solid #374151; color: #e5e7eb;
+            border-radius: 10px; font-size: 14px; transition: border-color 0.2s;
+        }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: rgba(34,197,94,0.5); box-shadow: 0 0 0 3px rgba(34,197,94,0.08); }
+        input::placeholder, textarea::placeholder { color: #4b5563; }
+
+        /* Modal */
+        .overlay { background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); }
+        .modal-box { background: #0f172a; border: 1px solid #1e293b; border-radius: 18px; }
+
+        /* Skeleton */
+        .skeleton { background: linear-gradient(90deg,#1f2937 25%,#293548 50%,#1f2937 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:14px; }
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #0b1120; }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 5px; }
+
+        /* Divisor */
+        .divider { height:1px; background: linear-gradient(90deg,transparent,#1f2937,transparent); }
+
+        /* Sort ativo */
+        .sort-btn { background:#1f2937; border:1px solid #374151; border-radius:8px; color:#6b7280; font-size:12px; padding:5px 12px; cursor:pointer; transition:all 0.15s; }
+        .sort-btn:hover { color:#e5e7eb; }
+        .sort-btn.active { background:rgba(34,197,94,0.1); border-color:rgba(34,197,94,0.4); color:#4ade80; }
+
+        @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+        .fade-in { animation: fadeIn 0.35s ease both; }
+    </style>
+</head>
+
+<body>
+
+<!-- ══ HEADER ══ -->
+<header style="background:#0d1526;border-bottom:1px solid #1f2937;position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);">
+    <div style="max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+            <div class="btn-green" style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="trending-up" style="width:17px;height:17px;color:#fff;"></i>
+            </div>
+            <div>
+                <div style="font-size:17px;font-weight:800;" class="grad">InvestHub</div>
+                <div style="font-size:11px;color:#4b5563;margin-top:-2px;">Dicas de Investimento</div>
+            </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:16px;">
+            <span style="font-size:13px;color:#6b7280;display:flex;align-items:center;gap:6px;">
+                <span style="width:7px;height:7px;background:#22c55e;border-radius:50%;display:inline-block;"></span>
+                <span id="total-dicas">-- dicas</span>
+            </span>
+            <button class="btn-green" style="padding:8px 16px;font-size:13px;display:flex;align-items:center;gap:6px;" onclick="abrirModal()">
+                <i data-lucide="plus" style="width:15px;height:15px;"></i> Nova Dica
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- ══ HERO compacto ══ -->
+<section style="max-width:1200px;margin:0 auto;padding:40px 24px 28px;">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;">
+        <div>
+            <h1 style="font-size:32px;font-weight:800;margin:0 0 6px;">
+                Dicas de <span class="grad">Investimento</span>
+            </h1>
+            <p style="color:#6b7280;font-size:14px;margin:0;">Explore e gerencie dicas financeiras por categoria e risco.</p>
+        </div>
+        <!-- Mini stats -->
+        <div style="display:flex;gap:24px;">
+            <div style="text-align:center;">
+                <div id="stat-total" style="font-size:26px;font-weight:800;" class="grad">--</div>
+                <div style="font-size:11px;color:#4b5563;margin-top:2px;">Dicas</div>
+            </div>
+            <div style="width:1px;background:#1f2937;"></div>
+            <div style="text-align:center;">
+                <div id="stat-cats" style="font-size:26px;font-weight:800;" class="grad">--</div>
+                <div style="font-size:11px;color:#4b5563;margin-top:2px;">Categorias</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ FILTROS ══ -->
+<section style="max-width:1200px;margin:0 auto;padding:0 24px 24px;">
+    <div class="card" style="padding:18px 20px;">
+        <!-- Busca + Ordenar -->
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+            <div style="position:relative;flex:1;min-width:200px;">
+                <i data-lucide="search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:#4b5563;"></i>
+                <input id="input-busca" type="text" placeholder="Buscar por título..."
+                    style="width:100%;padding:9px 12px 9px 36px;"
+                    oninput="debounceCarregarDicas()">
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;">
+                <span style="font-size:11px;color:#4b5563;white-space:nowrap;">Ordenar:</span>
+                <button class="sort-btn active" id="sort-recente" onclick="setSortOrder('recente')">Recentes</button>
+                <button class="sort-btn" id="sort-antigo"  onclick="setSortOrder('antigo')">Antigos</button>
+                <button class="sort-btn" id="sort-az"      onclick="setSortOrder('az')">A→Z</button>
+            </div>
+            <button onclick="limparFiltros()" style="display:flex;align-items:center;gap:6px;padding:9px 14px;background:#1f2937;border:1px solid #374151;border-radius:10px;color:#6b7280;font-size:13px;cursor:pointer;" onmouseover="this.style.color='#e5e7eb'" onmouseout="this.style.color='#6b7280'">
+                <i data-lucide="x" style="width:14px;height:14px;"></i> Limpar
+            </button>
+        </div>
+
+        <!-- Pills de categoria -->
+        <div id="cat-pills" style="display:flex;flex-wrap:wrap;gap:7px;"></div>
+    </div>
+</section>
+
+<!-- ══ CONTEÚDO PRINCIPAL: Cards + Gráfico ══ -->
+<main style="max-width:1200px;margin:0 auto;padding:0 24px 60px;display:grid;grid-template-columns:1fr 240px;gap:24px;align-items:start;">
+
+    <!-- Cards -->
+    <div>
+        <div style="font-size:13px;color:#4b5563;margin-bottom:14px;" id="resultado-contagem"></div>
+
+        <div id="lista-dicas" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;"></div>
+
+        <!-- Loading -->
+        <div id="loading" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
+            <div class="skeleton" style="height:200px;"></div>
+            <div class="skeleton" style="height:200px;"></div>
+            <div class="skeleton" style="height:200px;"></div>
+        </div>
+
+        <!-- Vazio -->
+        <div id="estado-vazio" style="display:none;text-align:center;padding:60px 20px;">
+            <i data-lucide="search-x" style="width:36px;height:36px;color:#374151;margin:0 auto 12px;display:block;"></i>
+            <p style="color:#6b7280;font-size:15px;font-weight:500;">Nenhuma dica encontrada</p>
+            <p style="color:#374151;font-size:13px;margin-top:4px;">Tente outros filtros ou crie uma nova dica</p>
+            <button class="btn-green" style="padding:10px 22px;margin-top:16px;font-size:13px;" onclick="abrirModal()">Criar dica</button>
+        </div>
+    </div>
+
+    <!-- Sidebar: Gráfico -->
+    <div style="position:sticky;top:80px;">
+        <div class="card" style="padding:20px;">
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:16px;">
+                <i data-lucide="pie-chart" style="width:15px;height:15px;color:#22c55e;"></i>
+                <span style="font-size:13px;font-weight:600;color:#9ca3af;">Distribuição</span>
+            </div>
+            <canvas id="chart-categorias" width="200" height="200"></canvas>
+            <div id="chart-legenda" style="margin-top:14px;display:flex;flex-direction:column;gap:7px;"></div>
+        </div>
+    </div>
+</main>
+
+<!-- ══ FOOTER ══ -->
+<footer style="border-top:1px solid #1f2937;background:#0d1526;">
+    <div style="max-width:1200px;margin:0 auto;padding:28px 24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+            <div class="btn-green" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="trending-up" style="width:14px;height:14px;color:#fff;"></i>
+            </div>
+            <span style="font-weight:700;font-size:14px;" class="grad">InvestHub</span>
+            <span style="color:#374151;font-size:13px;">· Projeto Acadêmico · Haskell + Servant + PostgreSQL</span>
+        </div>
+        <code style="font-size:12px;color:#22c55e;background:rgba(34,197,94,0.08);padding:4px 10px;border-radius:6px;border:1px solid rgba(34,197,94,0.15);">localhost:8080/dicas</code>
+    </div>
+</footer>
+
+<!-- ══ MODAL DETALHES ══ -->
+<div id="modal-detalhe" class="overlay" style="position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;" onclick="fecharDetalheOverlay(event)">
+    <div class="modal-box" style="width:100%;max-width:520px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;">
+        <div style="padding:22px 24px 16px;border-bottom:1px solid #1e293b;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+                <div style="flex:1;">
+                    <div id="detalhe-badges" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px;"></div>
+                    <h2 id="detalhe-titulo" style="font-size:18px;font-weight:700;color:#f9fafb;margin:0;line-height:1.4;"></h2>
+                </div>
+                <button onclick="document.getElementById('modal-detalhe').style.display='none'"
+                    style="background:none;border:none;color:#6b7280;cursor:pointer;padding:4px;" onmouseover="this.style.color='#e5e7eb'" onmouseout="this.style.color='#6b7280'">
+                    <i data-lucide="x" style="width:18px;height:18px;"></i>
+                </button>
+            </div>
+        </div>
+        <div style="padding:20px 24px;overflow-y:auto;flex:1;">
+            <p id="detalhe-descricao" style="color:#9ca3af;font-size:14px;line-height:1.7;margin:0 0 20px;"></p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div style="background:#111827;border:1px solid #1f2937;border-radius:10px;padding:12px;">
+                    <div style="font-size:11px;color:#4b5563;margin-bottom:4px;">Autor</div>
+                    <div id="detalhe-autor" style="font-size:13px;font-weight:600;color:#e5e7eb;"></div>
+                </div>
+                <div style="background:#111827;border:1px solid #1f2937;border-radius:10px;padding:12px;">
+                    <div style="font-size:11px;color:#4b5563;margin-bottom:4px;">Publicado em</div>
+                    <div id="detalhe-data" style="font-size:13px;font-weight:600;color:#e5e7eb;"></div>
+                </div>
+            </div>
+        </div>
+        <div style="padding:16px 24px;border-top:1px solid #1e293b;display:flex;gap:10px;">
+            <button id="detalhe-btn-editar" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(34,197,94,0.3);background:transparent;color:#4ade80;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;" onmouseover="this.style.background='rgba(34,197,94,0.08)'" onmouseout="this.style.background='transparent'">
+                <i data-lucide="pencil" style="width:14px;height:14px;"></i> Editar
+            </button>
+            <button id="detalhe-btn-excluir" style="padding:10px 16px;border-radius:10px;border:1px solid rgba(239,68,68,0.25);background:transparent;color:#f87171;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(239,68,68,0.08)'" onmouseout="this.style.background='transparent'">
+                <i data-lucide="trash-2" style="width:14px;height:14px;"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ══ MODAL CRIAR/EDITAR ══ -->
+<div id="modal" class="overlay" style="position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;" onclick="fecharModalOverlay(event)">
+    <div class="modal-box" style="width:100%;max-width:500px;">
+        <div style="padding:22px 24px 18px;border-bottom:1px solid #1e293b;display:flex;align-items:center;justify-content:space-between;">
+            <div>
+                <h2 id="modal-titulo" style="font-size:16px;font-weight:700;color:#f9fafb;margin:0;">Nova Dica</h2>
+                <p style="font-size:12px;color:#4b5563;margin:3px 0 0;">Preencha todos os campos</p>
+            </div>
+            <button onclick="fecharModal()" style="background:none;border:none;color:#6b7280;cursor:pointer;" onmouseover="this.style.color='#e5e7eb'" onmouseout="this.style.color='#6b7280'">
+                <i data-lucide="x" style="width:18px;height:18px;"></i>
+            </button>
+        </div>
+        <form id="form-dica" onsubmit="salvarDica(event)" style="padding:20px 24px;display:flex;flex-direction:column;gap:14px;">
+            <input type="hidden" id="dica-id">
+            <div>
+                <label style="display:block;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Título *</label>
+                <input id="campo-titulo" type="text" required maxlength="200" placeholder="Ex: Como investir no Tesouro Direto..." style="width:100%;padding:10px 14px;">
+            </div>
+            <div>
+                <label style="display:block;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Descrição *</label>
+                <textarea id="campo-descricao" required rows="4" maxlength="2000" placeholder="Descreva a dica com detalhes..." style="width:100%;padding:10px 14px;resize:none;"></textarea>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div>
+                    <label style="display:block;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Categoria *</label>
+                    <select id="campo-categoria" required style="width:100%;padding:10px 14px;">
+                        <option value="">Selecionar...</option>
+                        <option value="Renda Fixa">📊 Renda Fixa</option>
+                        <option value="Ações">📈 Ações</option>
+                        <option value="FIIs">🏢 FIIs</option>
+                        <option value="Previdência">🛡️ Previdência</option>
+                        <option value="Criptomoedas">₿ Criptomoedas</option>
+                        <option value="Exterior">🌎 Exterior</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display:block;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Risco *</label>
+                    <select id="campo-risco" required style="width:100%;padding:10px 14px;">
+                        <option value="">Selecionar...</option>
+                        <option value="Baixo">🟢 Baixo</option>
+                        <option value="Médio">🟡 Médio</option>
+                        <option value="Alto">🔴 Alto</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label style="display:block;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Autor *</label>
+                <input id="campo-autor" type="text" required maxlength="100" placeholder="Seu nome" style="width:100%;padding:10px 14px;">
+            </div>
+            <div style="display:flex;gap:10px;padding-top:4px;">
+                <button type="button" onclick="fecharModal()" style="flex:1;padding:11px;border-radius:10px;border:1px solid #374151;background:transparent;color:#9ca3af;font-size:13px;font-weight:600;cursor:pointer;">Cancelar</button>
+                <button type="submit" id="btn-salvar" class="btn-green" style="flex:1;padding:11px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;">
+                    <i data-lucide="save" style="width:14px;height:14px;"></i>
+                    <span id="btn-salvar-texto">Salvar</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ══ MODAL DELETE ══ -->
+<div id="modal-delete" class="overlay" style="position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;">
+    <div class="modal-box" style="width:100%;max-width:360px;padding:28px 24px;text-align:center;">
+        <div style="width:48px;height:48px;border-radius:12px;background:rgba(239,68,68,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+            <i data-lucide="trash-2" style="width:22px;height:22px;color:#f87171;"></i>
+        </div>
+        <h3 style="font-size:16px;font-weight:700;margin:0 0 6px;">Excluir Dica?</h3>
+        <p style="color:#6b7280;font-size:13px;margin:0 0 22px;">Essa ação não pode ser desfeita.</p>
+        <div style="display:flex;gap:10px;">
+            <button onclick="fecharModalDelete()" style="flex:1;padding:10px;border-radius:10px;border:1px solid #374151;background:transparent;color:#9ca3af;font-size:13px;font-weight:600;cursor:pointer;">Cancelar</button>
+            <button id="btn-confirmar-delete" onclick="confirmarDelete()" style="flex:1;padding:10px;border-radius:10px;background:#dc2626;border:none;color:#fff;font-size:13px;font-weight:600;cursor:pointer;">Excluir</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══ TOAST ══ -->
+<div id="toast" style="position:fixed;bottom:24px;right:24px;z-index:70;display:none;transition:all 0.3s ease;">
+    <div id="toast-inner" style="display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
+        <i id="toast-icon" style="width:16px;height:16px;"></i>
+        <span id="toast-msg" style="font-size:13px;font-weight:500;"></span>
+    </div>
+</div>
+
+<!-- ══ SCROLL TOP ══ -->
+<button id="btn-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+    style="position:fixed;bottom:24px;left:24px;z-index:40;width:38px;height:38px;border-radius:10px;background:#111827;border:1px solid #1f2937;color:#6b7280;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s;opacity:0;pointer-events:none;"
+    onmouseover="this.style.color='#4ade80';this.style.borderColor='rgba(34,197,94,0.4)'"
+    onmouseout="this.style.color='#6b7280';this.style.borderColor='#1f2937'">
+    <i data-lucide="chevron-up" style="width:18px;height:18px;"></i>
+</button>
+
+<script>
+const API_URL     = 'http://localhost:8080';
+let idDeletar     = null;
+let debTimer      = null;
+let todasDicas    = [];
+let catAtiva      = '';
+let ordem         = 'recente';
+let chart         = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    lucide.createIcons();
+    carregarDicas();
+    carregarEstatisticas();
+    window.addEventListener('scroll', () => {
+        const btn = document.getElementById('btn-top');
+        if (window.scrollY > 300) { btn.style.opacity='1'; btn.style.pointerEvents='auto'; }
+        else { btn.style.opacity='0'; btn.style.pointerEvents='none'; }
+    });
+});
+
+// ── API: Dicas ──
+async function carregarDicas() {
+    mostrarLoading(true);
+    document.getElementById('lista-dicas').innerHTML = '';
+    document.getElementById('estado-vazio').style.display = 'none';
+
+    const busca = document.getElementById('input-busca').value.trim();
+    let url = `${API_URL}/dicas`;
+    const p = new URLSearchParams();
+    if (catAtiva) p.append('categoria', catAtiva);
+    if (busca)    p.append('busca', busca);
+    if (p.toString()) url += '?' + p;
+
+    try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error();
+        todasDicas = await res.json();
+        mostrarLoading(false);
+        renderCards(ordenar(todasDicas));
+        const t = todasDicas.length;
+        document.getElementById('total-dicas').textContent = `${t} dica${t!==1?'s':''}`;
+        document.getElementById('resultado-contagem').textContent = t > 0 ? `${t} resultado${t!==1?'s':''} encontrado${t!==1?'s':''}` : '';
+        animNum('stat-total', t);
+    } catch {
+        mostrarLoading(false);
+        toast('Erro ao conectar com a API', 'err');
+        document.getElementById('estado-vazio').style.display = 'block';
+    }
+}
+
+function ordenar(d) {
+    const arr = [...d];
+    if (ordem === 'recente') return arr.sort((a,b) => new Date(b.criacao) - new Date(a.criacao));
+    if (ordem === 'antigo')  return arr.sort((a,b) => new Date(a.criacao) - new Date(b.criacao));
+    if (ordem === 'az')      return arr.sort((a,b) => a.titulo.localeCompare(b.titulo));
+    return arr;
+}
+
+function setSortOrder(o) {
+    ordem = o;
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('sort-'+o).classList.add('active');
+    renderCards(ordenar(todasDicas));
+}
+
+// ── Render cards ──
+function renderCards(dicas) {
+    const c = document.getElementById('lista-dicas');
+    if (!dicas.length) { document.getElementById('estado-vazio').style.display='block'; return; }
+
+    c.innerHTML = dicas.map(d => {
+        const data = new Date(d.criacao).toLocaleDateString('pt-BR', { day:'2-digit', month:'short', year:'numeric' });
+        const badge = {'Baixo':'badge-baixo','Médio':'badge-medio','Alto':'badge-alto'}[d.risco] || 'badge-medio';
+        const icon  = {'Renda Fixa':'📊','Ações':'📈','FIIs':'🏢','Previdência':'🛡️','Criptomoedas':'₿','Exterior':'🌎'}[d.categoria] || '💡';
+        const preview = d.descricao.length > 110 ? d.descricao.slice(0,110)+'…' : d.descricao;
+
+        return `<div class="card fade-in" style="padding:18px;display:flex;flex-direction:column;gap:12px;cursor:pointer;" onclick="verDica(${d.id})">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+                <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+                    <span>${icon}</span>
+                    <span style="font-size:11px;color:#9ca3af;background:#1f2937;border:1px solid #374151;padding:2px 10px;border-radius:999px;">${esc(d.categoria)}</span>
+                    <span class="${badge}" style="font-size:11px;font-weight:600;padding:2px 10px;border-radius:999px;">${d.risco}</span>
+                </div>
+                <div style="display:flex;gap:4px;opacity:0;transition:opacity 0.2s;" class="card-actions" onclick="event.stopPropagation()">
+                    <button onclick="editarDica(${d.id})" style="width:28px;height:28px;border-radius:8px;border:none;background:transparent;color:#4b5563;cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Editar" onmouseover="this.style.color='#4ade80';this.style.background='rgba(34,197,94,0.1)'" onmouseout="this.style.color='#4b5563';this.style.background='transparent'">
+                        <i data-lucide="pencil" style="width:13px;height:13px;"></i>
+                    </button>
+                    <button onclick="abrirModalDelete(${d.id})" style="width:28px;height:28px;border-radius:8px;border:none;background:transparent;color:#4b5563;cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Excluir" onmouseover="this.style.color='#f87171';this.style.background='rgba(239,68,68,0.1)'" onmouseout="this.style.color='#4b5563';this.style.background='transparent'">
+                        <i data-lucide="trash-2" style="width:13px;height:13px;"></i>
+                    </button>
+                </div>
+            </div>
+            <div style="flex:1;">
+                <h3 style="font-size:14px;font-weight:700;color:#f9fafb;margin:0 0 6px;line-height:1.4;">${esc(d.titulo)}</h3>
+                <p style="font-size:12px;color:#6b7280;margin:0;line-height:1.6;">${esc(preview)}</p>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid #1f2937;">
+                <span style="font-size:11px;color:#4b5563;display:flex;align-items:center;gap:5px;">
+                    <i data-lucide="user" style="width:11px;height:11px;"></i>${esc(d.autor)}
+                </span>
+                <span style="font-size:11px;color:#374151;display:flex;align-items:center;gap:5px;">
+                    <i data-lucide="calendar" style="width:11px;height:11px;"></i>${data}
+                </span>
+            </div>
+        </div>`;
+    }).join('');
+
+    // hover para mostrar actions
+    c.querySelectorAll('.card').forEach(el => {
+        const actions = el.querySelector('.card-actions');
+        el.addEventListener('mouseenter', () => actions.style.opacity='1');
+        el.addEventListener('mouseleave', () => actions.style.opacity='0');
+    });
+    lucide.createIcons();
+}
+
+// ── Estatísticas + Gráfico ──
+async function carregarEstatisticas() {
+    try {
+        const res   = await fetch(`${API_URL}/dicas/estatisticas`);
+        if (!res.ok) return;
+        const stats = await res.json();
+        renderPills(stats);
+        renderGrafico(stats);
+        animNum('stat-cats', stats.length);
+    } catch {}
+}
+
+function renderPills(stats) {
+    const icons = {'Renda Fixa':'📊','Ações':'📈','FIIs':'🏢','Previdência':'🛡️','Criptomoedas':'₿','Exterior':'🌎'};
+    const c = document.getElementById('cat-pills');
+    c.innerHTML = `<button class="pill ${catAtiva===''?'active':''}" onclick="filtrarCat('')">🔍 Todas</button>` +
+        stats.map(s => `<button class="pill ${catAtiva===s.categoria?'active':''}" onclick="filtrarCat('${s.categoria}')">
+            ${icons[s.categoria]||'💡'} ${s.categoria} <span style="color:${catAtiva===s.categoria?'rgba(74,222,128,0.6)':'#374151'};margin-left:3px;">${s.quantidade}</span>
+        </button>`).join('');
+}
+
+function renderGrafico(stats) {
+    const ctx  = document.getElementById('chart-categorias').getContext('2d');
+    const cores = ['#22c55e','#4ade80','#16a34a','#86efac','#15803d','#bbf7d0'];
+    if (chart) chart.destroy();
+    chart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: stats.map(s=>s.categoria),
+            datasets: [{ data: stats.map(s=>s.quantidade), backgroundColor: cores, borderColor:'#0b1120', borderWidth:3, hoverOffset:4 }]
+        },
+        options: {
+            responsive:true, maintainAspectRatio:true, cutout:'70%',
+            plugins: { legend:{ display:false }, tooltip:{ backgroundColor:'#111827', titleColor:'#f9fafb', bodyColor:'#9ca3af', borderColor:'#1f2937', borderWidth:1 } }
+        }
+    });
+
+    // Legenda customizada
+    const leg = document.getElementById('chart-legenda');
+    leg.innerHTML = stats.map((s,i) => `
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:7px;">
+                <div style="width:9px;height:9px;border-radius:2px;background:${cores[i]};flex-shrink:0;"></div>
+                <span style="font-size:11px;color:#9ca3af;">${s.categoria}</span>
+            </div>
+            <span style="font-size:11px;font-weight:600;color:#6b7280;">${s.quantidade}</span>
+        </div>`).join('');
+}
+
+function filtrarCat(cat) { catAtiva=cat; carregarDicas(); carregarEstatisticas(); }
+
+// ── Modal detalhes ──
+async function verDica(id) {
+    try {
+        const res = await fetch(`${API_URL}/dicas/${id}`);
+        if (!res.ok) return;
+        const d = await res.json();
+        const icons = {'Renda Fixa':'📊','Ações':'📈','FIIs':'🏢','Previdência':'🛡️','Criptomoedas':'₿','Exterior':'🌎'};
+        const badge = {'Baixo':'badge-baixo','Médio':'badge-medio','Alto':'badge-alto'}[d.risco]||'badge-medio';
+
+        document.getElementById('detalhe-titulo').textContent    = d.titulo;
+        document.getElementById('detalhe-descricao').textContent = d.descricao;
+        document.getElementById('detalhe-autor').textContent     = d.autor;
+        document.getElementById('detalhe-data').textContent      = new Date(d.criacao).toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+        document.getElementById('detalhe-badges').innerHTML = `
+            <span>${icons[d.categoria]||'💡'}</span>
+            <span style="font-size:11px;color:#9ca3af;background:#1f2937;border:1px solid #374151;padding:2px 10px;border-radius:999px;">${esc(d.categoria)}</span>
+            <span class="${badge}" style="font-size:11px;font-weight:600;padding:2px 10px;border-radius:999px;">${d.risco}</span>`;
+        document.getElementById('detalhe-btn-editar').onclick  = ()=>{ fecharDetalhe(); editarDica(id); };
+        document.getElementById('detalhe-btn-excluir').onclick = ()=>{ fecharDetalhe(); abrirModalDelete(id); };
+        document.getElementById('modal-detalhe').style.display = 'flex';
+        lucide.createIcons();
+    } catch {}
+}
+
+function fecharDetalhe() { document.getElementById('modal-detalhe').style.display='none'; }
+function fecharDetalheOverlay(e) { if(e.target===e.currentTarget) fecharDetalhe(); }
+
+// ── CRUD ──
+async function salvarDica(e) {
+    e.preventDefault();
+    const id = document.getElementById('dica-id').value;
+    const ed = !!id;
+    const payload = {
+        titulo:    document.getElementById('campo-titulo').value,
+        descricao: document.getElementById('campo-descricao').value,
+        categoria: document.getElementById('campo-categoria').value,
+        risco:     document.getElementById('campo-risco').value,
+        autor:     document.getElementById('campo-autor').value,
+    };
+    const btn = document.getElementById('btn-salvar');
+    btn.disabled=true; document.getElementById('btn-salvar-texto').textContent='Salvando...';
+    try {
+        const res = await fetch(ed?`${API_URL}/dicas/${id}`:`${API_URL}/dicas`, {
+            method: ed?'PUT':'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error();
+        fecharModal();
+        toast(ed?'Dica atualizada!':'Dica criada!', 'ok');
+        carregarDicas(); carregarEstatisticas();
+    } catch { toast('Erro ao salvar', 'err'); }
+    finally { btn.disabled=false; document.getElementById('btn-salvar-texto').textContent='Salvar'; }
+}
+
+async function editarDica(id) {
+    try {
+        const res = await fetch(`${API_URL}/dicas/${id}`);
+        const d   = await res.json();
+        document.getElementById('dica-id').value             = d.id;
+        document.getElementById('campo-titulo').value        = d.titulo;
+        document.getElementById('campo-descricao').value     = d.descricao;
+        document.getElementById('campo-categoria').value     = d.categoria;
+        document.getElementById('campo-risco').value         = d.risco;
+        document.getElementById('campo-autor').value         = d.autor;
+        document.getElementById('modal-titulo').textContent  = 'Editar Dica';
+        document.getElementById('btn-salvar-texto').textContent = 'Atualizar';
+        abrirModal();
+    } catch { toast('Erro ao carregar dica', 'err'); }
+}
+
+function abrirModalDelete(id) { idDeletar=id; document.getElementById('modal-delete').style.display='flex'; }
+function fecharModalDelete()   { idDeletar=null; document.getElementById('modal-delete').style.display='none'; }
+
+async function confirmarDelete() {
+    if (!idDeletar) return;
+    const btn=document.getElementById('btn-confirmar-delete');
+    btn.disabled=true; btn.textContent='Excluindo...';
+    try {
+        await fetch(`${API_URL}/dicas/${idDeletar}`,{method:'DELETE'});
+        fecharModalDelete(); toast('Dica excluída!','ok');
+        carregarDicas(); carregarEstatisticas();
+    } catch { toast('Erro ao excluir','err'); }
+    finally { btn.disabled=false; btn.textContent='Excluir'; }
+}
+
+function abrirModal() { document.getElementById('modal').style.display='flex'; setTimeout(()=>document.getElementById('campo-titulo').focus(),100); }
+function fecharModal() {
+    document.getElementById('modal').style.display='none';
+    document.getElementById('form-dica').reset();
+    document.getElementById('dica-id').value='';
+    document.getElementById('modal-titulo').textContent='Nova Dica';
+    document.getElementById('btn-salvar-texto').textContent='Salvar';
+}
+function fecharModalOverlay(e) { if(e.target===e.currentTarget) fecharModal(); }
+function limparFiltros() { document.getElementById('input-busca').value=''; filtrarCat(''); }
+function debounceCarregarDicas() { clearTimeout(debTimer); debTimer=setTimeout(carregarDicas,400); }
+function mostrarLoading(s) { document.getElementById('loading').style.display=s?'grid':'none'; }
+
+function toast(msg, tipo='ok') {
+    const el=document.getElementById('toast'), inner=document.getElementById('toast-inner');
+    document.getElementById('toast-msg').textContent=msg;
+    document.getElementById('toast-icon').setAttribute('data-lucide', tipo==='ok'?'check-circle':'alert-circle');
+    inner.style.background = tipo==='ok'?'#16a34a':'#dc2626';
+    el.style.display='block'; lucide.createIcons();
+    setTimeout(()=>el.style.display='none', 3000);
+}
+
+function animNum(id, target) {
+    const el=document.getElementById(id); if(!el) return;
+    let n=0; const step=Math.ceil(target/20);
+    const t=setInterval(()=>{ n=Math.min(n+step,target); el.textContent=n; if(n>=target)clearInterval(t); },40);
+}
+
+function esc(s) { const d=document.createElement('div'); d.appendChild(document.createTextNode(String(s))); return d.innerHTML; }
+
+document.addEventListener('keydown', e=>{
+    if(e.key==='Escape'){ fecharModal(); fecharModalDelete(); fecharDetalhe(); }
+});
+</script>
+</body>
+</html>

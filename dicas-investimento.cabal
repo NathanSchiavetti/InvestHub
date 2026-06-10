@@ -1,0 +1,46 @@
+cabal-version:      3.0
+name:               dicas-investimento
+version:            0.1.0.0
+synopsis:           CRUD de Dicas de Investimento usando Haskell e Servant
+description:        API REST completa para gerenciamento de dicas de investimento
+license:            BSD-3-Clause
+license-file:       LICENSE
+author:             Aluno
+maintainer:         aluno@exemplo.com
+category:           Web
+build-type:         Simple
+extra-doc-files:    CHANGELOG.md
+
+common warnings
+    ghc-options: -Wall
+
+executable dicas-investimento
+    import:           warnings
+    main-is:          Main.hs
+    other-modules:
+        API
+        Model
+        Repository
+        Server
+    build-depends:
+        base                  >=4.17 && <4.19,
+        servant               ^>=0.20,
+        servant-server        ^>=0.20,
+        warp                  ^>=3.3,
+        wai                   ^>=3.2,
+        wai-cors              ^>=0.2,
+        aeson                 ^>=2.2,
+        postgresql-simple     ^>=0.7,
+        bytestring            ^>=0.11,
+        text                  ^>=2.0,
+        time                  ^>=1.12,
+        http-types            ^>=0.12,
+        mtl                   ^>=2.3
+    hs-source-dirs:   app
+    default-language: Haskell2010
+    default-extensions:
+        OverloadedStrings
+        DeriveGeneric
+        DeriveAnyClass
+        DataKinds
+        TypeOperators
