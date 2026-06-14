@@ -4,767 +4,1468 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InvestHub | Dicas de Investimento</title>
-    <meta name="description" content="Plataforma de dicas de investimento com curadoria especializada.">
-
+    <meta name="description" content="Explore dicas de investimento curadas por especialistas. Renda fixa, ações, FIIs, criptomoedas e mais.">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: {
-                        brand: { 300:'#86efac', 400:'#4ade80', 500:'#22c55e', 600:'#16a34a', 700:'#15803d' }
-                    }
-                }
-            }
-        }
-    </script>
-
     <style>
-        * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
-        body { background: var(--bg-main); min-height: 100vh; color: var(--text-main); transition: background-color 0.3s, color 0.3s; }
-
-        /* Cards */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-main);
-            border-radius: 14px;
-            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s, background-color 0.3s;
-        }
-        .card:hover {
-            border-color: rgba(34,197,94,0.35);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+        :root {
+            --accent: #22c55e;
+            --accent-dim: rgba(34,197,94,0.15);
+            --bg: #0a0b0f;
+            --bg-raised: #111318;
+            --bg-card: #13161d;
+            --border: rgba(255,255,255,0.07);
+            --border-strong: rgba(255,255,255,0.12);
+            --fg: #f0f0f0;
+            --fg-muted: #8a8f9e;
+            --fg-subtle: #4b5261;
         }
 
-        /* Gradiente no texto */
-        .grad { background: linear-gradient(90deg,#22c55e,#4ade80); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { background: var(--bg); color: var(--fg); overflow-x: hidden; }
 
-        /* Badges de risco */
-        .badge-baixo { background:rgba(34,197,94,0.12); color:#4ade80; border:1px solid rgba(34,197,94,0.25); }
-        .badge-medio { background:rgba(251,191,36,0.12); color:#fbbf24; border:1px solid rgba(251,191,36,0.25); }
-        .badge-alto  { background:rgba(239,68,68,0.12);  color:#f87171; border:1px solid rgba(239,68,68,0.25); }
-
-        /* Pills de categoria */
-        .pill {
-            background: var(--bg-pill); border: 1px solid var(--border-pill);
-            border-radius: 999px; cursor: pointer;
-            transition: all 0.15s; color: var(--text-muted);
-            font-size: 12px; font-weight: 600; padding: 5px 13px;
+        /* ─── Noise texture ─── */
+        .noise::before {
+            content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            opacity: 0.35;
         }
-        .pill:hover  { border-color: rgba(34,197,94,0.4); color: #4ade80; }
-        .pill.active { background: rgba(34,197,94,0.12); border-color: rgba(34,197,94,0.5); color: #4ade80; }
 
-        /* Botão verde */
-        .btn-green {
-            background: linear-gradient(135deg,#16a34a,#15803d);
-            border-radius: 10px; color: #fff; font-weight: 600;
-            transition: all 0.2s; border: none; cursor: pointer;
+        /* ─── Grid background ─── */
+        .grid-bg {
+            background-image:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 48px 48px;
         }
-        .btn-green:hover { background: linear-gradient(135deg,#22c55e,#16a34a); box-shadow: 0 6px 20px rgba(34,197,94,0.3); transform: translateY(-1px); }
 
-        /* Inputs */
-        input, select, textarea {
-            background: var(--bg-input); border: 1px solid var(--border-input); color: var(--text-main);
-            border-radius: 10px; font-size: 14px; transition: border-color 0.2s, background-color 0.3s, color 0.3s;
+        /* ─── Aurora ─── */
+        .aurora-1 {
+            position:absolute; border-radius:50%; filter:blur(120px); pointer-events:none;
+            width:520px; height:520px; top:-120px; left:-60px;
+            background: radial-gradient(circle, rgba(34,197,94,0.22) 0%, transparent 70%);
+            animation: aurora1 18s ease-in-out infinite;
         }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: rgba(34,197,94,0.5); box-shadow: 0 0 0 3px rgba(34,197,94,0.08); }
-        input::placeholder, textarea::placeholder { color: var(--text-muted-darker); }
+        .aurora-2 {
+            position:absolute; border-radius:50%; filter:blur(140px); pointer-events:none;
+            width:460px; height:460px; top:80px; right:-80px;
+            background: radial-gradient(circle, rgba(16,163,74,0.14) 0%, transparent 70%);
+            animation: aurora2 22s ease-in-out infinite;
+        }
+        @keyframes aurora1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(40px,60px) scale(1.1)} }
+        @keyframes aurora2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-30px,40px) scale(0.95)} }
 
-        /* Modal */
-        .overlay { background: var(--bg-overlay); backdrop-filter: blur(8px); transition: background-color 0.3s; }
-        .modal-box { background: var(--bg-modal); border: 1px solid var(--border-modal); border-radius: 18px; transition: background-color 0.3s, border-color 0.3s; }
+        /* ─── Header ─── */
+        header {
+            position:sticky; top:0; z-index:50;
+            background: rgba(10,11,15,0.82); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        .header-inner { max-width:1200px; margin:0 auto; padding:0 24px; display:flex; align-items:center; justify-content:space-between; height:58px; }
+        nav a { font-size:13px; color:var(--fg-muted); text-decoration:none; transition:color 0.15s; }
+        nav a:hover { color:var(--fg); }
 
-        /* Skeleton */
-        .skeleton { background: linear-gradient(90deg,var(--bg-pill) 25%,var(--border-input) 50%,var(--bg-pill) 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:14px; }
+        /* ─── Buttons ─── */
+        .btn-accent {
+            display:inline-flex; align-items:center; gap:6px;
+            background:var(--accent); color:#fff; font-weight:600; font-size:13px;
+            padding:9px 18px; border-radius:999px; border:none; cursor:pointer;
+            transition: all 0.2s; text-decoration:none;
+        }
+        .btn-accent:hover { filter:brightness(1.08); transform:translateY(-1px); box-shadow:0 8px 24px rgba(34,197,94,0.3); }
+        .btn-ghost {
+            display:inline-flex; align-items:center; gap:6px;
+            background:rgba(255,255,255,0.06); color:var(--fg); font-weight:500; font-size:13px;
+            padding:9px 18px; border-radius:999px; border:1px solid var(--border-strong); cursor:pointer;
+            transition:all 0.15s; text-decoration:none;
+        }
+        .btn-ghost:hover { background:rgba(255,255,255,0.10); }
+
+        /* ─── Hero ─── */
+        .hero { position:relative; overflow:hidden; padding:80px 24px 90px; }
+        .hero-grid { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
+        .badge { display:inline-flex; align-items:center; gap:7px; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2); border-radius:999px; padding:5px 14px; font-size:11px; font-weight:600; color:var(--accent); letter-spacing:.05em; text-transform:uppercase; }
+        h1 { font-size:clamp(2.8rem,5.5vw,5rem); font-weight:700; line-height:0.97; letter-spacing:-0.045em; color:var(--fg); margin:20px 0 24px; }
+        h1 em { font-style:normal; color:var(--fg-muted); font-weight:400; }
+        .hero-sub { font-size:17px; color:var(--fg-muted); line-height:1.65; max-width:480px; }
+        .hero-stats { display:flex; gap:32px; align-items:center; margin-top:40px; }
+        .hero-stat dt { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.18em; color:var(--fg-subtle); margin-bottom:4px; }
+        .hero-stat dd { font-size:clamp(1.3rem,2vw,1.7rem); font-weight:700; letter-spacing:-0.025em; color:var(--fg); }
+        .hero-divider { width:1px; height:40px; background:var(--border-strong); }
+
+        /* ─── Live card (hero right) ─── */
+        .live-card {
+            background:rgba(17,19,24,0.9); border:1px solid var(--border-strong);
+            border-radius:22px; padding:22px; backdrop-filter:blur(16px);
+            box-shadow:0 32px 80px rgba(0,0,0,0.5);
+            position:relative; overflow:hidden;
+        }
+        .live-card::before {
+            content:''; position:absolute; top:-2px; left:50%; transform:translateX(-50%);
+            width:60%; height:2px;
+            background:linear-gradient(90deg,transparent,var(--accent),transparent);
+        }
+        .live-dot { width:7px; height:7px; border-radius:50%; background:var(--accent); position:relative; }
+        .live-dot::after { content:''; position:absolute; inset:-3px; border-radius:50%; background:var(--accent); opacity:0.4; animation:ping 1.5s ease-out infinite; }
+        @keyframes ping { 0%{transform:scale(1);opacity:0.4} 100%{transform:scale(2.2);opacity:0} }
+        .live-row {
+            display:flex; align-items:center; justify-content:space-between; gap:12px;
+            padding:10px 14px; border-radius:12px;
+            background:var(--bg); border:1px solid var(--border); margin-top:10px;
+            transition:border-color 0.2s;
+        }
+        .live-row:hover { border-color:rgba(34,197,94,0.3); }
+
+        /* ─── Section label ─── */
+        .sec-label { display:flex; align-items:center; gap:12px; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.22em; color:var(--accent); }
+        .sec-label span { display:block; width:32px; height:1px; background:var(--accent); }
+        h2.sec-title { font-size:clamp(2rem,4vw,3.4rem); font-weight:700; letter-spacing:-0.035em; line-height:1.04; color:var(--fg); margin:18px 0 16px; }
+        h2.sec-title em { font-style:italic; font-weight:400; color:var(--fg-muted); }
+
+        /* ─── Section ─── */
+        section { padding:80px 24px; }
+        .sec-inner { max-width:1200px; margin:0 auto; }
+        .divider-line { max-width:1200px; margin:0 auto; height:1px; background:var(--border); }
+
+        /* ─── Category cards ─── */
+        .cat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:48px; }
+        .cat-card {
+            background:var(--bg-card); border:1px solid var(--border);
+            border-radius:18px; padding:24px; cursor:pointer;
+            transition:all 0.25s; position:relative; overflow:hidden;
+        }
+        .cat-card::after {
+            content:''; position:absolute; inset:0; border-radius:inherit; opacity:0; transition:opacity 0.3s;
+            background:radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(34,197,94,0.12), transparent 60%);
+        }
+        .cat-card:hover { border-color:rgba(34,197,94,0.3); transform:translateY(-3px); box-shadow:0 16px 40px rgba(0,0,0,0.4); }
+        .cat-card:hover::after { opacity:1; }
+        .cat-icon-wrap { width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:20px; margin-bottom:16px; }
+        .cat-card h3 { font-size:15px; font-weight:700; letter-spacing:-0.015em; color:var(--fg); margin-bottom:6px; }
+        .cat-card p { font-size:12px; color:var(--fg-muted); line-height:1.6; }
+        .cat-count { position:absolute; top:20px; right:20px; font-size:11px; font-weight:700; color:var(--accent); background:var(--accent-dim); padding:3px 10px; border-radius:999px; }
+        .cat-card.active-cat { border-color:rgba(34,197,94,0.5); background:rgba(34,197,94,0.04); }
+
+        /* ─── Search + controls ─── */
+        .controls { background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:16px 20px; display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+        input[type=text] {
+            background:rgba(255,255,255,0.04); border:1px solid var(--border-strong);
+            color:var(--fg); border-radius:10px; padding:9px 14px 9px 38px;
+            font-size:13px; flex:1; min-width:180px; transition:border-color 0.2s;
+        }
+        input[type=text]::placeholder { color:var(--fg-subtle); }
+        input[type=text]:focus { outline:none; border-color:rgba(34,197,94,0.5); box-shadow:0 0 0 3px rgba(34,197,94,0.08); }
+        .sort-row { display:flex; gap:6px; align-items:center; }
+        .sort-btn { background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:8px; color:var(--fg-muted); font-size:12px; padding:6px 13px; cursor:pointer; transition:all 0.15s; }
+        .sort-btn:hover { color:var(--fg); border-color:var(--border-strong); }
+        .sort-btn.active { background:var(--accent-dim); border-color:rgba(34,197,94,0.4); color:var(--accent); }
+        .clear-btn { background:transparent; border:1px solid var(--border); border-radius:8px; color:var(--fg-muted); font-size:12px; padding:6px 13px; cursor:pointer; transition:all 0.15s; display:flex; align-items:center; gap:5px; }
+        .clear-btn:hover { border-color:var(--border-strong); color:var(--fg); }
+
+        /* ─── Tip cards ─── */
+        .tips-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:16px; margin-top:24px; }
+        .tip-card {
+            background:var(--bg-card); border:1px solid var(--border);
+            border-radius:16px; padding:20px; cursor:pointer;
+            transition:all 0.2s; display:flex; flex-direction:column; gap:14px;
+        }
+        .tip-card:hover { border-color:rgba(34,197,94,0.3); transform:translateY(-2px); box-shadow:0 12px 32px rgba(0,0,0,0.4); }
+        .tip-actions { display:flex; gap:4px; opacity:0; transition:opacity 0.2s; }
+        .tip-card:hover .tip-actions { opacity:1; }
+        .icon-btn { width:28px; height:28px; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--fg-subtle); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
+        .icon-btn:hover { color:var(--accent); border-color:rgba(34,197,94,0.35); background:var(--accent-dim); }
+        .icon-btn.del:hover { color:#f87171; border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.08); }
+
+        /* ─── Badges ─── */
+        .cat-tag { display:inline-flex; align-items:center; font-size:11px; color:var(--fg-muted); background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:999px; padding:2px 10px; }
+        .badge-baixo { font-size:11px; font-weight:600; padding:2px 10px; border-radius:999px; background:rgba(34,197,94,0.1); color:#4ade80; border:1px solid rgba(34,197,94,0.25); }
+        .badge-medio { font-size:11px; font-weight:600; padding:2px 10px; border-radius:999px; background:rgba(251,191,36,0.1); color:#fbbf24; border:1px solid rgba(251,191,36,0.25); }
+        .badge-alto  { font-size:11px; font-weight:600; padding:2px 10px; border-radius:999px; background:rgba(239,68,68,0.1);  color:#f87171; border:1px solid rgba(239,68,68,0.25); }
+
+        /* ─── Modals ─── */
+        .overlay { position:fixed; inset:0; z-index:60; background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); display:none; align-items:center; justify-content:center; padding:16px; }
+        .modal-box { background:#0d1020; border:1px solid rgba(255,255,255,0.1); border-radius:20px; width:100%; max-width:520px; overflow:hidden; }
+        .modal-head { padding:22px 24px 18px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+        .modal-body { padding:22px 24px; display:flex; flex-direction:column; gap:14px; max-height:60vh; overflow-y:auto; }
+        .modal-foot { padding:16px 24px; border-top:1px solid var(--border); display:flex; gap:10px; }
+
+        label { display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--fg-muted); margin-bottom:6px; }
+        input.field, select.field, textarea.field {
+            width:100%; background:rgba(255,255,255,0.04); border:1px solid var(--border-strong);
+            color:var(--fg); border-radius:10px; padding:10px 14px; font-size:13px; transition:border-color 0.2s;
+        }
+        input.field::placeholder, textarea.field::placeholder { color:var(--fg-subtle); }
+        input.field:focus, select.field:focus, textarea.field:focus { outline:none; border-color:rgba(34,197,94,0.5); box-shadow:0 0 0 3px rgba(34,197,94,0.08); }
+        select.field option { background:#1a1d2e; }
+        textarea.field { resize:none; }
+        .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+        .btn-save { flex:1; padding:11px; border-radius:12px; background:var(--accent); border:none; color:#fff; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:6px; }
+        .btn-save:hover { filter:brightness(1.08); box-shadow:0 6px 20px rgba(34,197,94,0.3); }
+        .btn-cancel { flex:1; padding:11px; border-radius:12px; background:transparent; border:1px solid var(--border-strong); color:var(--fg-muted); font-size:13px; font-weight:600; cursor:pointer; transition:all 0.15s; }
+        .btn-cancel:hover { color:var(--fg); border-color:var(--border-strong); }
+        .btn-danger { flex:1; padding:11px; border-radius:12px; background:#dc2626; border:none; color:#fff; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.15s; }
+        .btn-danger:hover { background:#ef4444; }
+        .x-btn { background:none; border:none; color:var(--fg-muted); cursor:pointer; padding:4px; border-radius:8px; transition:color 0.15s; }
+        .x-btn:hover { color:var(--fg); }
+
+        /* ─── Detalhe modal ─── */
+        .detail-header { padding:24px; border-bottom:1px solid var(--border); }
+        .detail-body { padding:24px; }
+        .meta-box { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:10px; padding:14px; }
+        .meta-box dt { font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:var(--fg-subtle); margin-bottom:5px; }
+        .meta-box dd { font-size:13px; font-weight:600; color:var(--fg); }
+
+        /* ─── Footer ─── */
+        footer { border-top:1px solid var(--border); background:var(--bg-raised); padding:36px 24px; }
+        .foot-inner { max-width:1200px; margin:0 auto; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; }
+
+        /* ─── Toast ─── */
+        #toast { position:fixed; bottom:24px; right:24px; z-index:80; transition:all 0.3s ease; display:none; }
+        .toast-inner { display:flex; align-items:center; gap:10px; padding:13px 20px; border-radius:14px; box-shadow:0 8px 32px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1); }
+
+        /* ─── Scroll top ─── */
+        #btn-top { position:fixed; bottom:24px; left:24px; z-index:40; width:40px; height:40px; border-radius:12px; background:var(--bg-card); border:1px solid var(--border); color:var(--fg-muted); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.3s; opacity:0; pointer-events:none; }
+        #btn-top.show { opacity:1; pointer-events:auto; }
+        #btn-top:hover { color:var(--accent); border-color:rgba(34,197,94,0.35); }
+
+        /* ─── Skeleton ─── */
+        .skeleton { background:linear-gradient(90deg,#1a1d28 25%,#22263a 50%,#1a1d28 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:16px; }
         @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: var(--bg-main); }
-        ::-webkit-scrollbar-thumb { background: var(--border-input); border-radius: 5px; }
+        /* ─── Misc ─── */
+        @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+        .fade-up { animation:fadeUp 0.35s ease both; }
 
-        /* Divisor */
-        .divider { height:1px; background: linear-gradient(90deg,transparent,var(--border-main),transparent); }
-
-        /* Sort ativo */
-        .sort-btn { background:var(--bg-pill); border:1px solid var(--border-pill); border-radius:8px; color:var(--text-muted); font-size:12px; padding:5px 12px; cursor:pointer; transition:all 0.15s; }
-        .sort-btn:hover { color:var(--text-main); }
-        .sort-btn.active { background:rgba(34,197,94,0.1); border-color:rgba(34,197,94,0.4); color:#4ade80; }
-
-        @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-        .fade-in { animation: fadeIn 0.35s ease both; }
-
-        /* Tema Escuro (Padrão) */
-        :root {
-            --bg-main: #0b1120;
-            --bg-card: #111827;
-            --bg-header: #0d1526;
-            --bg-input: #1f2937;
-            --bg-modal: #0f172a;
-            --border-main: #1f2937;
-            --border-input: #374151;
-            --border-pill: #374151;
-            --border-modal: #1e293b;
-            --text-main: #e5e7eb;
-            --text-muted: #6b7280;
-            --text-muted-darker: #4b5563;
-            --text-title: #f9fafb;
-            --bg-overlay: rgba(0,0,0,0.75);
-            --bg-pill: #1f2937;
+        /* ─── Responsive ─── */
+        @media(max-width:900px) {
+            .hero-grid { grid-template-columns:1fr; }
+            .live-card-wrap { display:none; }
+            .cat-grid { grid-template-columns:repeat(2,1fr); }
+            h1 { font-size:2.8rem; }
+        }
+        @media(max-width:600px) {
+            .cat-grid { grid-template-columns:1fr; }
+            nav { display:none; }
         }
 
-        /* Tema Claro */
-        body.light-mode {
-            --bg-main: #f8fafc;
-            --bg-card: #ffffff;
-            --bg-header: #ffffff;
-            --bg-input: #f1f5f9;
-            --bg-modal: #ffffff;
-            --border-main: #e2e8f0;
-            --border-input: #cbd5e1;
-            --border-pill: #e2e8f0;
-            --border-modal: #e2e8f0;
-            --text-main: #334155;
-            --text-muted: #64748b;
-            --text-muted-darker: #94a3b8;
-            --text-title: #0f172a;
-            --bg-overlay: rgba(15,23,42,0.6);
-            --bg-pill: #f1f5f9;
+        ::-webkit-scrollbar { width:5px; }
+        ::-webkit-scrollbar-track { background:var(--bg); }
+        ::-webkit-scrollbar-thumb { background:#2a2d3a; border-radius:5px; }
+
+        /* ─── Simulator buttons ─── */
+        .idx-btn, .period-btn {
+            background:rgba(255,255,255,0.04); border:1px solid var(--border-strong);
+            border-radius:8px; color:var(--fg-muted); font-size:12px; font-weight:600;
+            padding:7px 14px; cursor:pointer; transition:all 0.15s;
         }
+        .idx-btn:hover, .period-btn:hover { color:var(--fg); border-color:var(--border-strong); }
+        .idx-btn.active, .period-btn.active {
+            background:var(--accent-dim); border-color:rgba(34,197,94,0.5); color:var(--accent);
+        }
+        .preset-btn {
+            background:rgba(255,255,255,0.03); border:1px solid var(--border);
+            border-radius:6px; color:var(--fg-subtle); font-size:11px; font-weight:600;
+            padding:4px 10px; cursor:pointer; transition:all 0.15s;
+        }
+        .preset-btn:hover { color:var(--accent); border-color:rgba(34,197,94,0.3); background:var(--accent-dim); }
+        .sim-tr-last td { border-bottom: none !important; }
+
+        /* ─── Glossario ─── */
+        .gloss-card {
+            background:var(--bg-card); border:1px solid var(--border); border-radius:14px;
+            overflow:hidden; cursor:pointer; transition:border-color 0.2s;
+        }
+        .gloss-card:hover { border-color:rgba(34,197,94,0.3); }
+        .gloss-head { display:flex; align-items:center; justify-content:space-between; padding:16px 18px; }
+        .gloss-icon { width:36px; height:36px; border-radius:10px; background:rgba(255,255,255,0.04); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+        .gloss-body {
+            font-size:13px; color:var(--fg-muted); line-height:1.7;
+            padding:0 18px; max-height:0; overflow:hidden; transition:max-height 0.3s ease, padding 0.3s;
+        }
+        .gloss-card.open .gloss-body { max-height:200px; padding:0 18px 16px; }
+        .gloss-card.open .gloss-chevron { transform: rotate(180deg); }
+
+        /* ─── Vote button ─── */
+        .vote-btn { display:flex; align-items:center; gap:5px; background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:8px; color:var(--fg-subtle); font-size:11px; font-weight:700; padding:5px 10px; cursor:pointer; transition:all 0.2s; }
+        .vote-btn:hover { color:var(--accent); border-color:rgba(34,197,94,0.35); background:var(--accent-dim); }
+        .vote-btn.voted { background:var(--accent-dim); border-color:rgba(34,197,94,0.5); color:var(--accent); }
     </style>
 </head>
 
-<body>
+<body class="noise">
 
 <!-- ══ HEADER ══ -->
-<header style="background:var(--bg-header);border-bottom:1px solid var(--border-main);position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);transition:background-color 0.3s, border-color 0.3s;">
-    <div style="max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px;">
+<header>
+    <div class="header-inner">
         <div style="display:flex;align-items:center;gap:10px;">
-            <div class="btn-green" style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;">
-                <i data-lucide="trending-up" style="width:17px;height:17px;color:#fff;"></i>
+            <div style="width:32px;height:32px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="trending-up" style="width:16px;height:16px;color:#fff;"></i>
             </div>
-            <div>
-                <div style="font-size:17px;font-weight:800;" class="grad">InvestHub</div>
-                <div style="font-size:11px;color:var(--text-muted);margin-top:-2px;">Dicas de Investimento</div>
-            </div>
+            <span style="font-size:16px;font-weight:800;letter-spacing:-0.03em;">InvestHub</span>
         </div>
 
-        <div style="display:flex;align-items:center;gap:16px;">
-            <span style="font-size:13px;color:var(--text-muted);display:flex;align-items:center;gap:6px;">
-                <span style="width:7px;height:7px;background:#22c55e;border-radius:50%;display:inline-block;"></span>
-                <span id="total-dicas">-- dicas</span>
-            </span>
-            
-            <button id="btn-theme" class="sort-btn" style="padding:8px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:10px;" onclick="toggleTheme()" title="Alternar Tema">
-                <i data-lucide="sun" style="width:16px;height:16px;"></i>
-            </button>
+        <nav style="display:flex;gap:28px;">
+            <a href="#categorias">Categorias</a>
+            <a href="#simulador">Simulador</a>
+            <a href="#dicas">Explorar</a>
+        </nav>
 
-            <button class="btn-green" style="padding:8px 16px;font-size:13px;display:flex;align-items:center;gap:6px;" onclick="abrirModal()">
-                <i data-lucide="plus" style="width:15px;height:15px;"></i> Nova Dica
+        <div style="display:flex;align-items:center;gap:8px;">
+            <!-- #3 Health indicator -->
+            <div id="health-badge" style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:5px 12px;border-radius:999px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);color:var(--accent);transition:all 0.3s;cursor:default;" title="Status da API">
+                <span id="health-dot" class="live-dot" style="display:inline-block;"></span>
+                <span id="health-txt">API</span>
+            </div>
+            <span style="font-size:12px;color:var(--fg-subtle);display:flex;align-items:center;gap:6px;">
+                <span id="header-total">--</span>
+            </span>
+            <button class="btn-accent" onclick="abrirModal()" style="padding:7px 16px;font-size:12px;">
+                <i data-lucide="plus" style="width:13px;height:13px;"></i> Nova Dica
             </button>
         </div>
     </div>
 </header>
 
 <!-- ══ HERO ══ -->
-<section style="max-width:1200px;margin:0 auto;padding:40px 24px 28px;">
-    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;">
+<section class="hero grid-bg" id="hero">
+    <div class="aurora-1" aria-hidden="true"></div>
+    <div class="aurora-2" aria-hidden="true"></div>
+
+    <div class="hero-grid" style="position:relative;z-index:1;">
         <div>
-            <h1 style="font-size:32px;font-weight:800;margin:0 0 6px;color:var(--text-title);transition:color 0.3s;">
-                Dicas de <span class="grad">Investimento</span>
+            <div class="badge">
+                <span style="width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;"></span>
+                Haskell + Servant + PostgreSQL
+            </div>
+
+            <h1 style="margin:22px 0 20px;">
+                Invista com <em>conhecimento.</em> Sempre.
             </h1>
-            <p style="color:var(--text-muted);font-size:14px;margin:0;">Explore e gerencie dicas financeiras por categoria e risco.</p>
-        </div>
-        <div style="display:flex;gap:24px;">
-            <div style="text-align:center;">
-                <div id="stat-total" style="font-size:26px;font-weight:800;" class="grad">--</div>
-                <div style="font-size:11px;color:var(--text-muted-darker);margin-top:2px;">Dicas</div>
-            </div>
-            <div style="width:1px;background:var(--border-main);transition:background-color 0.3s;"></div>
-            <div style="text-align:center;">
-                <div id="stat-cats" style="font-size:26px;font-weight:800;" class="grad">--</div>
-                <div style="font-size:11px;color:var(--text-muted-darker);margin-top:2px;">Categorias</div>
-            </div>
-        </div>
-    </div>
-</section>
 
-<!-- ══ FILTROS ══ -->
-<section style="max-width:1200px;margin:0 auto;padding:0 24px 24px;">
-    <div class="card" style="padding:18px 20px;">
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
-            <div style="position:relative;flex:1;min-width:200px;">
-                <i data-lucide="search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--text-muted-darker);"></i>
-                <input id="input-busca" type="text" placeholder="Buscar por título..."
-                    style="width:100%;padding:9px 12px 9px 36px;"
-                    oninput="debounceCarregarDicas()">
-            </div>
-            <div style="display:flex;gap:6px;align-items:center;">
-                <span style="font-size:11px;color:var(--text-muted-darker);white-space:nowrap;">Ordenar:</span>
-                <button class="sort-btn active" id="sort-recente" onclick="setSortOrder('recente')">Recentes</button>
-                <button class="sort-btn" id="sort-antigo"  onclick="setSortOrder('antigo')">Antigos</button>
-                <button class="sort-btn" id="sort-az"      onclick="setSortOrder('az')">A→Z</button>
-            </div>
-            <button onclick="limparFiltros()" style="display:flex;align-items:center;gap:6px;padding:9px 14px;background:var(--bg-pill);border:1px solid var(--border-pill);border-radius:10px;color:var(--text-muted);font-size:13px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.color='var(--text-main)';this.style.borderColor='rgba(34,197,94,0.4)';" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border-pill)';">
-                <i data-lucide="x" style="width:14px;height:14px;"></i> Limpar
-            </button>
-        </div>
-        <div id="cat-pills" style="display:flex;flex-wrap:wrap;gap:7px;"></div>
-    </div>
-</section>
+            <p class="hero-sub">
+                Explore dicas financeiras curadas por especialistas.
+                De renda fixa a criptomoedas — filtre, aprenda e gerencie em um só lugar.
+            </p>
 
-<!-- ══ CONTEÚDO PRINCIPAL ══ -->
-<main style="max-width:1200px;margin:0 auto;padding:0 24px 60px;display:grid;grid-template-columns:1fr 240px;gap:24px;align-items:start;">
-    <div>
-        <div style="font-size:13px;color:var(--text-muted-darker);margin-bottom:14px;" id="resultado-contagem"></div>
-        <div id="lista-dicas" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;"></div>
-
-        <div id="loading" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
-            <div class="skeleton" style="height:200px;"></div>
-            <div class="skeleton" style="height:200px;"></div>
-            <div class="skeleton" style="height:200px;"></div>
-        </div>
-
-        <div id="estado-vazio" style="display:none;text-align:center;padding:60px 20px;">
-            <i data-lucide="search-x" style="width:36px;height:36px;color:var(--text-muted-darker);margin:0 auto 12px;display:block;"></i>
-            <p style="color:var(--text-muted);font-size:15px;font-weight:500;">Nenhuma dica encontrada</p>
-            <p style="color:var(--text-muted-darker);font-size:13px;margin-top:4px;">Tente outros filtros ou crie uma nova dica</p>
-            <button class="btn-green" style="padding:10px 22px;margin-top:16px;font-size:13px;" onclick="abrirModal()">Criar dica</button>
-        </div>
-    </div>
-
-    <!-- Sidebar: Gráfico -->
-    <div style="position:sticky;top:80px;">
-        <div class="card" style="padding:20px;">
-            <div style="display:flex;align-items:center;gap:7px;margin-bottom:16px;">
-                <i data-lucide="pie-chart" style="width:15px;height:15px;color:#22c55e;"></i>
-                <span style="font-size:13px;font-weight:600;color:var(--text-main);">Distribuição</span>
-            </div>
-            <canvas id="chart-categorias" width="200" height="200"></canvas>
-            <div id="chart-legenda" style="margin-top:14px;display:flex;flex-direction:column;gap:7px;"></div>
-        </div>
-    </div>
-</main>
-
-<!-- ══ FOOTER ══ -->
-<footer style="border-top:1px solid var(--border-main);background:var(--bg-header);transition:background-color 0.3s, border-color 0.3s;">
-    <div style="max-width:1200px;margin:0 auto;padding:28px 24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;">
-        <div style="display:flex;align-items:center;gap:8px;">
-            <div class="btn-green" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;">
-                <i data-lucide="trending-up" style="width:14px;height:14px;color:#fff;"></i>
-            </div>
-            <span style="font-weight:700;font-size:14px;" class="grad">InvestHub</span>
-            <span style="color:var(--text-muted-darker);font-size:13px;">· Projeto Acadêmico · Haskell + Servant + PostgreSQL</span>
-        </div>
-        <code style="font-size:12px;color:#22c55e;background:rgba(34,197,94,0.08);padding:4px 10px;border-radius:6px;border:1px solid rgba(34,197,94,0.15);">localhost:8080/dicas</code>
-    </div>
-</footer>
-
-<!-- Modais (Omitidos p/ encurtar, mesma logica) -->
-<div id="modal-detalhe" class="overlay" style="position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;" onclick="fecharDetalheOverlay(event)">
-    <div class="modal-box" style="width:100%;max-width:520px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;">
-        <div style="padding:22px 24px 16px;border-bottom:1px solid var(--border-modal);">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
-                <div style="flex:1;">
-                    <div id="detalhe-badges" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px;"></div>
-                    <h2 id="detalhe-titulo" style="font-size:18px;font-weight:700;color:var(--text-title);margin:0;line-height:1.4;"></h2>
+            <!-- Stats -->
+            <div style="display:flex;gap:0;margin-top:36px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+                <div style="flex:1;padding:18px 22px;border-right:1px solid var(--border);">
+                    <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.18em;color:var(--fg-subtle);margin-bottom:6px;">Dicas</div>
+                    <div id="stat-dicas" style="font-size:2rem;font-weight:800;letter-spacing:-0.04em;color:var(--fg);">--</div>
                 </div>
-                <button onclick="document.getElementById('modal-detalhe').style.display='none'"
-                    style="background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'">
-                    <i data-lucide="x" style="width:18px;height:18px;"></i>
+                <div style="flex:1;padding:18px 22px;border-right:1px solid var(--border);">
+                    <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.18em;color:var(--fg-subtle);margin-bottom:6px;">Categorias</div>
+                    <div id="stat-cats" style="font-size:2rem;font-weight:800;letter-spacing:-0.04em;color:var(--fg);">--</div>
+                </div>
+                <div style="flex:1;padding:18px 22px;">
+                    <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.18em;color:var(--fg-subtle);margin-bottom:6px;">API</div>
+                    <div style="font-size:2rem;font-weight:800;letter-spacing:-0.04em;color:var(--accent);">REST</div>
+                </div>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:28px;flex-wrap:wrap;">
+                <a href="#dicas" class="btn-accent">
+                    Explorar dicas <i data-lucide="arrow-down" style="width:14px;height:14px;"></i>
+                </a>
+                <button class="btn-ghost" onclick="abrirModal()">
+                    <i data-lucide="plus" style="width:14px;height:14px;"></i> Criar dica
                 </button>
             </div>
         </div>
-        <div style="padding:20px 24px;overflow-y:auto;flex:1;">
-            <p id="detalhe-descricao" style="color:var(--text-main);font-size:14px;line-height:1.7;margin:0 0 20px;"></p>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                <div style="background:var(--bg-main);border:1px solid var(--border-main);border-radius:10px;padding:12px;">
-                    <div style="font-size:11px;color:var(--text-muted-darker);margin-bottom:4px;">Autor</div>
-                    <div id="detalhe-autor" style="font-size:13px;font-weight:600;color:var(--text-main);"></div>
+
+        <!-- Live card -->
+        <div class="live-card-wrap" style="position:relative;">
+            <div style="position:absolute;inset:-24px;border-radius:32px;filter:blur(60px);background:conic-gradient(from 0deg,transparent,rgba(34,197,94,0.18),transparent 50%);opacity:0.7;animation:aurora1 10s ease-in-out infinite;" aria-hidden="true"></div>
+            <div class="live-card" style="position:relative;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                    <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.2em;color:var(--fg-muted);">Últimas dicas</span>
+                    <span style="display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:var(--accent);">
+                        <span class="live-dot"></span> ao vivo
+                    </span>
                 </div>
-                <div style="background:var(--bg-main);border:1px solid var(--border-main);border-radius:10px;padding:12px;">
-                    <div style="font-size:11px;color:var(--text-muted-darker);margin-bottom:4px;">Publicado em</div>
-                    <div id="detalhe-data" style="font-size:13px;font-weight:600;color:var(--text-main);"></div>
+                <div id="live-feed">
+                    <div class="skeleton" style="height:54px;margin-top:10px;"></div>
+                    <div class="skeleton" style="height:54px;margin-top:10px;"></div>
+                    <div class="skeleton" style="height:54px;margin-top:10px;"></div>
                 </div>
             </div>
         </div>
-        <div style="padding:16px 24px;border-top:1px solid var(--border-modal);display:flex;gap:10px;">
-            <button id="detalhe-btn-editar" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(34,197,94,0.3);background:transparent;color:#4ade80;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;" onmouseover="this.style.background='rgba(34,197,94,0.08)'" onmouseout="this.style.background='transparent'">
-                <i data-lucide="pencil" style="width:14px;height:14px;"></i> Editar
+    </div>
+</section>
+
+<!-- ══ CATEGORIAS ══ -->
+<section id="categorias" style="padding:80px 24px;">
+    <div class="sec-inner">
+        <div class="sec-label"><span></span> Categorias</div>
+        <h2 class="sec-title">Escolha seu <em>perfil de investidor.</em></h2>
+        <p style="color:var(--fg-muted);font-size:15px;max-width:520px;line-height:1.65;">Clique numa categoria para filtrar as dicas. Cada uma tem um nível de risco e estratégia diferente.</p>
+
+        <div class="cat-grid" id="cat-grid">
+            <!-- preenchido via JS -->
+        </div>
+    </div>
+</section>
+
+<div class="divider-line"></div>
+
+<!-- ══ SIMULADOR ══ -->
+<section id="simulador" style="padding:80px 24px;">
+    <div class="sec-inner">
+        <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:48px;">
+            <div>
+                <div class="sec-label"><span></span> Simulador</div>
+                <h2 class="sec-title">Quanto rende o seu <em>dinheiro?</em></h2>
+                <p style="color:var(--fg-muted);font-size:15px;max-width:480px;line-height:1.65;margin-top:12px;">Simule o rendimento do seu investimento com juros compostos, tabela regressiva de IR e comparação com poupança e CDI.</p>
+            </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:24px;align-items:start;">
+
+            <!-- ── Painel de inputs ── -->
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:28px;">
+                <h3 style="font-size:14px;font-weight:700;color:var(--fg);margin-bottom:24px;display:flex;align-items:center;gap:8px;">
+                    <i data-lucide="sliders" style="width:16px;height:16px;color:var(--accent);"></i> Parâmetros
+                </h3>
+
+                <!-- Valor inicial -->
+                <div style="margin-bottom:18px;">
+                    <label style="display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--fg-muted);margin-bottom:8px;">Valor inicial (R$)</label>
+                    <div style="position:relative;">
+                        <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:600;color:var(--fg-subtle);">R$</span>
+                        <input class="field" id="sim-valor" type="number" min="100" max="10000000" step="100" value="10000"
+                            style="padding-left:36px;" oninput="simAtualizar()">
+                    </div>
+                    <!-- Slider -->
+                    <input type="range" id="sim-slider" min="1000" max="500000" step="1000" value="10000"
+                        style="width:100%;margin-top:10px;accent-color:var(--accent);cursor:pointer;"
+                        oninput="document.getElementById('sim-valor').value=this.value;simAtualizar()">
+                    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--fg-subtle);margin-top:2px;">
+                        <span>R$ 1.000</span><span>R$ 500.000</span>
+                    </div>
+                </div>
+
+                <!-- Tipo de indexador -->
+                <div style="margin-bottom:18px;">
+                    <label style="display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--fg-muted);margin-bottom:8px;">Tipo de indexador</label>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                        <button class="idx-btn active" data-idx="CDI" onclick="selectIdx(this,'CDI')">CDI</button>
+                        <button class="idx-btn" data-idx="IPCA+" onclick="selectIdx(this,'IPCA+')">IPCA+</button>
+                        <button class="idx-btn" data-idx="Prefixado" onclick="selectIdx(this,'Prefixado')">Pré-fixado</button>
+                    </div>
+                    <div id="idx-hint" style="margin-top:8px;font-size:11px;color:var(--fg-subtle);background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:8px 10px;">CDI ref: 13,75% a.a. · Informe <strong style="color:var(--fg-muted);">% do CDI</strong> (ex: 110 = 110% do CDI)</div>
+                </div>
+
+                <!-- Taxa anual -->
+                <div style="margin-bottom:18px;">
+                    <label style="display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--fg-muted);margin-bottom:8px;" id="taxa-label">% do CDI</label>
+                    <div style="position:relative;">
+                        <input class="field" id="sim-taxa" type="number" min="0.1" max="500" step="0.5" value="110" oninput="simAtualizar()">
+                        <span id="taxa-suffix" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:600;color:var(--fg-subtle);">%</span>
+                    </div>
+                    <!-- Presets de taxa -->
+                    <div id="taxa-presets" style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
+                        <button class="preset-btn" onclick="setTaxa(90)">90%</button>
+                        <button class="preset-btn" onclick="setTaxa(100)">100%</button>
+                        <button class="preset-btn" onclick="setTaxa(110)">110%</button>
+                        <button class="preset-btn" onclick="setTaxa(120)">120%</button>
+                        <button class="preset-btn" onclick="setTaxa(130)">130%</button>
+                    </div>
+                    <div id="taxa-efetiva-hint" style="margin-top:8px;font-size:11px;color:var(--accent);"></div>
+                </div>
+
+                <!-- Período -->
+                <div style="margin-bottom:24px;">
+                    <label style="display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--fg-muted);margin-bottom:8px;">Período</label>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                        <button class="period-btn" data-anos="1" onclick="selectPeriod(this,1)">1 ano</button>
+                        <button class="period-btn active" data-anos="2" onclick="selectPeriod(this,2)">2 anos</button>
+                        <button class="period-btn" data-anos="3" onclick="selectPeriod(this,3)">3 anos</button>
+                        <button class="period-btn" data-anos="5" onclick="selectPeriod(this,5)">5 anos</button>
+                        <button class="period-btn" data-anos="10" onclick="selectPeriod(this,10)">10 anos</button>
+                    </div>
+                </div>
+
+                <button onclick="simular()" class="btn-accent" style="width:100%;justify-content:center;padding:13px;font-size:14px;border-radius:12px;">
+                    <i data-lucide="calculator" style="width:15px;height:15px;"></i>
+                    <span id="btn-sim-txt">Simular agora</span>
+                </button>
+
+                <p style="font-size:11px;color:var(--fg-subtle);margin-top:14px;line-height:1.6;text-align:center;">* Simulação educacional. Não é recomendação de investimento. IR pela tabela regressiva.</p>
+            </div>
+
+            <!-- ── Painel de resultados ── -->
+            <div id="sim-resultado" style="display:flex;flex-direction:column;gap:16px;">
+
+                <!-- Placeholder antes de simular -->
+                <div id="sim-placeholder" style="background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:60px 24px;text-align:center;">
+                    <i data-lucide="line-chart" style="width:40px;height:40px;color:var(--fg-subtle);margin:0 auto 14px;display:block;"></i>
+                    <p style="font-size:15px;font-weight:600;color:var(--fg-muted);">Configure e clique em Simular</p>
+                    <p style="font-size:13px;color:var(--fg-subtle);margin-top:6px;">Os resultados e o gráfico aparecerão aqui</p>
+                </div>
+
+                <!-- Resultado real (oculto inicialmente) -->
+                <div id="sim-output" style="display:none;flex-direction:column;gap:16px;">
+
+                    <!-- Destaque do valor final -->
+                    <div style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:18px;padding:28px;position:relative;overflow:hidden;">
+                        <div style="position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,0.15),transparent 70%);pointer-events:none;"></div>
+                        <div id="sim-header-row" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;position:relative;z-index:1;">
+                            <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.15em;color:var(--accent);">Valor final estimado</div>
+                        </div>
+                        <div id="sim-vf" style="font-size:clamp(2rem,4vw,3.2rem);font-weight:800;letter-spacing:-0.04em;color:var(--fg);">R$ --</div>
+                        <div style="display:flex;gap:24px;margin-top:16px;flex-wrap:wrap;">
+                            <div>
+                                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--fg-subtle);margin-bottom:4px;">Rendimento bruto</div>
+                                <div id="sim-rb" style="font-size:16px;font-weight:700;color:#4ade80;">+ R$ --</div>
+                            </div>
+                            <div style="width:1px;background:rgba(255,255,255,0.08);"></div>
+                            <div>
+                                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--fg-subtle);margin-bottom:4px;">Rendimento líquido (IR <span id="sim-aliq">--</span>%)</div>
+                                <div id="sim-rl" style="font-size:16px;font-weight:700;color:var(--accent);">+ R$ --</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico de evolução -->
+                    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:24px;">
+                        <div style="font-size:12px;font-weight:600;color:var(--fg-muted);margin-bottom:16px;display:flex;align-items:center;gap:7px;">
+                            <i data-lucide="trending-up" style="width:14px;height:14px;color:var(--accent);"></i> Evolução mensal
+                        </div>
+                        <canvas id="sim-chart" style="max-height:220px;"></canvas>
+                    </div>
+
+                    <!-- Tabela comparativa -->
+                    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:18px;overflow:hidden;">
+                        <div style="padding:18px 22px;border-bottom:1px solid var(--border);font-size:12px;font-weight:600;color:var(--fg-muted);display:flex;align-items:center;gap:7px;">
+                            <i data-lucide="bar-chart-2" style="width:14px;height:14px;color:var(--accent);"></i> Comparativo
+                        </div>
+                        <table style="width:100%;border-collapse:collapse;">
+                            <thead>
+                                <tr style="background:rgba(255,255,255,0.02);">
+                                    <th style="padding:12px 22px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--fg-subtle);">Investimento</th>
+                                    <th style="padding:12px 16px;text-align:right;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--fg-subtle);">Valor Final</th>
+                                    <th style="padding:12px 22px;text-align:right;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--fg-subtle);">Rend. Líquido</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sim-tabela"></tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="divider-line"></div>
+
+<!-- ══ GLOSSÁRIO ══ -->
+<section id="glossario" style="padding:80px 24px;">
+    <div class="sec-inner">
+        <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:48px;">
+            <div>
+                <div class="sec-label"><span></span> Glossário</div>
+                <h2 class="sec-title">Entenda os <em>termos.</em></h2>
+                <p style="color:var(--fg-muted);font-size:15px;max-width:480px;line-height:1.65;margin-top:12px;">Os conceitos fundamentais do mercado financeiro explicados de forma simples.</p>
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;" id="glossario-grid">
+
+            <div class="gloss-card" onclick="toggleGloss(this)">
+                <div class="gloss-head">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div class="gloss-icon">📊</div>
+                        <div>
+                            <div style="font-size:13px;font-weight:700;color:var(--fg);">CDI</div>
+                            <div style="font-size:11px;color:var(--fg-subtle);">Certificado de Depósito Interbancário</div>
+                        </div>
+                    </div>
+                    <i data-lucide="chevron-down" class="gloss-chevron" style="width:16px;height:16px;color:var(--fg-subtle);transition:transform 0.25s;"></i>
+                </div>
+                <div class="gloss-body">Taxa de empréstimos entre bancos, usada como referência para investimentos de renda fixa. Atualmente próxima à taxa Selic (~13,75% a.a.). Investimentos que rendem &ldquo;100% do CDI&rdquo; acompanham essa taxa.</div>
+            </div>
+
+            <div class="gloss-card" onclick="toggleGloss(this)">
+                <div class="gloss-head">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div class="gloss-icon">📈</div>
+                        <div>
+                            <div style="font-size:13px;font-weight:700;color:var(--fg);">IPCA</div>
+                            <div style="font-size:11px;color:var(--fg-subtle);">Índice de Preços ao Consumidor Amplo</div>
+                        </div>
+                    </div>
+                    <i data-lucide="chevron-down" class="gloss-chevron" style="width:16px;height:16px;color:var(--fg-subtle);transition:transform 0.25s;"></i>
+                </div>
+                <div class="gloss-body">Medida oficial da inflação no Brasil, calculada pelo IBGE. Investimentos como Tesouro IPCA+ garantem rendimento real (acima da inflação), protegendo o poder de compra.</div>
+            </div>
+
+            <div class="gloss-card" onclick="toggleGloss(this)">
+                <div class="gloss-head">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div class="gloss-icon">🏢</div>
+                        <div>
+                            <div style="font-size:13px;font-weight:700;color:var(--fg);">FII</div>
+                            <div style="font-size:11px;color:var(--fg-subtle);">Fundo de Investimento Imobiliário</div>
+                        </div>
+                    </div>
+                    <i data-lucide="chevron-down" class="gloss-chevron" style="width:16px;height:16px;color:var(--fg-subtle);transition:transform 0.25s;"></i>
+                </div>
+                <div class="gloss-body">Fundos que investem em imóveis ou papéis do setor imobiliário. Distribuem rendimentos mensais (geralmente isentos de IR para pessoa física) e são negociados na bolsa como ações.</div>
+            </div>
+
+            <div class="gloss-card" onclick="toggleGloss(this)">
+                <div class="gloss-head">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div class="gloss-icon">🛡️</div>
+                        <div>
+                            <div style="font-size:13px;font-weight:700;color:var(--fg);">PGBL / VGBL</div>
+                            <div style="font-size:11px;color:var(--fg-subtle);">Previdência Privada</div>
+                        </div>
+                    </div>
+                    <i data-lucide="chevron-down" class="gloss-chevron" style="width:16px;height:16px;color:var(--fg-subtle);transition:transform 0.25s;"></i>
+                </div>
+                <div class="gloss-body">PGBL: deduz até 12% da renda bruta no IR (ideal para quem faz declaração completa). VGBL: IR só incide sobre o rendimento (ideal para declaração simplificada). Ambos são veículos de longo prazo com benefício tributário.</div>
+            </div>
+
+            <div class="gloss-card" onclick="toggleGloss(this)">
+                <div class="gloss-head">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div class="gloss-icon">🏦</div>
+                        <div>
+                            <div style="font-size:13px;font-weight:700;color:var(--fg);">Selic</div>
+                            <div style="font-size:11px;color:var(--fg-subtle);">Taxa básica de juros da economia</div>
+                        </div>
+                    </div>
+                    <i data-lucide="chevron-down" class="gloss-chevron" style="width:16px;height:16px;color:var(--fg-subtle);transition:transform 0.25s;"></i>
+                </div>
+                <div class="gloss-body">Definida pelo Banco Central a cada 45 dias, a Selic é a taxa base de toda a economia. Ela influencia diretamente o CDI, a poupança e os juros dos empréstimos. O Tesouro Selic rende 100% da Selic.</div>
+            </div>
+
+            <div class="gloss-card" onclick="toggleGloss(this)">
+                <div class="gloss-head">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div class="gloss-icon">⚖️</div>
+                        <div>
+                            <div style="font-size:13px;font-weight:700;color:var(--fg);">IR Regressivo</div>
+                            <div style="font-size:11px;color:var(--fg-subtle);">Imposto de Renda em investimentos</div>
+                        </div>
+                    </div>
+                    <i data-lucide="chevron-down" class="gloss-chevron" style="width:16px;height:16px;color:var(--fg-subtle);transition:transform 0.25s;"></i>
+                </div>
+                <div class="gloss-body">Tabela regressiva: até 180 dias → 22,5% · 181–360 dias → 20% · 361–720 dias → 17,5% · acima de 720 dias → 15%. Quanto mais tempo investido, menor o imposto. FIIs e poupança são isentos para PF.</div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<div class="divider-line"></div>
+
+<!-- ══ EXPLORAR ══ -->
+<section id="dicas" style="padding:80px 24px;">
+    <div class="sec-inner">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:28px;">
+            <div>
+                <div class="sec-label"><span></span> Explorar</div>
+                <h2 class="sec-title" style="font-size:clamp(1.8rem,3vw,2.6rem);margin:10px 0 0;">Todas as dicas.</h2>
+            </div>
+            <span id="resultado-contagem" style="font-size:13px;color:var(--fg-subtle);"></span>
+        </div>
+
+        <!-- Controles -->
+        <div class="controls">
+            <div style="position:relative;flex:1;min-width:180px;">
+                <i data-lucide="search" style="position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--fg-subtle);pointer-events:none;"></i>
+                <input type="text" id="input-busca" placeholder="Buscar por título..." oninput="debounce()">
+            </div>
+            <div class="sort-row">
+                <span style="font-size:11px;color:var(--fg-subtle);">Ordenar:</span>
+                <button class="sort-btn active" id="sort-recente" onclick="setOrdem('recente')">Recentes</button>
+                <button class="sort-btn" id="sort-antigo" onclick="setOrdem('antigo')">Antigos</button>
+                <button class="sort-btn" id="sort-az" onclick="setOrdem('az')">A→Z</button>
+            </div>
+            <button class="clear-btn" onclick="limpar()">
+                <i data-lucide="x" style="width:13px;height:13px;"></i> Limpar
             </button>
-            <button id="detalhe-btn-excluir" style="padding:10px 16px;border-radius:10px;border:1px solid rgba(239,68,68,0.25);background:transparent;color:#f87171;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(239,68,68,0.08)'" onmouseout="this.style.background='transparent'">
-                <i data-lucide="trash-2" style="width:14px;height:14px;"></i>
+        </div>
+
+        <!-- #2 API Error banner -->
+        <div id="api-error" style="display:none;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:14px;padding:16px 20px;margin-bottom:20px;display:none;align-items:center;justify-content:space-between;gap:12px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <i data-lucide="wifi-off" style="width:18px;height:18px;color:#f87171;flex-shrink:0;"></i>
+                <div>
+                    <div style="font-size:13px;font-weight:700;color:#f87171;">Sem conexão com a API</div>
+                    <div style="font-size:12px;color:var(--fg-muted);margin-top:2px;">Verifique se o servidor está rodando em localhost:8080</div>
+                </div>
+            </div>
+            <button onclick="init()" style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#f87171;font-size:12px;font-weight:600;padding:7px 14px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;">
+                <i data-lucide="refresh-cw" style="width:13px;height:13px;"></i> Tentar novamente
+            </button>
+        </div>
+
+        <!-- Grid -->
+        <div id="tips-grid" class="tips-grid"></div>
+        <div id="loading" class="tips-grid">
+            <div class="skeleton" style="height:190px;"></div>
+            <div class="skeleton" style="height:190px;"></div>
+            <div class="skeleton" style="height:190px;"></div>
+        </div>
+        <div id="vazio" style="display:none;text-align:center;padding:70px 0;">
+            <i data-lucide="inbox" style="width:40px;height:40px;color:var(--fg-subtle);margin:0 auto 14px;display:block;"></i>
+            <p style="font-size:16px;font-weight:600;color:var(--fg-muted);">Nenhuma dica encontrada</p>
+            <p style="font-size:13px;color:var(--fg-subtle);margin-top:6px;">Tente outro filtro ou crie uma nova dica</p>
+            <button class="btn-accent" onclick="abrirModal()" style="margin-top:20px;">Criar dica</button>
+        </div>
+    </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+    <div class="foot-inner">
+        <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:28px;height:28px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="trending-up" style="width:14px;height:14px;color:#fff;"></i>
+            </div>
+            <span style="font-weight:800;font-size:14px;letter-spacing:-0.02em;">InvestHub</span>
+            <span style="color:var(--fg-subtle);font-size:13px;">· Projeto Acadêmico · Haskell + Servant + PostgreSQL</span>
+        </div>
+        <code style="font-size:12px;color:var(--accent);background:var(--accent-dim);padding:5px 12px;border-radius:8px;border:1px solid rgba(34,197,94,0.2);">GET localhost:8080/dicas</code>
+    </div>
+</footer>
+
+<button id="btn-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <i data-lucide="chevron-up" style="width:18px;height:18px;"></i>
+</button>
+
+<!-- ══ MODAL DETALHES ══ -->
+<div class="overlay" id="modal-detalhe" onclick="fechaOverlay(event,'modal-detalhe')">
+    <div class="modal-box" style="max-width:560px;">
+        <div class="detail-header">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+                <div style="flex:1;">
+                    <div id="d-badges" style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;"></div>
+                    <h3 id="d-titulo" style="font-size:19px;font-weight:700;letter-spacing:-0.02em;color:var(--fg);line-height:1.35;"></h3>
+                </div>
+                <button class="x-btn" onclick="fecha('modal-detalhe')"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
+            </div>
+        </div>
+        <div class="detail-body" style="max-height:55vh;overflow-y:auto;">
+            <p id="d-desc" style="font-size:14px;color:var(--fg-muted);line-height:1.75;margin-bottom:20px;"></p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <dl class="meta-box"><dt>Autor</dt><dd id="d-autor"></dd></dl>
+                <dl class="meta-box"><dt>Publicado em</dt><dd id="d-data"></dd></dl>
+            </div>
+            <!-- #1 Votos no modal de detalhe -->
+            <div style="margin-top:14px;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:12px;padding:14px 16px;">
+                <button id="d-voto-btn" onclick="votarModal()" style="display:flex;align-items:center;gap:7px;background:var(--accent-dim);border:1px solid rgba(34,197,94,0.35);border-radius:10px;color:var(--accent);font-size:13px;font-weight:700;padding:8px 16px;cursor:pointer;transition:all 0.2s;">
+                    <i data-lucide="heart" style="width:15px;height:15px;"></i>
+                    <span id="d-votos">0</span>
+                </button>
+                <span style="font-size:12px;color:var(--fg-subtle);">pessoas acharam essa dica útil</span>
+            </div>
+        </div>
+        <div class="modal-foot">
+            <button class="btn-cancel" id="d-editar" style="flex:none;padding:10px 20px;color:#4ade80;border-color:rgba(34,197,94,0.3);">
+                <i data-lucide="pencil" style="width:13px;height:13px;display:inline;"></i> Editar
+            </button>
+            <button class="btn-danger" id="d-excluir" style="flex:none;padding:10px 14px;background:transparent;border:1px solid rgba(239,68,68,0.25);color:#f87171;">
+                <i data-lucide="trash-2" style="width:13px;height:13px;display:inline;"></i>
             </button>
         </div>
     </div>
 </div>
 
-<div id="modal" class="overlay" style="position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;" onclick="fecharModalOverlay(event)">
-    <div class="modal-box" style="width:100%;max-width:500px;">
-        <div style="padding:22px 24px 18px;border-bottom:1px solid var(--border-modal);display:flex;align-items:center;justify-content:space-between;">
+<!-- ══ MODAL CRUD ══ -->
+<div class="overlay" id="modal-crud" onclick="fechaOverlay(event,'modal-crud')">
+    <div class="modal-box">
+        <div class="modal-head">
             <div>
-                <h2 id="modal-titulo" style="font-size:16px;font-weight:700;color:var(--text-title);margin:0;">Nova Dica</h2>
-                <p style="font-size:12px;color:var(--text-muted-darker);margin:3px 0 0;">Preencha todos os campos</p>
+                <h3 id="crud-titulo" style="font-size:16px;font-weight:700;color:var(--fg);">Nova Dica</h3>
+                <p style="font-size:12px;color:var(--fg-subtle);margin-top:3px;">Preencha todos os campos obrigatórios</p>
             </div>
-            <button onclick="fecharModal()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'">
-                <i data-lucide="x" style="width:18px;height:18px;"></i>
-            </button>
+            <button class="x-btn" onclick="fecha('modal-crud')"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
         </div>
-        <form id="form-dica" onsubmit="salvarDica(event)" style="padding:20px 24px;display:flex;flex-direction:column;gap:14px;">
-            <input type="hidden" id="dica-id">
-            <div>
-                <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Título *</label>
-                <input id="campo-titulo" type="text" required maxlength="200" placeholder="Ex: Como investir no Tesouro Direto..." style="width:100%;padding:10px 14px;">
-            </div>
-            <div>
-                <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Descrição *</label>
-                <textarea id="campo-descricao" required rows="4" maxlength="2000" placeholder="Descreva a dica com detalhes..." style="width:100%;padding:10px 14px;resize:none;"></textarea>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <form id="form" onsubmit="salvar(event)">
+            <div class="modal-body">
+                <input type="hidden" id="f-id">
                 <div>
-                    <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Categoria *</label>
-                    <select id="campo-categoria" required style="width:100%;padding:10px 14px;">
-                        <option value="">Selecionar...</option>
-                        <option value="Renda Fixa">📊 Renda Fixa</option>
-                        <option value="Ações">📈 Ações</option>
-                        <option value="FIIs">🏢 FIIs</option>
-                        <option value="Previdência">🛡️ Previdência</option>
-                        <option value="Criptomoedas">₿ Criptomoedas</option>
-                        <option value="Exterior">🌎 Exterior</option>
-                    </select>
+                    <label>Título *</label>
+                    <input class="field" id="f-titulo" type="text" required maxlength="200" placeholder="Ex: Como investir no Tesouro Direto...">
                 </div>
                 <div>
-                    <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Risco *</label>
-                    <select id="campo-risco" required style="width:100%;padding:10px 14px;">
-                        <option value="">Selecionar...</option>
-                        <option value="Baixo">🟢 Baixo</option>
-                        <option value="Médio">🟡 Médio</option>
-                        <option value="Alto">🔴 Alto</option>
-                    </select>
+                    <label>Descrição *</label>
+                    <textarea class="field" id="f-desc" required rows="4" maxlength="2000" placeholder="Descreva a dica com detalhes e estratégias..."></textarea>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label>Categoria *</label>
+                        <select class="field" id="f-cat" required>
+                            <option value="">Selecionar...</option>
+                            <option value="Renda Fixa">📊 Renda Fixa</option>
+                            <option value="Ações">📈 Ações</option>
+                            <option value="FIIs">🏢 FIIs</option>
+                            <option value="Previdência">🛡️ Previdência</option>
+                            <option value="Criptomoedas">₿ Criptomoedas</option>
+                            <option value="Exterior">🌎 Exterior</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Risco *</label>
+                        <select class="field" id="f-risco" required>
+                            <option value="">Selecionar...</option>
+                            <option value="Baixo">🟢 Baixo</option>
+                            <option value="Médio">🟡 Médio</option>
+                            <option value="Alto">🔴 Alto</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label>Autor *</label>
+                    <input class="field" id="f-autor" type="text" required maxlength="100" placeholder="Seu nome">
                 </div>
             </div>
-            <div>
-                <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Autor *</label>
-                <input id="campo-autor" type="text" required maxlength="100" placeholder="Seu nome" style="width:100%;padding:10px 14px;">
-            </div>
-            <div style="display:flex;gap:10px;padding-top:4px;">
-                <button type="button" onclick="fecharModal()" style="flex:1;padding:11px;border-radius:10px;border:1px solid var(--border-input);background:transparent;color:var(--text-muted);font-size:13px;font-weight:600;cursor:pointer;">Cancelar</button>
-                <button type="submit" id="btn-salvar" class="btn-green" style="flex:1;padding:11px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;">
+            <div class="modal-foot">
+                <button type="button" class="btn-cancel" onclick="fecha('modal-crud')">Cancelar</button>
+                <button type="submit" class="btn-save" id="btn-salvar">
                     <i data-lucide="save" style="width:14px;height:14px;"></i>
-                    <span id="btn-salvar-texto">Salvar</span>
+                    <span id="btn-txt">Salvar</span>
                 </button>
             </div>
         </form>
     </div>
 </div>
 
-<div id="modal-delete" class="overlay" style="position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;">
-    <div class="modal-box" style="width:100%;max-width:360px;padding:28px 24px;text-align:center;">
-        <div style="width:48px;height:48px;border-radius:12px;background:rgba(239,68,68,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-            <i data-lucide="trash-2" style="width:22px;height:22px;color:#f87171;"></i>
-        </div>
-        <h3 style="font-size:16px;font-weight:700;margin:0 0 6px;color:var(--text-title);">Excluir Dica?</h3>
-        <p style="color:var(--text-muted);font-size:13px;margin:0 0 22px;">Essa ação não pode ser desfeita.</p>
-        <div style="display:flex;gap:10px;">
-            <button onclick="fecharModalDelete()" style="flex:1;padding:10px;border-radius:10px;border:1px solid var(--border-input);background:transparent;color:var(--text-muted);font-size:13px;font-weight:600;cursor:pointer;">Cancelar</button>
-            <button id="btn-confirmar-delete" onclick="confirmarDelete()" style="flex:1;padding:10px;border-radius:10px;background:#dc2626;border:none;color:#fff;font-size:13px;font-weight:600;cursor:pointer;">Excluir</button>
+<!-- ══ MODAL DELETE ══ -->
+<div class="overlay" id="modal-del">
+    <div class="modal-box" style="max-width:360px;">
+        <div style="padding:32px 24px;text-align:center;">
+            <div style="width:52px;height:52px;border-radius:14px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
+                <i data-lucide="trash-2" style="width:22px;height:22px;color:#f87171;"></i>
+            </div>
+            <h3 style="font-size:17px;font-weight:700;margin-bottom:7px;">Excluir esta dica?</h3>
+            <p style="font-size:13px;color:var(--fg-muted);line-height:1.6;margin-bottom:24px;">Essa ação é permanente e não pode ser desfeita.</p>
+            <div style="display:flex;gap:10px;">
+                <button class="btn-cancel" onclick="fecha('modal-del')">Cancelar</button>
+                <button class="btn-danger" id="btn-del" onclick="confirmarDel()">Excluir</button>
+            </div>
         </div>
     </div>
 </div>
 
-<div id="toast" style="position:fixed;bottom:24px;right:24px;z-index:70;display:none;transition:all 0.3s ease;">
-    <div id="toast-inner" style="display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
-        <i id="toast-icon" style="width:16px;height:16px;"></i>
+<!-- ══ TOAST ══ -->
+<div id="toast">
+    <div class="toast-inner" id="toast-inner">
+        <i id="toast-ico" style="width:16px;height:16px;"></i>
         <span id="toast-msg" style="font-size:13px;font-weight:500;"></span>
     </div>
 </div>
 
-<button id="btn-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"
-    style="position:fixed;bottom:24px;left:24px;z-index:40;width:38px;height:38px;border-radius:10px;background:var(--bg-card);border:1px solid var(--border-main);color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s;opacity:0;pointer-events:none;"
-    onmouseover="this.style.color='#4ade80';this.style.borderColor='rgba(34,197,94,0.4)'"
-    onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border-main)'">
-    <i data-lucide="chevron-up" style="width:18px;height:18px;"></i>
-</button>
-
 <script>
-const API_URL     = 'http://localhost:8080';
-let idDeletar     = null;
-let debTimer      = null;
-let todasDicas    = [];
-let catAtiva      = '';
-let ordem         = 'recente';
-let chart         = null;
+const API = 'http://localhost:8080';
+let dados = [], catAtiva = '', ordem = 'recente', idDel = null, debT = null;
+let chart = null;
 
-// CORES DAS CATEGORIAS
-const COR_CATEGORIAS = {
-    'Renda Fixa': '#a855f7',   // Roxo
-    'Ações': '#3b82f6',        // Azul
-    'FIIs': '#eab308',         // Amarelo
-    'Previdência': '#14b8a6',  // Teal
-    'Criptomoedas': '#f97316', // Laranja
-    'Exterior': '#ef4444'      // Vermelho
+const ICONS = {'Renda Fixa':'📊','Ações':'📈','FIIs':'🏢','Previdência':'🛡️','Criptomoedas':'₿','Exterior':'🌎'};
+const CAT_DESC = {
+    'Renda Fixa':   'CDBs, LCIs, LCAs, Tesouro Direto. Menor risco, retorno previsível.',
+    'Ações':        'Renda variável com potencial de valorização acima da inflação.',
+    'FIIs':         'Fundos Imobiliários para renda passiva mensal com isenção de IR.',
+    'Previdência':  'PGBL e VGBL para planejamento de longo prazo e benefício fiscal.',
+    'Criptomoedas': 'Bitcoin, Ethereum e altcoins para diversificação de alto risco.',
+    'Exterior':     'ETFs, REITs e ações internacionais para diversificação global.',
 };
+const badge = r => ({'Baixo':'badge-baixo','Médio':'badge-medio','Alto':'badge-alto'}[r]||'badge-medio');
+const esc = s => { const d=document.createElement('div'); d.appendChild(document.createTextNode(String(s))); return d.innerHTML; };
 
 document.addEventListener('DOMContentLoaded', () => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
-        document.body.classList.add('light-mode');
-        document.getElementById('btn-theme').innerHTML = `<i data-lucide="moon" style="width:16px;height:16px;"></i>`;
-    }
-
     lucide.createIcons();
-    carregarDicas();
-    carregarEstatisticas();
+    init();
     window.addEventListener('scroll', () => {
         const btn = document.getElementById('btn-top');
-        if (window.scrollY > 300) { btn.style.opacity='1'; btn.style.pointerEvents='auto'; }
-        else { btn.style.opacity='0'; pointerEvents='none'; }
+        window.scrollY > 400 ? btn.classList.add('show') : btn.classList.remove('show');
+    });
+    // Spotlight em cat-cards
+    document.addEventListener('mousemove', e => {
+        document.querySelectorAll('.cat-card').forEach(card => {
+            const r = card.getBoundingClientRect();
+            card.style.setProperty('--mx', ((e.clientX-r.left)/r.width*100)+'%');
+            card.style.setProperty('--my', ((e.clientY-r.top)/r.height*100)+'%');
+        });
     });
 });
 
-function toggleTheme() {
-    const body = document.body;
-    body.classList.toggle('light-mode');
-    const isLight = body.classList.contains('light-mode');
-    localStorage.setItem('theme', isLight ? 'light' : 'dark');
-    
-    const btn = document.getElementById('btn-theme');
-    btn.innerHTML = `<i data-lucide="${isLight ? 'moon' : 'sun'}" style="width:16px;height:16px;"></i>`;
-    lucide.createIcons();
-    
-    if (window.lastStats) { renderGrafico(window.lastStats); }
+async function init() {
+    await Promise.all([carregarDicas(), carregarStats()]);
+    healthCheck();
+    setInterval(healthCheck, 30000); // Check every 30s
 }
 
+// ── API Health ──
+async function healthCheck() {
+    const badge = document.getElementById('health-badge');
+    const txt   = document.getElementById('health-txt');
+    const dot   = document.getElementById('health-dot');
+    const err   = document.getElementById('api-error');
+    try {
+        const r = await fetch(`${API}/health`);
+        if (!r.ok) throw new Error();
+        const s = await r.json();
+        err.style.display = 'none';
+        if (s.status === 'ok') {
+            badge.style.background = 'rgba(34,197,94,0.08)'; badge.style.borderColor = 'rgba(34,197,94,0.2)'; badge.style.color = 'var(--accent)';
+            dot.style.background = 'var(--accent)'; dot.style.boxShadow = '0 0 8px rgba(34,197,94,0.5)';
+            txt.textContent = 'API OK';
+        } else {
+            badge.style.background = 'rgba(234,179,8,0.08)'; badge.style.borderColor = 'rgba(234,179,8,0.2)'; badge.style.color = '#eab308';
+            dot.style.background = '#eab308'; dot.style.boxShadow = 'none';
+            txt.textContent = 'API DB Err';
+        }
+    } catch {
+        badge.style.background = 'rgba(239,68,68,0.08)'; badge.style.borderColor = 'rgba(239,68,68,0.2)'; badge.style.color = '#f87171';
+        dot.style.background = '#f87171'; dot.style.boxShadow = 'none';
+        txt.textContent = 'API Offline';
+        err.style.display = 'flex';
+    }
+}
+
+// ── API Dicas ──
 async function carregarDicas() {
     mostrarLoading(true);
-    document.getElementById('lista-dicas').innerHTML = '';
-    document.getElementById('estado-vazio').style.display = 'none';
-
+    document.getElementById('tips-grid').innerHTML = '';
+    document.getElementById('vazio').style.display = 'none';
     const busca = document.getElementById('input-busca').value.trim();
-    let url = `${API_URL}/dicas`;
+    let url = `${API}/dicas`;
     const p = new URLSearchParams();
     if (catAtiva) p.append('categoria', catAtiva);
     if (busca)    p.append('busca', busca);
     if (p.toString()) url += '?' + p;
-
     try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error();
-        todasDicas = await res.json();
+        const r = await fetch(url);
+        dados = await r.json();
         mostrarLoading(false);
-        renderCards(ordenar(todasDicas));
-        const t = todasDicas.length;
-        document.getElementById('total-dicas').textContent = `${t} dica${t!==1?'s':''}`;
-        document.getElementById('resultado-contagem').textContent = t > 0 ? `${t} resultado${t!==1?'s':''} encontrado${t!==1?'s':''}` : '';
-        animNum('stat-total', t);
+        renderDicas(ordenar(dados));
+        const t = dados.length;
+        document.getElementById('header-total').textContent = `${t} dica${t!==1?'s':''}`;
+        document.getElementById('resultado-contagem').textContent = t > 0 ? `${t} resultado${t!==1?'s':''}` : '';
+        animN('stat-dicas', t);
     } catch {
         mostrarLoading(false);
         toast('Erro ao conectar com a API', 'err');
-        document.getElementById('estado-vazio').style.display = 'block';
+        document.getElementById('vazio').style.display = 'block';
     }
 }
 
 function ordenar(d) {
-    const arr = [...d];
-    if (ordem === 'recente') return arr.sort((a,b) => {
-        const diff = new Date(b.criacao) - new Date(a.criacao);
-        return diff === 0 ? b.id - a.id : diff;
-    });
-    if (ordem === 'antigo')  return arr.sort((a,b) => {
-        const diff = new Date(a.criacao) - new Date(b.criacao);
-        return diff === 0 ? a.id - b.id : diff;
-    });
-    if (ordem === 'az')      return arr.sort((a,b) => a.titulo.localeCompare(b.titulo));
-    return arr;
+    const a = [...d];
+    if (ordem==='recente') return a.sort((x,y)=>new Date(y.criacao)-new Date(x.criacao));
+    if (ordem==='antigo')  return a.sort((x,y)=>new Date(x.criacao)-new Date(y.criacao));
+    if (ordem==='az')      return a.sort((x,y)=>x.titulo.localeCompare(y.titulo));
+    return a;
 }
-
-function setSortOrder(o) {
-    ordem = o;
-    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+function setOrdem(o) {
+    ordem=o;
+    document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
     document.getElementById('sort-'+o).classList.add('active');
-    renderCards(ordenar(todasDicas));
+    renderDicas(ordenar(dados));
 }
 
-function renderCards(dicas) {
-    const c = document.getElementById('lista-dicas');
-    if (!dicas.length) { document.getElementById('estado-vazio').style.display='block'; return; }
-
-    const curtidas = JSON.parse(localStorage.getItem('minhas_curtidas') || '[]');
-
-    c.innerHTML = dicas.map(d => {
-        const data = new Date(d.criacao).toLocaleDateString('pt-BR', { day:'2-digit', month:'short', year:'numeric' });
-        const badge = {'Baixo':'badge-baixo','Médio':'badge-medio','Alto':'badge-alto'}[d.risco] || 'badge-medio';
-        const icon  = {'Renda Fixa':'📊','Ações':'📈','FIIs':'🏢','Previdência':'🛡️','Criptomoedas':'₿','Exterior':'🌎'}[d.categoria] || '💡';
-        const preview = d.descricao.length > 110 ? d.descricao.slice(0,110)+'…' : d.descricao;
-        
-        const isLiked = curtidas.includes(d.id);
-        const thumbColor = isLiked ? '#4ade80' : 'var(--text-muted)';
-        const thumbFill = isLiked ? '#4ade80' : 'none';
-        
-        // Cor dinâmica da categoria
-        const catColor = COR_CATEGORIAS[d.categoria] || '#22c55e';
-
-        return `<div class="card fade-in" style="padding:18px;display:flex;flex-direction:column;gap:12px;cursor:pointer;" onclick="verDica(${d.id})">
+function renderDicas(list) {
+    const c = document.getElementById('tips-grid');
+    if (!list.length) { document.getElementById('vazio').style.display='block'; return; }
+    c.innerHTML = list.map(d => {
+        const data = new Date(d.criacao).toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
+        const prev = d.descricao.length>100 ? d.descricao.slice(0,100)+'…' : d.descricao;
+        const voted = localStorage.getItem('voto_'+d.id) === 'true';
+        return `<div class="tip-card fade-up" onclick="verDica(${d.id})">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
                 <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
-                    <span>${icon}</span>
-                    <span style="font-size:11px;color:${catColor};background:${catColor}15;border:1px solid ${catColor}40;padding:2px 10px;border-radius:999px;font-weight:600;">${esc(d.categoria)}</span>
-                    <span class="${badge}" style="font-size:11px;font-weight:600;padding:2px 10px;border-radius:999px;">${d.risco}</span>
+                    <span>${ICONS[d.categoria]||'💡'}</span>
+                    <span class="cat-tag">${esc(d.categoria)}</span>
+                    <span class="${badge(d.risco)}">${d.risco}</span>
                 </div>
-                <div style="display:flex;gap:4px;opacity:0;transition:opacity 0.2s;" class="card-actions" onclick="event.stopPropagation()">
-                    <button onclick="editarDica(${d.id})" style="width:28px;height:28px;border-radius:8px;border:none;background:transparent;color:var(--text-muted-darker);cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Editar" onmouseover="this.style.color='#4ade80';this.style.background='rgba(34,197,94,0.1)'" onmouseout="this.style.color='var(--text-muted-darker)';this.style.background='transparent'">
-                        <i data-lucide="pencil" style="width:13px;height:13px;"></i>
-                    </button>
-                    <button onclick="abrirModalDelete(${d.id})" style="width:28px;height:28px;border-radius:8px;border:none;background:transparent;color:var(--text-muted-darker);cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Excluir" onmouseover="this.style.color='#f87171';this.style.background='rgba(239,68,68,0.1)'" onmouseout="this.style.color='var(--text-muted-darker)';this.style.background='transparent'">
-                        <i data-lucide="trash-2" style="width:13px;height:13px;"></i>
-                    </button>
+                <div class="tip-actions" onclick="event.stopPropagation()">
+                    <button class="icon-btn" onclick="editarDica(${d.id})" title="Editar"><i data-lucide="pencil" style="width:13px;height:13px;"></i></button>
+                    <button class="icon-btn del" onclick="abrirDel(${d.id})" title="Excluir"><i data-lucide="trash-2" style="width:13px;height:13px;"></i></button>
                 </div>
             </div>
             <div style="flex:1;">
-                <h3 style="font-size:14px;font-weight:700;color:var(--text-title);margin:0 0 6px;line-height:1.4;">${esc(d.titulo)}</h3>
-                <p style="font-size:12px;color:var(--text-muted);margin:0;line-height:1.6;">${esc(preview)}</p>
+                <h3 style="font-size:14px;font-weight:700;letter-spacing:-0.015em;color:var(--fg);margin-bottom:6px;line-height:1.4;">${esc(d.titulo)}</h3>
+                <p style="font-size:12px;color:var(--fg-muted);line-height:1.65;">${esc(prev)}</p>
             </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--border-main);">
-                <div style="display:flex;gap:12px;">
-                    <span style="font-size:11px;color:var(--text-muted-darker);display:flex;align-items:center;gap:5px;">
-                        <i data-lucide="user" style="width:11px;height:11px;"></i>${esc(d.autor)}
-                    </span>
-                    <span style="font-size:11px;color:var(--text-muted-darker);display:flex;align-items:center;gap:5px;">
-                        <i data-lucide="calendar" style="width:11px;height:11px;"></i>${data}
-                    </span>
-                </div>
-                
-                <button onclick="event.stopPropagation(); toggleCurtida(${d.id})" style="display:flex;align-items:center;gap:5px;background:none;border:none;color:${thumbColor};font-size:12px;font-weight:600;cursor:pointer;padding:4px 8px;border-radius:6px;transition:all 0.2s;" onmouseover="this.style.color='#4ade80';this.style.background='rgba(34,197,94,0.1)'" onmouseout="this.style.color='${thumbColor}';this.style.background='transparent'">
-                    <i data-lucide="thumbs-up" fill="${thumbFill}" style="width:13px;height:13px;"></i> ${d.votos || 0}
+            <div style="display:flex;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border);">
+                <!-- #4 Vote button on cards -->
+                <button class="vote-btn ${voted?'voted':''}" onclick="event.stopPropagation(); toggleVoto(${d.id}, this)">
+                    <i data-lucide="heart" style="width:11px;height:11px;"></i> <span class="vc">${d.votos||0}</span>
                 </button>
+                <div style="display:flex;gap:12px;">
+                    <span style="font-size:11px;color:var(--fg-subtle);display:flex;align-items:center;gap:5px;"><i data-lucide="user" style="width:11px;height:11px;"></i>${esc(d.autor)}</span>
+                    <span style="font-size:11px;color:var(--fg-subtle);display:flex;align-items:center;gap:5px;"><i data-lucide="calendar" style="width:11px;height:11px;"></i>${data}</span>
+                </div>
             </div>
         </div>`;
     }).join('');
-
-    c.querySelectorAll('.card').forEach(el => {
-        const actions = el.querySelector('.card-actions');
-        el.addEventListener('mouseenter', () => actions.style.opacity='1');
-        el.addEventListener('mouseleave', () => actions.style.opacity='0');
-    });
     lucide.createIcons();
 }
 
-async function carregarEstatisticas() {
+// ── Stats + categorias ──
+async function carregarStats() {
     try {
-        const res   = await fetch(`${API_URL}/dicas/estatisticas`);
-        if (!res.ok) return;
-        const stats = await res.json();
-        window.lastStats = stats;
-        renderPills(stats);
-        renderGrafico(stats);
-        animNum('stat-cats', stats.length);
+        const r = await fetch(`${API}/dicas/estatisticas`);
+        const stats = await r.json();
+        animN('stat-cats', stats.length);
+        renderCatGrid(stats);
+        renderLiveFeed();
     } catch {}
 }
 
-function renderPills(stats) {
-    const icons = {'Renda Fixa':'📊','Ações':'📈','FIIs':'🏢','Previdência':'🛡️','Criptomoedas':'₿','Exterior':'🌎'};
-    const c = document.getElementById('cat-pills');
-    c.innerHTML = `<button class="pill ${catAtiva===''?'active':''}" onclick="filtrarCat('')">🔍 Todas</button>` +
-        stats.map(s => {
-            const cor = COR_CATEGORIAS[s.categoria] || '#22c55e';
-            const styleAtivo = catAtiva===s.categoria ? `background:${cor}15; border-color:${cor}60; color:${cor};` : '';
-            return `<button class="pill" style="${styleAtivo}" onclick="filtrarCat('${s.categoria}')">
-                ${icons[s.categoria]||'💡'} ${s.categoria} <span style="color:${catAtiva===s.categoria?cor:'var(--text-muted-darker)'};margin-left:3px;">${s.quantidade}</span>
-            </button>`
-        }).join('');
-}
-
-function renderGrafico(stats) {
-    const ctx  = document.getElementById('chart-categorias').getContext('2d');
-    const isLight = document.body.classList.contains('light-mode');
-    
-    // Usar as cores reais agora!
-    const coresDoGrafico = stats.map(s => COR_CATEGORIAS[s.categoria] || '#22c55e');
-    
-    if (chart) chart.destroy();
-    chart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: stats.map(s=>s.categoria),
-            datasets: [{ data: stats.map(s=>s.quantidade), backgroundColor: coresDoGrafico, borderColor: isLight ? '#ffffff' : '#0b1120', borderWidth:3, hoverOffset:4 }]
-        },
-        options: {
-            responsive:true, maintainAspectRatio:true, cutout:'70%',
-            plugins: { 
-                legend:{ display:false }, 
-                tooltip:{ 
-                    backgroundColor: isLight ? '#ffffff' : '#111827', 
-                    titleColor: isLight ? '#0f172a' : '#f9fafb', 
-                    bodyColor: isLight ? '#334155' : '#9ca3af', 
-                    borderColor: isLight ? '#e2e8f0' : '#1f2937', 
-                    borderWidth:1 
-                } 
-            }
-        }
-    });
-
-    const leg = document.getElementById('chart-legenda');
-    leg.innerHTML = stats.map((s,i) => `
-        <div style="display:flex;align-items:center;justify-content:space-between;">
-            <div style="display:flex;align-items:center;gap:7px;">
-                <div style="width:9px;height:9px;border-radius:2px;background:${coresDoGrafico[i]};flex-shrink:0;"></div>
-                <span style="font-size:11px;color:var(--text-main);">${s.categoria}</span>
-            </div>
-            <span style="font-size:11px;font-weight:600;color:var(--text-muted);">${s.quantidade}</span>
+function renderCatGrid(stats) {
+    const counts = {};
+    stats.forEach(s => counts[s.categoria] = s.quantidade);
+    const cats = ['Renda Fixa','Ações','FIIs','Previdência','Criptomoedas','Exterior'];
+    document.getElementById('cat-grid').innerHTML = cats.map(cat => `
+        <div class="cat-card ${catAtiva===cat?'active-cat':''}" onclick="filtrarCat('${cat}')">
+            <div class="cat-count">${counts[cat]||0}</div>
+            <div class="cat-icon-wrap">${ICONS[cat]||'💡'}</div>
+            <h3>${cat}</h3>
+            <p>${CAT_DESC[cat]||''}</p>
         </div>`).join('');
 }
 
-function filtrarCat(cat) { catAtiva=cat; carregarDicas(); carregarEstatisticas(); }
-
-async function verDica(id) {
+async function renderLiveFeed() {
     try {
-        const res = await fetch(`${API_URL}/dicas/${id}`);
-        if (!res.ok) return;
-        const d = await res.json();
-        const icons = {'Renda Fixa':'📊','Ações':'📈','FIIs':'🏢','Previdência':'🛡️','Criptomoedas':'₿','Exterior':'🌎'};
-        const badge = {'Baixo':'badge-baixo','Médio':'badge-medio','Alto':'badge-alto'}[d.risco]||'badge-medio';
-        const catColor = COR_CATEGORIAS[d.categoria] || '#22c55e';
-
-        document.getElementById('detalhe-titulo').textContent    = d.titulo;
-        document.getElementById('detalhe-descricao').textContent = d.descricao;
-        document.getElementById('detalhe-autor').textContent     = d.autor;
-        document.getElementById('detalhe-data').textContent      = new Date(d.criacao).toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
-        document.getElementById('detalhe-badges').innerHTML = `
-            <span>${icons[d.categoria]||'💡'}</span>
-            <span style="font-size:11px;color:${catColor};background:${catColor}15;border:1px solid ${catColor}40;padding:2px 10px;border-radius:999px;font-weight:600;">${esc(d.categoria)}</span>
-            <span class="${badge}" style="font-size:11px;font-weight:600;padding:2px 10px;border-radius:999px;">${d.risco}</span>`;
-        document.getElementById('detalhe-btn-editar').onclick  = ()=>{ fecharDetalhe(); editarDica(id); };
-        document.getElementById('detalhe-btn-excluir').onclick = ()=>{ fecharDetalhe(); abrirModalDelete(id); };
-        document.getElementById('modal-detalhe').style.display = 'flex';
+        const r = await fetch(`${API}/dicas`);
+        const all = await r.json();
+        const latest = [...all].sort((a,b)=>new Date(b.criacao)-new Date(a.criacao)).slice(0,4);
+        document.getElementById('live-feed').innerHTML = latest.map(d => `
+            <div class="live-row" onclick="verDica(${d.id})" style="cursor:pointer;">
+                <div style="flex:1;min-width:0;">
+                    <div style="font-size:13px;font-weight:600;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(d.titulo)}</div>
+                    <div style="font-size:11px;color:var(--fg-subtle);margin-top:2px;">${d.categoria}</div>
+                </div>
+                <span class="${badge(d.risco)}" style="flex-shrink:0;">${d.risco}</span>
+            </div>`).join('');
         lucide.createIcons();
     } catch {}
 }
 
-function fecharDetalhe() { document.getElementById('modal-detalhe').style.display='none'; }
-function fecharDetalheOverlay(e) { if(e.target===e.currentTarget) fecharDetalhe(); }
+function filtrarCat(cat) {
+    catAtiva = catAtiva===cat ? '' : cat;
+    document.querySelectorAll('.cat-card').forEach((el,i)=>{
+        const c=['Renda Fixa','Ações','FIIs','Previdência','Criptomoedas','Exterior'][i];
+        el.classList.toggle('active-cat', c===catAtiva);
+    });
+    carregarDicas();
+    document.getElementById('dicas').scrollIntoView({behavior:'smooth'});
+}
 
-async function salvarDica(e) {
+// ── Modal detalhes ──
+async function verDica(id) {
+    try {
+        const r = await fetch(`${API}/dicas/${id}`);
+        const d = await r.json();
+        document.getElementById('d-titulo').textContent = d.titulo;
+        document.getElementById('d-desc').textContent   = d.descricao;
+        document.getElementById('d-autor').textContent  = d.autor;
+        document.getElementById('d-data').textContent   = new Date(d.criacao).toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+        document.getElementById('d-badges').innerHTML = `
+            <span>${ICONS[d.categoria]||'💡'}</span>
+            <span class="cat-tag">${esc(d.categoria)}</span>
+            <span class="${badge(d.risco)}">${d.risco}</span>`;
+        document.getElementById('d-editar').onclick  = ()=>{ fecha('modal-detalhe'); editarDica(id); };
+        document.getElementById('d-excluir').onclick = ()=>{ fecha('modal-detalhe'); abrirDel(id); };
+        
+        // Setup votos no modal
+        const btnVoto = document.getElementById('d-voto-btn');
+        const count   = document.getElementById('d-votos');
+        count.textContent = d.votos || 0;
+        btnVoto.onclick = () => votarModal(id, count, btnVoto);
+        if (localStorage.getItem('voto_'+id) === 'true') {
+            btnVoto.style.background = 'var(--accent-dim)'; btnVoto.style.borderColor = 'rgba(34,197,94,0.5)'; btnVoto.style.color = 'var(--accent)';
+        } else {
+            btnVoto.style.background = 'rgba(255,255,255,0.04)'; btnVoto.style.borderColor = 'var(--border)'; btnVoto.style.color = 'var(--fg-subtle)';
+        }
+
+        abre('modal-detalhe'); lucide.createIcons();
+    } catch {}
+}
+
+// ── Votos ──
+async function toggleVoto(id, btn) {
+    const vc = btn.querySelector('.vc');
+    let v = parseInt(vc.textContent) || 0;
+    const isVoted = localStorage.getItem('voto_'+id) === 'true';
+    btn.disabled = true;
+
+    try {
+        if (isVoted) {
+            await fetch(`${API}/dicas/${id}/remover-voto`, {method:'PATCH'});
+            localStorage.removeItem('voto_'+id);
+            vc.textContent = Math.max(0, v-1);
+            btn.classList.remove('voted');
+        } else {
+            await fetch(`${API}/dicas/${id}/voto`, {method:'PATCH'});
+            localStorage.setItem('voto_'+id, 'true');
+            vc.textContent = v+1;
+            btn.classList.add('voted');
+        }
+    } catch {
+        toast('Erro ao computar voto','err');
+    } finally { btn.disabled = false; }
+}
+
+async function votarModal(id, countEl, btn) {
+    const isVoted = localStorage.getItem('voto_'+id) === 'true';
+    let v = parseInt(countEl.textContent) || 0;
+    btn.disabled = true;
+
+    try {
+        if (isVoted) {
+            await fetch(`${API}/dicas/${id}/remover-voto`, {method:'PATCH'});
+            localStorage.removeItem('voto_'+id);
+            countEl.textContent = Math.max(0, v-1);
+            btn.style.background = 'rgba(255,255,255,0.04)'; btn.style.borderColor = 'var(--border)'; btn.style.color = 'var(--fg-subtle)';
+        } else {
+            await fetch(`${API}/dicas/${id}/voto`, {method:'PATCH'});
+            localStorage.setItem('voto_'+id, 'true');
+            countEl.textContent = v+1;
+            btn.style.background = 'var(--accent-dim)'; btn.style.borderColor = 'rgba(34,197,94,0.5)'; btn.style.color = 'var(--accent)';
+        }
+        // Atualiza a grid por trás
+        carregarDicas();
+    } catch {
+        toast('Erro ao computar voto','err');
+    } finally { btn.disabled = false; }
+}
+
+// ── CRUD ──
+async function salvar(e) {
     e.preventDefault();
-    const id = document.getElementById('dica-id').value;
-    const ed = !!id;
+    const id = document.getElementById('f-id').value;
     const payload = {
-        titulo:    document.getElementById('campo-titulo').value,
-        descricao: document.getElementById('campo-descricao').value,
-        categoria: document.getElementById('campo-categoria').value,
-        risco:     document.getElementById('campo-risco').value,
-        autor:     document.getElementById('campo-autor').value,
+        titulo: document.getElementById('f-titulo').value,
+        descricao: document.getElementById('f-desc').value,
+        categoria: document.getElementById('f-cat').value,
+        risco: document.getElementById('f-risco').value,
+        autor: document.getElementById('f-autor').value,
     };
     const btn = document.getElementById('btn-salvar');
-    btn.disabled=true; document.getElementById('btn-salvar-texto').textContent='Salvando...';
+    btn.disabled=true; document.getElementById('btn-txt').textContent='Salvando...';
     try {
-        const res = await fetch(ed?`${API_URL}/dicas/${id}`:`${API_URL}/dicas`, {
-            method: ed?'PUT':'POST',
-            headers:{'Content-Type':'application/json'},
-            body: JSON.stringify(payload)
+        const res = await fetch(id?`${API}/dicas/${id}`:`${API}/dicas`, {
+            method:id?'PUT':'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
         });
         if (!res.ok) throw new Error();
-        fecharModal();
-        toast(ed?'Dica atualizada!':'Dica criada!', 'ok');
-        carregarDicas(); carregarEstatisticas();
-    } catch { toast('Erro ao salvar', 'err'); }
-    finally { btn.disabled=false; document.getElementById('btn-salvar-texto').textContent='Salvar'; }
+        fecha('modal-crud');
+        toast(id?'Dica atualizada!':'Dica criada!','ok');
+        carregarDicas(); carregarStats();
+    } catch { toast('Erro ao salvar','err'); }
+    finally { btn.disabled=false; document.getElementById('btn-txt').textContent='Salvar'; }
 }
 
 async function editarDica(id) {
     try {
-        const res = await fetch(`${API_URL}/dicas/${id}`);
-        const d   = await res.json();
-        document.getElementById('dica-id').value             = d.id;
-        document.getElementById('campo-titulo').value        = d.titulo;
-        document.getElementById('campo-descricao').value     = d.descricao;
-        document.getElementById('campo-categoria').value     = d.categoria;
-        document.getElementById('campo-risco').value         = d.risco;
-        document.getElementById('campo-autor').value         = d.autor;
-        document.getElementById('modal-titulo').textContent  = 'Editar Dica';
-        document.getElementById('btn-salvar-texto').textContent = 'Atualizar';
-        abrirModal();
-    } catch { toast('Erro ao carregar dica', 'err'); }
+        const r = await fetch(`${API}/dicas/${id}`);
+        const d = await r.json();
+        document.getElementById('f-id').value    = d.id;
+        document.getElementById('f-titulo').value= d.titulo;
+        document.getElementById('f-desc').value  = d.descricao;
+        document.getElementById('f-cat').value   = d.categoria;
+        document.getElementById('f-risco').value = d.risco;
+        document.getElementById('f-autor').value = d.autor;
+        document.getElementById('crud-titulo').textContent = 'Editar Dica';
+        document.getElementById('btn-txt').textContent = 'Atualizar';
+        abre('modal-crud');
+    } catch { toast('Erro ao carregar','err'); }
 }
 
-function abrirModalDelete(id) { idDeletar=id; document.getElementById('modal-delete').style.display='flex'; }
-function fecharModalDelete()   { idDeletar=null; document.getElementById('modal-delete').style.display='none'; }
-
-async function confirmarDelete() {
-    if (!idDeletar) return;
-    const btn=document.getElementById('btn-confirmar-delete');
+function abrirDel(id) { idDel=id; abre('modal-del'); }
+async function confirmarDel() {
+    if (!idDel) return;
+    const btn=document.getElementById('btn-del');
     btn.disabled=true; btn.textContent='Excluindo...';
     try {
-        await fetch(`${API_URL}/dicas/${idDeletar}`,{method:'DELETE'});
-        fecharModalDelete(); toast('Dica excluída!','ok');
-        carregarDicas(); carregarEstatisticas();
+        await fetch(`${API}/dicas/${idDel}`,{method:'DELETE'});
+        fecha('modal-del'); toast('Dica excluída!','ok');
+        carregarDicas(); carregarStats();
     } catch { toast('Erro ao excluir','err'); }
-    finally { btn.disabled=false; btn.textContent='Excluir'; }
+    finally { btn.disabled=false; btn.textContent='Excluir'; idDel=null; }
 }
 
-function abrirModal() { document.getElementById('modal').style.display='flex'; setTimeout(()=>document.getElementById('campo-titulo').focus(),100); }
-function fecharModal() {
-    document.getElementById('modal').style.display='none';
-    document.getElementById('form-dica').reset();
-    document.getElementById('dica-id').value='';
-    document.getElementById('modal-titulo').textContent='Nova Dica';
-    document.getElementById('btn-salvar-texto').textContent='Salvar';
+function abrirModal() {
+    document.getElementById('form').reset();
+    document.getElementById('f-id').value='';
+    document.getElementById('crud-titulo').textContent='Nova Dica';
+    document.getElementById('btn-txt').textContent='Salvar';
+    abre('modal-crud');
+    setTimeout(()=>document.getElementById('f-titulo').focus(),100);
 }
-function fecharModalOverlay(e) { if(e.target===e.currentTarget) fecharModal(); }
-function limparFiltros() { document.getElementById('input-busca').value=''; filtrarCat(''); }
-function debounceCarregarDicas() { clearTimeout(debTimer); debTimer=setTimeout(carregarDicas,400); }
+
+// ── Helpers ──
+function abre(id) { document.getElementById(id).style.display='flex'; }
+function fecha(id) { document.getElementById(id).style.display='none'; }
+function fechaOverlay(e,id) { if(e.target===e.currentTarget) fecha(id); }
+function limpar() { document.getElementById('input-busca').value=''; catAtiva=''; document.querySelectorAll('.cat-card').forEach(c=>c.classList.remove('active-cat')); carregarDicas(); }
+function debounce() { clearTimeout(debT); debT=setTimeout(carregarDicas,400); }
 function mostrarLoading(s) { document.getElementById('loading').style.display=s?'grid':'none'; }
 
-function toast(msg, tipo='ok') {
-    const el=document.getElementById('toast'), inner=document.getElementById('toast-inner');
+function toggleGloss(el) {
+    el.classList.toggle('open');
+}
+
+function toast(msg,tipo) {
     document.getElementById('toast-msg').textContent=msg;
-    document.getElementById('toast-icon').setAttribute('data-lucide', tipo==='ok'?'check-circle':'alert-circle');
-    inner.style.background = tipo==='ok'?'#16a34a':'#dc2626';
-    el.style.display='block'; lucide.createIcons();
-    setTimeout(()=>el.style.display='none', 3000);
+    document.getElementById('toast-ico').setAttribute('data-lucide',tipo==='ok'?'check-circle':'alert-circle');
+    const inner=document.getElementById('toast-inner');
+    inner.style.background = tipo==='ok'?'#15803d':'#991b1b';
+    inner.style.color='#fff';
+    document.getElementById('toast').style.display='block';
+    lucide.createIcons();
+    setTimeout(()=>document.getElementById('toast').style.display='none',3000);
 }
 
-function animNum(id, target) {
+function animN(id,n) {
     const el=document.getElementById(id); if(!el) return;
-    let n=0; const step=Math.ceil(target/20);
-    const t=setInterval(()=>{ n=Math.min(n+step,target); el.textContent=n; if(n>=target)clearInterval(t); },40);
+    let i=0; const s=Math.ceil(n/20);
+    const t=setInterval(()=>{ i=Math.min(i+s,n); el.textContent=i; if(i>=n)clearInterval(t); },40);
 }
 
-function esc(s) { const d=document.createElement('div'); d.appendChild(document.createTextNode(String(s))); return d.innerHTML; }
-
-document.addEventListener('keydown', e=>{
-    if(e.key==='Escape'){ fecharModal(); fecharModalDelete(); fecharDetalhe(); }
+document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){ ['modal-detalhe','modal-crud','modal-del'].forEach(fecha); }
 });
 
-// -- NOVO SISTEMA DE CURTIDAS COM LOCALSTORAGE --
-async function toggleCurtida(id) {
-    let curtidas = JSON.parse(localStorage.getItem('minhas_curtidas') || '[]');
-    const isLiked = curtidas.includes(id);
-    const endpoint = isLiked ? 'remover-voto' : 'voto';
+// ════════════════════════════════════════════════
+// SIMULADOR
+// ════════════════════════════════════════════════
+let simIndexador = 'CDI';
+let simPeriodo   = 2;
+let simChart     = null;
 
-    const dica = todasDicas.find(d => d.id === id);
-    if (dica) dica.votos += isLiked ? -1 : 1;
+function selectIdx(btn, idx) {
+    simIndexador = idx;
+    document.querySelectorAll('.idx-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
 
-    if (isLiked) {
-        curtidas = curtidas.filter(cId => cId !== id);
-        toast('Curtida removida', 'ok');
+    const CDI_REF   = 13.75;
+    const IPCA_REF  = 4.62;
+    const label   = document.getElementById('taxa-label');
+    const hint    = document.getElementById('idx-hint');
+    const presets = document.getElementById('taxa-presets');
+    const input   = document.getElementById('sim-taxa');
+
+    if (idx === 'CDI') {
+        label.textContent   = '% do CDI';
+        hint.innerHTML      = `CDI ref: 13,75% a.a. &middot; Informe <strong style="color:var(--fg-muted);">% do CDI</strong> (ex: 110 = 110% do CDI = ${(CDI_REF*1.1).toFixed(2)}% a.a.)`;
+        presets.innerHTML   = `<button class="preset-btn" onclick="setTaxa(90)">90%</button>
+                               <button class="preset-btn" onclick="setTaxa(100)">100%</button>
+                               <button class="preset-btn" onclick="setTaxa(110)">110%</button>
+                               <button class="preset-btn" onclick="setTaxa(120)">120%</button>
+                               <button class="preset-btn" onclick="setTaxa(130)">130%</button>`;
+        input.value = 110; input.min = 50; input.max = 200; input.step = 5;
+    } else if (idx === 'IPCA+') {
+        label.textContent   = 'Spread acima do IPCA (%)';
+        hint.innerHTML      = `IPCA ref: 4,62% a.a. &middot; Informe o <strong style="color:var(--fg-muted);">spread</strong> (ex: 6 = IPCA + 6% = ${(IPCA_REF+6).toFixed(2)}% a.a.)`;
+        presets.innerHTML   = `<button class="preset-btn" onclick="setTaxa(4)">+4%</button>
+                               <button class="preset-btn" onclick="setTaxa(5)">+5%</button>
+                               <button class="preset-btn" onclick="setTaxa(6)">+6%</button>
+                               <button class="preset-btn" onclick="setTaxa(7)">+7%</button>
+                               <button class="preset-btn" onclick="setTaxa(8)">+8%</button>`;
+        input.value = 6; input.min = 0.5; input.max = 20; input.step = 0.5;
     } else {
-        curtidas.push(id);
-        toast('Dica curtida!', 'ok');
+        label.textContent   = 'Taxa anual (% a.a.)';
+        hint.innerHTML      = `Taxa pr\u00e9-fixada anual. <strong style="color:var(--fg-muted);">Ex: 14.5 = 14,5% ao ano</strong>`;
+        presets.innerHTML   = `<button class="preset-btn" onclick="setTaxa(10)">10%</button>
+                               <button class="preset-btn" onclick="setTaxa(12)">12%</button>
+                               <button class="preset-btn" onclick="setTaxa(14)">14%</button>
+                               <button class="preset-btn" onclick="setTaxa(16)">16%</button>
+                               <button class="preset-btn" onclick="setTaxa(18)">18%</button>`;
+        input.value = 14; input.min = 1; input.max = 50; input.step = 0.5;
     }
-    localStorage.setItem('minhas_curtidas', JSON.stringify(curtidas));
-    
-    renderCards(ordenar(todasDicas));
+    simAtualizar();
+}
+
+function selectPeriod(btn, anos) {
+    simPeriodo = anos;
+    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+function setTaxa(taxa) {
+    document.getElementById('sim-taxa').value = taxa;
+    simAtualizar();
+}
+
+function simAtualizar() {
+    const v = parseFloat(document.getElementById('sim-valor').value) || 0;
+    const slider = document.getElementById('sim-slider');
+    if (v >= 1000 && v <= 500000) slider.value = v;
+
+    // Mostra taxa efetiva em tempo real
+    const taxa   = parseFloat(document.getElementById('sim-taxa').value) || 0;
+    const hint   = document.getElementById('taxa-efetiva-hint');
+    const CDI_REF = 13.75, IPCA_REF = 4.62;
+    let efetiva = taxa;
+    if (simIndexador === 'CDI')   efetiva = CDI_REF * taxa / 100;
+    if (simIndexador === 'IPCA+') efetiva = IPCA_REF + taxa;
+    if (taxa > 0) {
+        hint.textContent = `→ Taxa efetiva: ${efetiva.toFixed(2)}% a.a.`;
+    } else {
+        hint.textContent = '';
+    }
+}
+
+const brl = v => 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+async function simular() {
+    const vi      = parseFloat(document.getElementById('sim-valor').value);
+    const taxaAa  = parseFloat(document.getElementById('sim-taxa').value);
+
+    if (!vi || vi <= 0) { toast('Informe um valor inicial válido', 'err'); return; }
+    if (!taxaAa || taxaAa <= 0) { toast('Informe uma taxa anual válida', 'err'); return; }
+
+    const btn = document.getElementById('btn-sim-txt');
+    btn.textContent = 'Calculando...';
 
     try {
-        await fetch(`${API_URL}/dicas/${id}/${endpoint}`, { method: 'PATCH' });
+        const res = await fetch(`${API}/simulador`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                valorInicial:  vi,
+                tipoIndexador: simIndexador,
+                taxaAnual:     taxaAa,
+                periodoAnos:   simPeriodo
+            })
+        });
+
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        renderSimResult(data, vi);
+
     } catch {
-        // Ignorar erro visual no optimisic UI para não travar a experiência
+        toast('Erro ao chamar o simulador', 'err');
+    } finally {
+        btn.textContent = 'Simular agora';
     }
+}
+
+function renderSimResult(data, vi) {
+    // Mostra painel de resultado
+    document.getElementById('sim-placeholder').style.display = 'none';
+    const out = document.getElementById('sim-output');
+    out.style.display = 'flex';
+
+    // Valores principais
+    document.getElementById('sim-vf').textContent   = brl(data.valorFinal);
+    document.getElementById('sim-rb').textContent   = '+ ' + brl(data.rendimentoBruto);
+    document.getElementById('sim-rl').textContent   = '+ ' + brl(data.rendimentoLiquido);
+    document.getElementById('sim-aliq').textContent = data.aliquotaIR;
+
+    // Gráfico de linha
+    const evolucao = data.evolucaoMensal || [];
+    const labels   = evolucao.map(e => `M${e.mes}`);
+    const valores  = evolucao.map(e => e.valor);
+
+    // Adiciona ponto inicial
+    labels.unshift('Início');
+    valores.unshift(vi);
+
+    const ctx = document.getElementById('sim-chart').getContext('2d');
+    if (simChart) simChart.destroy();
+    simChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [{
+                label: 'Valor acumulado',
+                data: valores,
+                borderColor: '#22c55e',
+                backgroundColor: 'rgba(34,197,94,0.08)',
+                borderWidth: 2,
+                pointRadius: evolucao.length > 24 ? 0 : 3,
+                pointBackgroundColor: '#22c55e',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#111827',
+                    titleColor: '#f0f0f0',
+                    bodyColor: '#8a8f9e',
+                    borderColor: '#1f2937',
+                    borderWidth: 1,
+                    callbacks: {
+                        label: ctx => ' ' + brl(ctx.parsed.y)
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: '#4b5261', font: { size: 10 },
+                        maxTicksLimit: 12,
+                        maxRotation: 0
+                    },
+                    grid: { color: 'rgba(255,255,255,0.04)' }
+                },
+                y: {
+                    ticks: {
+                        color: '#4b5261', font: { size: 10 },
+                        callback: v => 'R$ ' + (v/1000).toFixed(0) + 'k'
+                    },
+                    grid: { color: 'rgba(255,255,255,0.04)' }
+                }
+            }
+        }
+    });
+    lucide.createIcons();
+
+    // Tabela comparativa
+    const tabela = document.getElementById('sim-tabela');
+    const comps  = data.comparacoes || [];
+    tabela.innerHTML = comps.map((c, i) => {
+        const isLast   = i === comps.length - 1;
+        const isMelhor = i === comps.length - 1;
+        const corRL    = isMelhor ? '#4ade80' : '#8a8f9e';
+        return `<tr style="border-bottom:${isLast?'none':'1px solid rgba(255,255,255,0.05)'};">
+            <td style="padding:14px 22px;font-size:13px;font-weight:${isMelhor?'700':'400'};color:${isMelhor?'var(--fg)':'var(--fg-muted)'};">
+                ${isMelhor ? '<span style="display:inline-flex;align-items:center;gap:6px;"><span style=\'width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;\'></span>' : ''}
+                ${c.nome}
+                ${isMelhor ? '</span>' : ''}
+            </td>
+            <td style="padding:14px 16px;font-size:13px;font-weight:600;color:var(--fg);text-align:right;font-variant-numeric:tabular-nums;">${brl(c.valorFinal)}</td>
+            <td style="padding:14px 22px;font-size:13px;font-weight:700;color:${corRL};text-align:right;font-variant-numeric:tabular-nums;">+ ${brl(c.rendimentoLiquido)}</td>
+        </tr>`;
+    }).join('');
+
+    // Botao Exportar
+    if(!document.getElementById('sim-exportar')) {
+        const titleRow = document.getElementById('sim-header-row');
+        if (titleRow) {
+            titleRow.innerHTML += `
+            <button id="sim-exportar" class="btn-ghost" onclick="exportarSimulacao(${vi}, '${data.comparacoes[data.comparacoes.length-1].nome}', ${data.valorFinal})" style="padding:6px 12px;font-size:11px;color:var(--accent);border:1px solid rgba(34,197,94,0.3);background:var(--accent-dim);border-radius:8px;">
+                <i data-lucide="copy" style="width:12px;height:12px;"></i> Copiar
+            </button>`;
+            lucide.createIcons();
+        }
+    }
+
+    // Scroll suave para o resultado
+    out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function exportarSimulacao(vi, nome, vf) {
+    const texto = `📊 *Simulação InvestHub*\n\nInvestindo *R$ ${(vi).toLocaleString('pt-BR')}* em *${nome}* por *${simPeriodo} ano(s)*, o retorno projetado é de *R$ ${(vf).toLocaleString('pt-BR',{minimumFractionDigits:2})}*.\n\nSimule você também no InvestHub!`;
+    navigator.clipboard.writeText(texto).then(() => toast('Resultado copiado!', 'ok')).catch(() => toast('Erro ao copiar', 'err'));
 }
 </script>
 </body>

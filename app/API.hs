@@ -21,6 +21,8 @@ import Model
 --   PUT    /dicas/:id                      → Atualiza dica existente
 --   DELETE /dicas/:id                      → Remove dica
 --   GET    /dicas/estatisticas             → Estatísticas por categoria
+--   POST   /simulador                      → Simula rendimento de investimento
+--   GET    /health                         → Health check da API + banco
 type DicasAPI =
     -- GET /dicas?categoria=...&busca=...
     "dicas" :> QueryParam "categoria" String
@@ -56,7 +58,16 @@ type DicasAPI =
     -- PATCH /dicas/:id/remover-voto
     :<|> "dicas" :> Capture "id" Int
                  :> "remover-voto"
-                 :> Patch '[JSON] DicaInvestimento         
+                 :> Patch '[JSON] DicaInvestimento
+
+    -- POST /simulador
+    :<|> "simulador"
+                 :> ReqBody '[JSON] SimulacaoInput
+                 :> Post '[JSON] SimulacaoResult
+
+    -- GET /health
+    :<|> "health"
+                 :> Get '[JSON] HealthStatus
 
 -- | Proxy para o tipo da API (necessário para Servant)
 dicasAPI :: Proxy DicasAPI

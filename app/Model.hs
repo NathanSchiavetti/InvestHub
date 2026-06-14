@@ -9,6 +9,11 @@ module Model
     , NovaDica(..)
     , Estatistica(..)
     , MensagemSucesso(..)
+    , SimulacaoInput(..)
+    , SimulacaoResult(..)
+    , ComparacaoItem(..)
+    , EvolucaoMensal(..)
+    , HealthStatus(..)
     ) where
 
 import GHC.Generics (Generic)
@@ -26,10 +31,8 @@ import Database.PostgreSQL.Simple.FromRow (FromRow(..), field)
 
 -- ---------------------------------------------------------------------------
 -- Helpers: remove o prefixo Haskell e deixa o nome limpo no JSON
--- Ex: dicaTitulo → "titulo" | novaTitulo → "titulo" | estCategoria → "categoria"
 -- ---------------------------------------------------------------------------
 
--- Remove os primeiros N caracteres e coloca a primeira letra em minúsculo
 stripPrefix :: Int -> String -> String
 stripPrefix n s =
     let rest = drop n s
@@ -37,29 +40,12 @@ stripPrefix n s =
         []     -> s
         (c:cs) -> toLower c : cs
 
--- DicaInvestimento: prefixo "dica" = 4 chars
---   dicaId        → "id"
---   dicaTitulo    → "titulo"
---   dicaDescricao → "descricao"
---   dicaCategoria → "categoria"
---   dicaRisco     → "risco"
---   dicaAutor     → "autor"
---   dicaCriacao   → "criacao"
 prefixDica :: String -> String
 prefixDica = stripPrefix 4
 
--- NovaDica: prefixo "nova" = 4 chars
---   novaTitulo    → "titulo"
---   novaDescricao → "descricao"
---   novaCategoria → "categoria"
---   novaRisco     → "risco"
---   novaAutor     → "autor"
 prefixNova :: String -> String
 prefixNova = stripPrefix 4
 
--- Estatistica: prefixo "est" = 3 chars
---   estCategoria  → "categoria"
---   estQuantidade → "quantidade"
 prefixEst :: String -> String
 prefixEst = stripPrefix 3
 
@@ -67,17 +53,16 @@ prefixEst = stripPrefix 3
 -- | Entidade principal: DicaInvestimento
 -- ---------------------------------------------------------------------------
 data DicaInvestimento = DicaInvestimento
-    { dicaId        :: Int      -- ^ id
-    , dicaTitulo    :: String   -- ^ titulo
-    , dicaDescricao :: String   -- ^ descricao
-    , dicaCategoria :: String   -- ^ categoria
-    , dicaRisco     :: String   -- ^ risco
-    , dicaAutor     :: String   -- ^ autor
-    , dicaCriacao   :: UTCTime  -- ^ criacao
+    { dicaId        :: Int
+    , dicaTitulo    :: String
+    , dicaDescricao :: String
+    , dicaCategoria :: String
+    , dicaRisco     :: String
+    , dicaAutor     :: String
+    , dicaCriacao   :: UTCTime
     , dicaVotos     :: Int
     } deriving (Generic, Show)
 
--- JSON: { "id": 1, "titulo": "...", "descricao": "...", ... }
 instance ToJSON DicaInvestimento where
     toJSON = genericToJSON defaultOptions
         { fieldLabelModifier = prefixDica }
@@ -86,30 +71,28 @@ instance FromJSON DicaInvestimento where
     parseJSON = genericParseJSON defaultOptions
         { fieldLabelModifier = prefixDica }
 
--- Leitura do banco de dados (mapeamento linha → tipo)
 instance FromRow DicaInvestimento where
     fromRow = DicaInvestimento
-        <$> field   -- id
-        <*> field   -- titulo
-        <*> field   -- descricao
-        <*> field   -- categoria
-        <*> field   -- risco
-        <*> field   -- autor
-        <*> field   -- data_criacao
-        <*> field   -- votos
+        <$> field
+        <*> field
+        <*> field
+        <*> field
+        <*> field
+        <*> field
+        <*> field
+        <*> field
 
 -- ---------------------------------------------------------------------------
--- | Payload de criação/atualização — JSON simples sem prefixo
+-- | Payload de criação/atualização
 -- ---------------------------------------------------------------------------
 data NovaDica = NovaDica
-    { novaTitulo    :: String   -- ^ "titulo"
-    , novaDescricao :: String   -- ^ "descricao"
-    , novaCategoria :: String   -- ^ "categoria"
-    , novaRisco     :: String   -- ^ "risco"
-    , novaAutor     :: String   -- ^ "autor"
+    { novaTitulo    :: String
+    , novaDescricao :: String
+    , novaCategoria :: String
+    , novaRisco     :: String
+    , novaAutor     :: String
     } deriving (Generic, Show)
 
--- JSON: { "titulo": "...", "descricao": "...", "categoria": "...", ... }
 instance ToJSON NovaDica where
     toJSON = genericToJSON defaultOptions
         { fieldLabelModifier = prefixNova }
@@ -122,11 +105,10 @@ instance FromJSON NovaDica where
 -- | Resultado do endpoint de estatísticas
 -- ---------------------------------------------------------------------------
 data Estatistica = Estatistica
-    { estCategoria  :: String   -- ^ "categoria"
-    , estQuantidade :: Int      -- ^ "quantidade"
+    { estCategoria  :: String
+    , estQuantidade :: Int
     } deriving (Generic, Show)
 
--- JSON: { "categoria": "Ações", "quantidade": 3 }
 instance ToJSON Estatistica where
     toJSON = genericToJSON defaultOptions
         { fieldLabelModifier = prefixEst }
@@ -147,3 +129,112 @@ data MensagemSucesso = MensagemSucesso
 
 instance ToJSON MensagemSucesso
 instance FromJSON MensagemSucesso
+
+-- ---------------------------------------------------------------------------
+-- | Simulador de Investimento
+-- ---------------------------------------------------------------------------
+
+data SimulacaoInput = SimulacaoInput
+    { valorInicial   :: Double
+    , tipoIndexador  :: String
+    , taxaAnual      :: Double
+    , periodoAnos    :: Int
+    } deriving (Generic, Show)
+
+instance ToJSON SimulacaoInput
+instance FromJSON SimulacaoInput
+
+data EvolucaoMensal = EvolucaoMensal
+    { mes   :: Int
+    , valor :: Double
+    } deriving (Generic, Show)
+
+instance ToJSON EvolucaoMensal
+instance FromJSON EvolucaoMensal
+
+data ComparacaoItem = ComparacaoItem
+    { nomeInvestimento :: String
+    , valorFinalComp   :: Double
+    , rendimentoComp   :: Double
+    , rendLiquidoComp  :: Double
+    } deriving (Generic, Show)
+
+instance ToJSON ComparacaoItem where
+    toJSON = genericToJSON defaultOptions
+        { fieldLabelModifier = \s -> case s of
+            "nomeInvestimento" -> "nome"
+            "valorFinalComp"   -> "valorFinal"
+            "rendimentoComp"   -> "rendimento"
+            "rendLiquidoComp"  -> "rendimentoLiquido"
+            other              -> other
+        }
+
+instance FromJSON ComparacaoItem where
+    parseJSON = genericParseJSON defaultOptions
+        { fieldLabelModifier = \s -> case s of
+            "nomeInvestimento" -> "nome"
+            "valorFinalComp"   -> "valorFinal"
+            "rendimentoComp"   -> "rendimento"
+            "rendLiquidoComp"  -> "rendimentoLiquido"
+            other              -> other
+        }
+
+data SimulacaoResult = SimulacaoResult
+    { simValorFinal        :: Double
+    , simRendimentoBruto   :: Double
+    , simRendimentoLiquido :: Double
+    , simAliquotaIR        :: Double
+    , simComparacoes       :: [ComparacaoItem]
+    , simEvolucaoMensal    :: [EvolucaoMensal]
+    } deriving (Generic, Show)
+
+instance ToJSON SimulacaoResult where
+    toJSON = genericToJSON defaultOptions
+        { fieldLabelModifier = \s -> case s of
+            "simValorFinal"        -> "valorFinal"
+            "simRendimentoBruto"   -> "rendimentoBruto"
+            "simRendimentoLiquido" -> "rendimentoLiquido"
+            "simAliquotaIR"        -> "aliquotaIR"
+            "simComparacoes"       -> "comparacoes"
+            "simEvolucaoMensal"    -> "evolucaoMensal"
+            other                  -> other
+        }
+
+instance FromJSON SimulacaoResult where
+    parseJSON = genericParseJSON defaultOptions
+        { fieldLabelModifier = \s -> case s of
+            "simValorFinal"        -> "valorFinal"
+            "simRendimentoBruto"   -> "rendimentoBruto"
+            "simRendimentoLiquido" -> "rendimentoLiquido"
+            "simAliquotaIR"        -> "aliquotaIR"
+            "simComparacoes"       -> "comparacoes"
+            "simEvolucaoMensal"    -> "evolucaoMensal"
+            other                  -> other
+        }
+
+-- ---------------------------------------------------------------------------
+-- | Health check
+-- ---------------------------------------------------------------------------
+data HealthStatus = HealthStatus
+    { healthStatus :: String   -- ^ "ok" | "degraded"
+    , healthDb     :: String   -- ^ "connected" | "error"
+    , healthVersion :: String  -- ^ versao da app
+    } deriving (Generic, Show)
+
+instance ToJSON HealthStatus where
+    toJSON = genericToJSON defaultOptions
+        { fieldLabelModifier = \s -> case s of
+            "healthStatus"  -> "status"
+            "healthDb"      -> "db"
+            "healthVersion" -> "version"
+            other           -> other
+        }
+
+instance FromJSON HealthStatus where
+    parseJSON = genericParseJSON defaultOptions
+        { fieldLabelModifier = \s -> case s of
+            "healthStatus"  -> "status"
+            "healthDb"      -> "db"
+            "healthVersion" -> "version"
+            other           -> other
+        }
