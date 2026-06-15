@@ -15,11 +15,11 @@ RUN cabal update && cabal build --only-dependencies
 # Copia o código fonte
 COPY app/ ./app/
 
-# Compila o projeto em modo release
-RUN cabal build -O2 exe:dicas-investimento
+# Compila o projeto
+RUN cabal build exe:dicas-investimento
 
 # Copia o binário para um local fixo
-RUN cp $(cabal list-bin dicas-investimento) /app/servidor
+RUN cp $(cabal list-bin -v0 exe:dicas-investimento) /app/servidor
 
 # ─────────────────────────────────────────────
 # Imagem final minimalista (sem GHC/Cabal)
