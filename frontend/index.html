@@ -108,49 +108,26 @@
         .hero-sub { font-size:17px; color:var(--fg-muted); line-height:1.65; max-width:480px; }
 
         /* Live card */
-        .live-card {
-            background:rgba(17,19,24,0.9); border:1px solid var(--border-strong);
-            border-radius:22px; padding:22px; backdrop-filter:blur(16px);
-            box-shadow:0 32px 80px rgba(0,0,0,0.5);
-            position:relative; overflow:hidden;
-        }
-        .live-card::before {
-            content:''; position:absolute; top:-2px; left:50%; transform:translateX(-50%);
-            width:60%; height:2px;
-            background:linear-gradient(90deg,transparent,var(--accent),transparent);
-        }
+        .live-card { background:rgba(17,19,24,0.9); border:1px solid var(--border-strong); border-radius:22px; padding:22px; backdrop-filter:blur(16px); box-shadow:0 32px 80px rgba(0,0,0,0.5); position:relative; overflow:hidden; }
+        .live-card::before { content:''; position:absolute; top:-2px; left:50%; transform:translateX(-50%); width:60%; height:2px; background:linear-gradient(90deg,transparent,var(--accent),transparent); }
         .live-dot { width:7px; height:7px; border-radius:50%; background:var(--accent); position:relative; display:inline-block; }
         .live-dot::after { content:''; position:absolute; inset:-3px; border-radius:50%; background:var(--accent); opacity:0.4; animation:ping 1.5s ease-out infinite; }
         @keyframes ping { 0%{transform:scale(1);opacity:0.4} 100%{transform:scale(2.2);opacity:0} }
-        .live-row {
-            display:flex; align-items:center; justify-content:space-between; gap:12px;
-            padding:10px 14px; border-radius:12px;
-            background:var(--bg); border:1px solid var(--border); margin-top:10px;
-            transition:border-color 0.2s;
-        }
+        .live-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 14px; border-radius:12px; background:var(--bg); border:1px solid var(--border); margin-top:10px; transition:border-color 0.2s; }
         .live-row:hover { border-color:rgba(34,197,94,0.3); }
 
-        /* Section label */
+        /* Labels & Titles */
         .sec-label { display:flex; align-items:center; gap:12px; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.22em; color:var(--accent); }
         .sec-label span { display:block; width:32px; height:1px; background:var(--accent); }
         h2.sec-title { font-size:clamp(2rem,4vw,3.4rem); font-weight:700; letter-spacing:-0.035em; line-height:1.04; color:var(--fg); margin:18px 0 16px; }
         h2.sec-title em { font-style:italic; font-weight:400; color:var(--fg-muted); }
-
-        /* Panel section */
         .panel-section { padding:60px 24px; }
         .sec-inner { max-width:1200px; margin:0 auto; }
 
         /* Category cards */
         .cat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:48px; }
-        .cat-card {
-            background:var(--bg-card); border:1px solid var(--border);
-            border-radius:18px; padding:24px; cursor:pointer;
-            transition:all 0.25s; position:relative; overflow:hidden;
-        }
-        .cat-card::after {
-            content:''; position:absolute; inset:0; border-radius:inherit; opacity:0; transition:opacity 0.3s;
-            background:radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(34,197,94,0.12), transparent 60%);
-        }
+        .cat-card { background:var(--bg-card); border:1px solid var(--border); border-radius:18px; padding:24px; cursor:pointer; transition:all 0.25s; position:relative; overflow:hidden; }
+        .cat-card::after { content:''; position:absolute; inset:0; border-radius:inherit; opacity:0; transition:opacity 0.3s; background:radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(34,197,94,0.12), transparent 60%); }
         .cat-card:hover { border-color:rgba(34,197,94,0.3); transform:translateY(-3px); box-shadow:0 16px 40px rgba(0,0,0,0.4); }
         .cat-card:hover::after { opacity:1; }
         .cat-icon-wrap { width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:20px; margin-bottom:16px; }
@@ -159,13 +136,17 @@
         .cat-count { position:absolute; top:20px; right:20px; font-size:11px; font-weight:700; color:var(--accent); background:var(--accent-dim); padding:3px 10px; border-radius:999px; }
         .cat-card.active-cat { border-color:rgba(34,197,94,0.5); background:rgba(34,197,94,0.04); }
 
+        /* ─── Explore Layout (Sidebar + Main) ─── */
+        .explore-layout { display:flex; gap:32px; align-items:flex-start; margin-top:24px; }
+        .sidebar-filters { width:250px; flex-shrink:0; background:var(--bg-card); border:1px solid var(--border); border-radius:16px; padding:24px; position:sticky; top:80px; }
+        .main-explore { flex:1; min-width:0; }
+        .filter-lbl { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--fg-muted); cursor:pointer; transition:color 0.2s; margin-bottom:12px; }
+        .filter-lbl:hover { color:var(--fg); }
+        .filter-lbl input[type="checkbox"] { accent-color:var(--accent); width:15px; height:15px; cursor:pointer; background:transparent; }
+
         /* Search + controls */
-        .controls { background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:16px 20px; display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
-        input[type=text] {
-            background:rgba(255,255,255,0.04); border:1px solid var(--border-strong);
-            color:var(--fg); border-radius:10px; padding:9px 14px 9px 38px;
-            font-size:13px; flex:1; min-width:180px; transition:border-color 0.2s;
-        }
+        .controls { background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:16px 20px; display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:24px; }
+        input[type=text] { background:rgba(255,255,255,0.04); border:1px solid var(--border-strong); color:var(--fg); border-radius:10px; padding:9px 14px 9px 38px; font-size:13px; flex:1; min-width:180px; transition:border-color 0.2s; }
         input[type=text]::placeholder { color:var(--fg-subtle); }
         input[type=text]:focus { outline:none; border-color:rgba(34,197,94,0.5); box-shadow:0 0 0 3px rgba(34,197,94,0.08); }
         .sort-row { display:flex; gap:6px; align-items:center; }
@@ -176,15 +157,18 @@
         .clear-btn:hover { border-color:var(--border-strong); color:var(--fg); }
 
         /* Tip cards */
-        .tips-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:16px; margin-top:24px; }
-        .tip-card {
-            background:var(--bg-card); border:1px solid var(--border);
-            border-radius:16px; padding:20px; cursor:pointer;
-            transition:all 0.2s; display:flex; flex-direction:column; gap:14px;
-        }
+        .tips-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; }
+        .tip-card { background:var(--bg-card); border:1px solid var(--border); border-radius:16px; padding:20px; cursor:pointer; transition:all 0.2s; display:flex; flex-direction:column; gap:14px; }
         .tip-card:hover { border-color:rgba(34,197,94,0.3); transform:translateY(-2px); box-shadow:0 12px 32px rgba(0,0,0,0.4); }
-        .tip-actions { display:flex; gap:4px; opacity:0; transition:opacity 0.2s; }
-        .tip-card:hover .tip-actions { opacity:1; }
+        
+        /* ─── Admin Table ─── */
+        .admin-table-wrapper { width:100%; overflow-x:auto; background:var(--bg-card); border:1px solid var(--border); border-radius:16px; margin-top:24px; }
+        .admin-table { width:100%; border-collapse:collapse; text-align:left; min-width:800px; }
+        .admin-table th { padding:16px 20px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--fg-subtle); border-bottom:1px solid var(--border); background:rgba(255,255,255,0.02); }
+        .admin-table td { padding:14px 20px; font-size:13px; color:var(--fg); border-bottom:1px solid var(--border); }
+        .admin-table tr:last-child td { border-bottom:none; }
+        .admin-table tr:hover td { background:rgba(255,255,255,0.02); }
+        .action-btns { display:flex; gap:6px; }
         .icon-btn { width:28px; height:28px; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--fg-subtle); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
         .icon-btn:hover { color:var(--accent); border-color:rgba(34,197,94,0.35); background:var(--accent-dim); }
         .icon-btn.del:hover { color:#f87171; border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.08); }
@@ -195,32 +179,38 @@
         .badge-medio { font-size:11px; font-weight:600; padding:2px 10px; border-radius:999px; background:rgba(251,191,36,0.1); color:#fbbf24; border:1px solid rgba(251,191,36,0.25); }
         .badge-alto  { font-size:11px; font-weight:600; padding:2px 10px; border-radius:999px; background:rgba(239,68,68,0.1);  color:#f87171; border:1px solid rgba(239,68,68,0.25); }
 
-        /* Modals */
+        /* Modals & Drawers */
         .overlay { position:fixed; inset:0; z-index:60; background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); display:none; align-items:center; justify-content:center; padding:16px; }
         .modal-box { background:#0d1020; border:1px solid rgba(255,255,255,0.1); border-radius:20px; width:100%; max-width:520px; overflow:hidden; }
         .modal-head { padding:22px 24px 18px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
         .modal-body { padding:22px 24px; display:flex; flex-direction:column; gap:14px; max-height:60vh; overflow-y:auto; }
         .modal-foot { padding:16px 24px; border-top:1px solid var(--border); display:flex; gap:10px; }
 
+        /* ─── DRAWER LATERAL ─── */
+        .drawer-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:100; opacity:0; pointer-events:none; transition:opacity 0.3s; backdrop-filter:blur(4px); }
+        .drawer-overlay.open { opacity:1; pointer-events:auto; }
+        .drawer { position:fixed; top:0; right:0; width:100%; max-width:460px; height:100%; background:var(--bg-card); border-left:1px solid var(--border); transform:translateX(100%); transition:transform 0.3s ease; display:flex; flex-direction:column; box-shadow:-10px 0 40px rgba(0,0,0,0.5); }
+        .drawer.open { transform:translateX(0); }
+        .drawer-header { padding:20px 24px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+        .drawer-body { flex:1; overflow-y:auto; padding:24px; display:flex; flex-direction:column; gap:16px; }
+        .drawer-footer { padding:20px 24px; border-top:1px solid var(--border); display:flex; gap:12px; background:var(--bg-raised); }
+
         label { display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--fg-muted); margin-bottom:6px; }
-        input.field, select.field, textarea.field {
-            width:100%; background:rgba(255,255,255,0.04); border:1px solid var(--border-strong);
-            color:var(--fg); border-radius:10px; padding:10px 14px; font-size:13px; transition:border-color 0.2s;
-        }
+        input.field, select.field, textarea.field { width:100%; background:rgba(255,255,255,0.04); border:1px solid var(--border-strong); color:var(--fg); border-radius:10px; padding:10px 14px; font-size:13px; transition:border-color 0.2s; }
         input.field::placeholder, textarea.field::placeholder { color:var(--fg-subtle); }
         input.field:focus, select.field:focus, textarea.field:focus { outline:none; border-color:rgba(34,197,94,0.5); box-shadow:0 0 0 3px rgba(34,197,94,0.08); }
         select.field option { background:#1a1d2e; }
-        textarea.field { resize:none; }
+        textarea.field { resize:vertical; min-height:80px; }
         .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 
         .btn-save { flex:1; padding:11px; border-radius:12px; background:var(--accent); border:none; color:#fff; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:6px; }
         .btn-save:hover { filter:brightness(1.08); box-shadow:0 6px 20px rgba(34,197,94,0.3); }
-        .btn-cancel { flex:1; padding:11px; border-radius:12px; background:transparent; border:1px solid var(--border-strong); color:var(--fg-muted); font-size:13px; font-weight:600; cursor:pointer; transition:all 0.15s; }
+        .btn-cancel { flex:1; padding:11px; border-radius:12px; background:transparent; border:1px solid var(--border-strong); color:var(--fg-muted); font-size:13px; font-weight:600; cursor:pointer; transition:all 0.15s; text-align:center; }
         .btn-cancel:hover { color:var(--fg); border-color:var(--border-strong); }
         .btn-danger { flex:1; padding:11px; border-radius:12px; background:#dc2626; border:none; color:#fff; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.15s; }
         .btn-danger:hover { background:#ef4444; }
         .x-btn { background:none; border:none; color:var(--fg-muted); cursor:pointer; padding:4px; border-radius:8px; transition:color 0.15s; }
-        .x-btn:hover { color:var(--fg); }
+        .x-btn:hover { color:var(--fg); background:rgba(255,255,255,0.05); }
 
         /* Detalhe modal */
         .detail-header { padding:24px; border-bottom:1px solid var(--border); }
@@ -230,11 +220,11 @@
         .meta-box dd { font-size:13px; font-weight:600; color:var(--fg); }
 
         /* Footer */
-        footer { border-top:1px solid var(--border); background:var(--bg-raised); padding:36px 24px; }
+        footer { border-top:1px solid var(--border); background:var(--bg-raised); padding:36px 24px; margin-top: 40px; }
         .foot-inner { max-width:1200px; margin:0 auto; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; }
 
         /* Toast */
-        #toast { position:fixed; bottom:24px; right:24px; z-index:80; transition:all 0.3s ease; display:none; }
+        #toast { position:fixed; bottom:24px; right:24px; z-index:150; transition:all 0.3s ease; display:none; }
         .toast-inner { display:flex; align-items:center; gap:10px; padding:13px 20px; border-radius:14px; box-shadow:0 8px 32px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1); }
 
         /* Scroll top */
@@ -257,6 +247,10 @@
             .cat-grid { grid-template-columns:repeat(2,1fr); }
             h1 { font-size:2.8rem; }
         }
+        @media(max-width:768px) {
+            .explore-layout { flex-direction:column; }
+            .sidebar-filters { width:100%; position:static; }
+        }
         @media(max-width:700px) {
             .tab-btn .tab-label { display:none; }
             .tab-btn { padding:7px 10px; }
@@ -269,56 +263,32 @@
         ::-webkit-scrollbar-track { background:var(--bg); }
         ::-webkit-scrollbar-thumb { background:#2a2d3a; border-radius:5px; }
 
-        /* Simulator buttons */
-        .idx-btn, .period-btn {
-            background:rgba(255,255,255,0.04); border:1px solid var(--border-strong);
-            border-radius:8px; color:var(--fg-muted); font-size:12px; font-weight:600;
-            padding:7px 14px; cursor:pointer; transition:all 0.15s;
-        }
+        /* Simulator & Glossary & Extra Tools (Same as before) */
+        .idx-btn, .period-btn { background:rgba(255,255,255,0.04); border:1px solid var(--border-strong); border-radius:8px; color:var(--fg-muted); font-size:12px; font-weight:600; padding:7px 14px; cursor:pointer; transition:all 0.15s; }
         .idx-btn:hover, .period-btn:hover { color:var(--fg); border-color:var(--border-strong); }
-        .idx-btn.active, .period-btn.active {
-            background:var(--accent-dim); border-color:rgba(34,197,94,0.5); color:var(--accent);
-        }
-        .preset-btn {
-            background:rgba(255,255,255,0.03); border:1px solid var(--border);
-            border-radius:6px; color:var(--fg-subtle); font-size:11px; font-weight:600;
-            padding:4px 10px; cursor:pointer; transition:all 0.15s;
-        }
+        .idx-btn.active, .period-btn.active { background:var(--accent-dim); border-color:rgba(34,197,94,0.5); color:var(--accent); }
+        .preset-btn { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:6px; color:var(--fg-subtle); font-size:11px; font-weight:600; padding:4px 10px; cursor:pointer; transition:all 0.15s; }
         .preset-btn:hover { color:var(--accent); border-color:rgba(34,197,94,0.3); background:var(--accent-dim); }
 
-        /* Glossario */
-        .gloss-card {
-            background:var(--bg-card); border:1px solid var(--border); border-radius:14px;
-            overflow:hidden; cursor:pointer; transition:border-color 0.2s;
-        }
+        .gloss-card { background:var(--bg-card); border:1px solid var(--border); border-radius:14px; overflow:hidden; cursor:pointer; transition:border-color 0.2s; }
         .gloss-card:hover { border-color:rgba(34,197,94,0.3); }
         .gloss-head { display:flex; align-items:center; justify-content:space-between; padding:16px 18px; }
         .gloss-icon { width:36px; height:36px; border-radius:10px; background:rgba(255,255,255,0.04); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
-        .gloss-body {
-            font-size:13px; color:var(--fg-muted); line-height:1.7;
-            padding:0 18px; max-height:0; overflow:hidden; transition:max-height 0.3s ease, padding 0.3s;
-        }
+        .gloss-body { font-size:13px; color:var(--fg-muted); line-height:1.7; padding:0 18px; max-height:0; overflow:hidden; transition:max-height 0.3s ease, padding 0.3s; }
         .gloss-card.open .gloss-body { max-height:200px; padding:0 18px 16px; }
         .gloss-card.open .gloss-chevron { transform: rotate(180deg); }
 
-        /* Vote button */
         .vote-btn { display:flex; align-items:center; gap:5px; background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:8px; color:var(--fg-subtle); font-size:11px; font-weight:700; padding:5px 10px; cursor:pointer; transition:all 0.2s; }
         .vote-btn:hover { color:var(--accent); border-color:rgba(34,197,94,0.35); background:var(--accent-dim); }
         .vote-btn.voted { background:var(--accent-dim); border-color:rgba(34,197,94,0.5); color:var(--accent); }
 
-        /* API Error Banner */
-        .api-error-banner {
-            display:none; align-items:center; gap:12px;
-            background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2);
-            border-radius:12px; padding:14px 18px; margin-bottom:20px;
-        }
+        .api-error-banner { display:none; align-items:center; gap:12px; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); border-radius:12px; padding:14px 18px; margin-bottom:20px; }
         .api-error-banner p { font-size:13px; color:#f87171; }
     </style>
 </head>
 
 <body class="noise">
 
-<!-- HEADER -->
 <header>
     <div class="header-inner">
         <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
@@ -330,20 +300,19 @@
 
         <nav class="tab-nav">
             <button class="tab-btn" id="tab-inicio" onclick="irParaAba('inicio')">
-                <i data-lucide="home" style="width:15px;height:15px;"></i>
-                <span class="tab-label">Inicio</span>
+                <i data-lucide="home" style="width:15px;height:15px;"></i> <span class="tab-label">Início</span>
             </button>
             <button class="tab-btn" id="tab-explorar" onclick="irParaAba('explorar')">
-                <i data-lucide="compass" style="width:15px;height:15px;"></i>
-                <span class="tab-label">Explorar</span>
+                <i data-lucide="compass" style="width:15px;height:15px;"></i> <span class="tab-label">Explorar</span>
+            </button>
+            <button class="tab-btn" id="tab-admin" onclick="irParaAba('admin')">
+                <i data-lucide="database" style="width:15px;height:15px;"></i> <span class="tab-label">Gerenciar</span>
             </button>
             <button class="tab-btn" id="tab-simulador" onclick="irParaAba('simulador')">
-                <i data-lucide="calculator" style="width:15px;height:15px;"></i>
-                <span class="tab-label">Simulador</span>
+                <i data-lucide="calculator" style="width:15px;height:15px;"></i> <span class="tab-label">Simulador</span>
             </button>
             <button class="tab-btn" id="tab-glossario" onclick="irParaAba('glossario')">
-                <i data-lucide="book-open" style="width:15px;height:15px;"></i>
-                <span class="tab-label">Glossario</span>
+                <i data-lucide="book-open" style="width:15px;height:15px;"></i> <span class="tab-label">Glossário</span>
             </button>
         </nav>
 
@@ -355,14 +324,13 @@
             <span style="font-size:12px;color:var(--fg-subtle);display:flex;align-items:center;gap:6px;">
                 <span id="header-total">--</span>
             </span>
-            <button class="btn-accent" onclick="abrirModal()" style="padding:7px 16px;font-size:12px;">
+            <button class="btn-accent" onclick="abrirDrawer()" style="padding:7px 16px;font-size:12px;">
                 <i data-lucide="plus" style="width:13px;height:13px;"></i> Nova Dica
             </button>
         </div>
     </div>
 </header>
 
-<!-- ABA INICIO -->
 <div class="tab-panel" id="panel-inicio">
     <section class="hero grid-bg">
         <div class="aurora-1" aria-hidden="true"></div>
@@ -381,7 +349,7 @@
 
                 <p class="hero-sub">
                     Explore dicas financeiras curadas por especialistas.
-                    De renda fixa a criptomoedas, filtre, aprenda e gerencie em um so lugar.
+                    De renda fixa a criptomoedas, filtre, aprenda e gerencie em um só lugar.
                 </p>
 
                 <div style="display:flex;gap:0;margin-top:36px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
@@ -403,7 +371,7 @@
                     <button class="btn-accent" onclick="irParaAba('explorar')">
                         Explorar dicas <i data-lucide="arrow-right" style="width:14px;height:14px;"></i>
                     </button>
-                    <button class="btn-ghost" onclick="abrirModal()">
+                    <button class="btn-ghost" onclick="abrirDrawer()">
                         <i data-lucide="plus" style="width:14px;height:14px;"></i> Criar dica
                     </button>
                 </div>
@@ -413,7 +381,7 @@
                 <div style="position:absolute;inset:-24px;border-radius:32px;filter:blur(60px);background:conic-gradient(from 0deg,transparent,rgba(34,197,94,0.18),transparent 50%);opacity:0.7;animation:aurora1 10s ease-in-out infinite;" aria-hidden="true"></div>
                 <div class="live-card" style="position:relative;">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-                        <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.2em;color:var(--fg-muted);">Ultimas dicas</span>
+                        <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.2em;color:var(--fg-muted);">Últimas dicas</span>
                         <span style="display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:var(--accent);">
                             <span class="live-dot"></span> ao vivo
                         </span>
@@ -432,13 +400,12 @@
         <div class="sec-inner">
             <div class="sec-label"><span></span> Categorias</div>
             <h2 class="sec-title">Escolha seu <em>perfil de investidor.</em></h2>
-            <p style="color:var(--fg-muted);font-size:15px;max-width:520px;line-height:1.65;">Clique numa categoria para ir direto as dicas filtradas.</p>
+            <p style="color:var(--fg-muted);font-size:15px;max-width:520px;line-height:1.65;">Clique numa categoria para ir direto às dicas filtradas.</p>
             <div class="cat-grid" id="cat-grid-inicio"></div>
         </div>
     </section>
 </div>
 
-<!-- ABA EXPLORAR -->
 <div class="tab-panel" id="panel-explorar">
     <div class="panel-section">
         <div class="sec-inner">
@@ -449,50 +416,107 @@
 
             <div class="api-error-banner" id="api-error">
                 <i data-lucide="wifi-off" style="width:18px;height:18px;color:#f87171;flex-shrink:0;"></i>
-                <p>API offline. Verifique se o servidor esta rodando em <strong>localhost:8080</strong>.</p>
+                <p>API offline. Verifique se o servidor está rodando em <strong>localhost:8080</strong>.</p>
             </div>
 
-            <div class="controls">
-                <div style="position:relative;flex:1;min-width:200px;">
-                    <i data-lucide="search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--fg-subtle);"></i>
-                    <input type="text" id="input-busca" placeholder="Buscar dicas..." oninput="debounce()">
-                </div>
-                <div class="sort-row">
-                    <span style="font-size:11px;color:var(--fg-subtle);font-weight:600;text-transform:uppercase;letter-spacing:.1em;">Ordem:</span>
-                    <button class="sort-btn active" id="sort-recente" onclick="setOrdem('recente')">Recente</button>
-                    <button class="sort-btn" id="sort-antigo" onclick="setOrdem('antigo')">Antigo</button>
-                    <button class="sort-btn" id="sort-az" onclick="setOrdem('az')">A-Z</button>
-                </div>
-                <button class="clear-btn" onclick="limpar()">
-                    <i data-lucide="x" style="width:12px;height:12px;"></i> Limpar
-                </button>
-                <span id="resultado-contagem" style="font-size:12px;color:var(--fg-subtle);"></span>
-            </div>
+            <div class="explore-layout">
+                <aside class="sidebar-filters">
+                    <h3 style="font-size:14px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:8px;">
+                        <i data-lucide="filter" style="width:16px;height:16px;color:var(--accent);"></i> Filtros
+                    </h3>
+                    
+                    <div style="margin-bottom:24px;">
+                        <h4 style="font-size:11px;font-weight:600;color:var(--fg-subtle);text-transform:uppercase;margin-bottom:12px;">Por Categoria</h4>
+                        <div style="display:flex;flex-direction:column;gap:10px;" id="filter-cats">
+                            <label class="filter-lbl"><input type="checkbox" value="Renda Fixa" onchange="aplicarFiltros()"> Renda Fixa</label>
+                            <label class="filter-lbl"><input type="checkbox" value="Ações" onchange="aplicarFiltros()"> Ações</label>
+                            <label class="filter-lbl"><input type="checkbox" value="FIIs" onchange="aplicarFiltros()"> FIIs</label>
+                            <label class="filter-lbl"><input type="checkbox" value="Previdência" onchange="aplicarFiltros()"> Previdência</label>
+                            <label class="filter-lbl"><input type="checkbox" value="Criptomoedas" onchange="aplicarFiltros()"> Criptomoedas</label>
+                            <label class="filter-lbl"><input type="checkbox" value="Exterior" onchange="aplicarFiltros()"> Exterior</label>
+                        </div>
+                    </div>
 
-            <div id="loading" style="display:none;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-top:24px;">
-                <div class="skeleton" style="height:180px;"></div>
-                <div class="skeleton" style="height:180px;"></div>
-                <div class="skeleton" style="height:180px;"></div>
-                <div class="skeleton" style="height:180px;"></div>
-                <div class="skeleton" style="height:180px;"></div>
-                <div class="skeleton" style="height:180px;"></div>
-            </div>
+                    <div>
+                        <h4 style="font-size:11px;font-weight:600;color:var(--fg-subtle);text-transform:uppercase;margin-bottom:12px;">Por Risco</h4>
+                        <div style="display:flex;flex-direction:column;gap:10px;" id="filter-risks">
+                            <label class="filter-lbl"><input type="checkbox" value="Baixo" onchange="aplicarFiltros()"> Baixo</label>
+                            <label class="filter-lbl"><input type="checkbox" value="Médio" onchange="aplicarFiltros()"> Médio</label>
+                            <label class="filter-lbl"><input type="checkbox" value="Alto" onchange="aplicarFiltros()"> Alto</label>
+                        </div>
+                    </div>
+                </aside>
 
-            <div class="tips-grid" id="tips-grid"></div>
+                <main class="main-explore">
+                    <div class="controls">
+                        <div style="position:relative;flex:1;min-width:200px;">
+                            <i data-lucide="search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--fg-subtle);"></i>
+                            <input type="text" id="input-busca" placeholder="Buscar por título ou palavra-chave..." oninput="debounceFiltro()">
+                        </div>
+                        <div class="sort-row">
+                            <span style="font-size:11px;color:var(--fg-subtle);font-weight:600;text-transform:uppercase;letter-spacing:.1em;">Ordem:</span>
+                            <button class="sort-btn active" id="sort-recente" onclick="setOrdem('recente')">Recente</button>
+                            <button class="sort-btn" id="sort-antigo" onclick="setOrdem('antigo')">Antigo</button>
+                            <button class="sort-btn" id="sort-az" onclick="setOrdem('az')">A-Z</button>
+                        </div>
+                        <button class="clear-btn" onclick="limparFiltros()">
+                            <i data-lucide="x" style="width:12px;height:12px;"></i> Limpar
+                        </button>
+                        <span id="resultado-contagem" style="font-size:12px;color:var(--fg-subtle);"></span>
+                    </div>
 
-            <div id="vazio" style="display:none;text-align:center;padding:80px 24px;">
-                <i data-lucide="inbox" style="width:40px;height:40px;color:var(--fg-subtle);margin:0 auto 14px;display:block;"></i>
-                <p style="font-size:15px;font-weight:600;color:var(--fg-muted);">Nenhuma dica encontrada</p>
-                <p style="font-size:13px;color:var(--fg-subtle);margin-top:6px;">Tente outro filtro ou crie uma nova dica</p>
-                <button class="btn-accent" onclick="abrirModal()" style="margin-top:20px;">
-                    <i data-lucide="plus" style="width:14px;height:14px;"></i> Nova Dica
-                </button>
+                    <div id="loading" style="display:none;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
+                        <div class="skeleton" style="height:180px;"></div>
+                        <div class="skeleton" style="height:180px;"></div>
+                        <div class="skeleton" style="height:180px;"></div>
+                    </div>
+
+                    <div class="tips-grid" id="tips-grid"></div>
+
+                    <div id="vazio" style="display:none;text-align:center;padding:80px 24px;">
+                        <i data-lucide="inbox" style="width:40px;height:40px;color:var(--fg-subtle);margin:0 auto 14px;display:block;"></i>
+                        <p style="font-size:15px;font-weight:600;color:var(--fg-muted);">Nenhuma dica encontrada</p>
+                        <p style="font-size:13px;color:var(--fg-subtle);margin-top:6px;">Tente outros filtros ou crie uma nova dica.</p>
+                    </div>
+                </main>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ABA SIMULADOR -->
+<div class="tab-panel" id="panel-admin">
+    <div class="panel-section">
+        <div class="sec-inner">
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:28px;">
+                <div>
+                    <div class="sec-label"><span></span> Administração</div>
+                    <h2 class="sec-title" style="font-size:clamp(1.6rem,3vw,2.4rem);margin-bottom:8px;">Gerenciar <em>Banco de Dados.</em></h2>
+                </div>
+                <button class="btn-accent" onclick="abrirDrawer()">
+                    <i data-lucide="plus" style="width:14px;height:14px;"></i> Adicionar Dica
+                </button>
+            </div>
+
+            <div class="admin-table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th style="min-width:280px;">Título</th>
+                            <th>Categoria</th>
+                            <th>Risco</th>
+                            <th>Autor</th>
+                            <th>Data</th>
+                            <th style="text-align:right;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="tab-panel" id="panel-simulador">
     <div class="panel-section">
         <div class="sec-inner">
@@ -500,27 +524,23 @@
                 <div>
                     <div class="sec-label"><span></span> Simulador</div>
                     <h2 class="sec-title">Quanto rende o seu <em>dinheiro?</em></h2>
-                    <p style="color:var(--fg-muted);font-size:15px;max-width:480px;line-height:1.65;margin-top:12px;">Simule o rendimento do seu investimento com juros compostos, tabela regressiva de IR e comparacao com poupanca e CDI.</p>
+                    <p style="color:var(--fg-muted);font-size:15px;max-width:480px;line-height:1.65;margin-top:12px;">Simule o rendimento do seu investimento com juros compostos, tabela regressiva de IR e comparação com poupança e CDI.</p>
                 </div>
             </div>
 
             <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:24px;align-items:start;">
-
                 <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:28px;">
                     <h3 style="font-size:14px;font-weight:700;color:var(--fg);margin-bottom:24px;display:flex;align-items:center;gap:8px;">
-                        <i data-lucide="sliders" style="width:16px;height:16px;color:var(--accent);"></i> Parametros
+                        <i data-lucide="sliders" style="width:16px;height:16px;color:var(--accent);"></i> Parâmetros
                     </h3>
 
                     <div style="margin-bottom:18px;">
                         <label style="display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--fg-muted);margin-bottom:8px;">Valor inicial (R$)</label>
                         <div style="position:relative;">
                             <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:600;color:var(--fg-subtle);">R$</span>
-                            <input class="field" id="sim-valor" type="number" min="100" max="10000000" step="100" value="10000"
-                                style="padding-left:36px;" oninput="simAtualizar()">
+                            <input class="field" id="sim-valor" type="number" min="100" max="10000000" step="100" value="10000" style="padding-left:36px;" oninput="simAtualizar()">
                         </div>
-                        <input type="range" id="sim-slider" min="1000" max="500000" step="1000" value="10000"
-                            style="width:100%;margin-top:10px;accent-color:var(--accent);cursor:pointer;"
-                            oninput="document.getElementById('sim-valor').value=this.value;simAtualizar()">
+                        <input type="range" id="sim-slider" min="1000" max="500000" step="1000" value="10000" style="width:100%;margin-top:10px;accent-color:var(--accent);cursor:pointer;" oninput="document.getElementById('sim-valor').value=this.value;simAtualizar()">
                         <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--fg-subtle);margin-top:2px;">
                             <span>R$ 1.000</span><span>R$ 500.000</span>
                         </div>
@@ -531,7 +551,7 @@
                         <div style="display:flex;gap:8px;flex-wrap:wrap;">
                             <button class="idx-btn active" data-idx="CDI" onclick="selectIdx(this,'CDI')">CDI</button>
                             <button class="idx-btn" data-idx="IPCA+" onclick="selectIdx(this,'IPCA+')">IPCA+</button>
-                            <button class="idx-btn" data-idx="Prefixado" onclick="selectIdx(this,'Prefixado')">Pre-fixado</button>
+                            <button class="idx-btn" data-idx="Prefixado" onclick="selectIdx(this,'Prefixado')">Pré-fixado</button>
                         </div>
                         <div id="idx-hint" style="margin-top:8px;font-size:11px;color:var(--fg-subtle);background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:8px 10px;">CDI ref: 13,75% a.a. Informe <strong style="color:var(--fg-muted);">% do CDI</strong> (ex: 110 = 110% do CDI)</div>
                     </div>
@@ -553,7 +573,7 @@
                     </div>
 
                     <div style="margin-bottom:24px;">
-                        <label style="display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--fg-muted);margin-bottom:8px;">Periodo</label>
+                        <label style="display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--fg-muted);margin-bottom:8px;">Período</label>
                         <div style="display:flex;gap:8px;flex-wrap:wrap;">
                             <button class="period-btn" data-anos="1" onclick="selectPeriod(this,1)">1 ano</button>
                             <button class="period-btn active" data-anos="2" onclick="selectPeriod(this,2)">2 anos</button>
@@ -567,15 +587,14 @@
                         <i data-lucide="calculator" style="width:15px;height:15px;"></i>
                         <span id="btn-sim-txt">Simular agora</span>
                     </button>
-
-                    <p style="font-size:11px;color:var(--fg-subtle);margin-top:14px;line-height:1.6;text-align:center;">* Simulacao educacional. Nao e recomendacao de investimento. IR pela tabela regressiva.</p>
+                    <p style="font-size:11px;color:var(--fg-subtle);margin-top:14px;line-height:1.6;text-align:center;">* Simulação educacional. Não é recomendação de investimento.</p>
                 </div>
 
                 <div id="sim-resultado" style="display:flex;flex-direction:column;gap:16px;">
                     <div id="sim-placeholder" style="background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:60px 24px;text-align:center;">
                         <i data-lucide="line-chart" style="width:40px;height:40px;color:var(--fg-subtle);margin:0 auto 14px;display:block;"></i>
                         <p style="font-size:15px;font-weight:600;color:var(--fg-muted);">Configure e clique em Simular</p>
-                        <p style="font-size:13px;color:var(--fg-subtle);margin-top:6px;">Os resultados e o grafico aparecerao aqui</p>
+                        <p style="font-size:13px;color:var(--fg-subtle);margin-top:6px;">Os resultados e o gráfico aparecerão aqui</p>
                     </div>
 
                     <div id="sim-output" style="display:none;flex-direction:column;gap:16px;">
@@ -592,7 +611,7 @@
                                 </div>
                                 <div style="width:1px;background:rgba(255,255,255,0.08);"></div>
                                 <div>
-                                    <div style="font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--fg-subtle);margin-bottom:4px;">Rendimento liquido (IR <span id="sim-aliq">--</span>%)</div>
+                                    <div style="font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--fg-subtle);margin-bottom:4px;">Rendimento líquido (IR <span id="sim-aliq">--</span>%)</div>
                                     <div id="sim-rl" style="font-size:16px;font-weight:700;color:var(--accent);">+ R$ --</div>
                                 </div>
                             </div>
@@ -600,7 +619,7 @@
 
                         <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:24px;">
                             <div style="font-size:12px;font-weight:600;color:var(--fg-muted);margin-bottom:16px;display:flex;align-items:center;gap:7px;">
-                                <i data-lucide="trending-up" style="width:14px;height:14px;color:var(--accent);"></i> Evolucao mensal
+                                <i data-lucide="trending-up" style="width:14px;height:14px;color:var(--accent);"></i> Evolução mensal
                             </div>
                             <canvas id="sim-chart" style="max-height:220px;"></canvas>
                         </div>
@@ -614,7 +633,7 @@
                                     <tr style="background:rgba(255,255,255,0.02);">
                                         <th style="padding:12px 22px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--fg-subtle);">Investimento</th>
                                         <th style="padding:12px 16px;text-align:right;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--fg-subtle);">Valor Final</th>
-                                        <th style="padding:12px 22px;text-align:right;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--fg-subtle);">Rend. Liquido</th>
+                                        <th style="padding:12px 22px;text-align:right;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--fg-subtle);">Rend. Líquido</th>
                                     </tr>
                                 </thead>
                                 <tbody id="sim-tabela"></tbody>
@@ -627,32 +646,30 @@
     </div>
 </div>
 
-<!-- ABA GLOSSARIO -->
 <div class="tab-panel" id="panel-glossario">
     <div class="panel-section">
         <div class="sec-inner">
             <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:48px;">
                 <div>
-                    <div class="sec-label"><span></span> Glossario</div>
+                    <div class="sec-label"><span></span> Glossário</div>
                     <h2 class="sec-title">Entenda os <em>termos.</em></h2>
                     <p style="color:var(--fg-muted);font-size:15px;max-width:480px;line-height:1.65;margin-top:12px;">Os conceitos fundamentais do mercado financeiro explicados de forma simples.</p>
                 </div>
             </div>
 
             <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;" id="glossario-grid">
-
                 <div class="gloss-card" onclick="toggleGloss(this)">
                     <div class="gloss-head">
                         <div style="display:flex;align-items:center;gap:10px;">
                             <div class="gloss-icon">&#x1F4CA;</div>
                             <div>
                                 <div style="font-size:13px;font-weight:700;color:var(--fg);">CDI</div>
-                                <div style="font-size:11px;color:var(--fg-subtle);">Certificado de Deposito Interbancario</div>
+                                <div style="font-size:11px;color:var(--fg-subtle);">Certificado de Depósito Interbancário</div>
                             </div>
                         </div>
                         <i data-lucide="chevron-down" class="gloss-chevron" style="width:16px;height:16px;color:var(--fg-subtle);transition:transform 0.25s;"></i>
                     </div>
-                    <div class="gloss-body">Taxa de emprestimos entre bancos, usada como referencia para investimentos de renda fixa. Atualmente proxima a taxa Selic (~13,75% a.a.). Investimentos que rendem "100% do CDI" acompanham essa taxa.</div>
+                    <div class="gloss-body">Taxa de empréstimos entre bancos, usada como referência para investimentos de renda fixa. Atualmente próxima à taxa Selic (~13,75% a.a.). Investimentos que rendem "100% do CDI" acompanham essa taxa.</div>
                 </div>
 
                 <div class="gloss-card" onclick="toggleGloss(this)">
@@ -661,12 +678,12 @@
                             <div class="gloss-icon">&#x1F4C8;</div>
                             <div>
                                 <div style="font-size:13px;font-weight:700;color:var(--fg);">IPCA</div>
-                                <div style="font-size:11px;color:var(--fg-subtle);">Indice de Precos ao Consumidor Amplo</div>
+                                <div style="font-size:11px;color:var(--fg-subtle);">Índice de Preços ao Consumidor Amplo</div>
                             </div>
                         </div>
                         <i data-lucide="chevron-down" class="gloss-chevron" style="width:16px;height:16px;color:var(--fg-subtle);transition:transform 0.25s;"></i>
                     </div>
-                    <div class="gloss-body">Medida oficial da inflacao no Brasil, calculada pelo IBGE. Investimentos como Tesouro IPCA+ garantem rendimento real (acima da inflacao), protegendo o poder de compra.</div>
+                    <div class="gloss-body">Medida oficial da inflação no Brasil, calculada pelo IBGE. Investimentos como Tesouro IPCA+ garantem rendimento real (acima da inflação), protegendo o poder de compra.</div>
                 </div>
 
                 <div class="gloss-card" onclick="toggleGloss(this)">
@@ -675,12 +692,12 @@
                             <div class="gloss-icon">&#x1F3E2;</div>
                             <div>
                                 <div style="font-size:13px;font-weight:700;color:var(--fg);">FII</div>
-                                <div style="font-size:11px;color:var(--fg-subtle);">Fundo de Investimento Imobiliario</div>
+                                <div style="font-size:11px;color:var(--fg-subtle);">Fundo de Investimento Imobiliário</div>
                             </div>
                         </div>
                         <i data-lucide="chevron-down" class="gloss-chevron" style="width:16px;height:16px;color:var(--fg-subtle);transition:transform 0.25s;"></i>
                     </div>
-                    <div class="gloss-body">Fundos que investem em imoveis ou papeis do setor imobiliario. Distribuem rendimentos mensais (geralmente isentos de IR para pessoa fisica) e sao negociados na bolsa como acoes.</div>
+                    <div class="gloss-body">Fundos que investem em imóveis ou papéis do setor imobiliário. Distribuem rendimentos mensais (geralmente isentos de IR para pessoa física) e são negociados na bolsa como ações.</div>
                 </div>
 
                 <div class="gloss-card" onclick="toggleGloss(this)">
@@ -689,12 +706,12 @@
                             <div class="gloss-icon">&#x1F6E1;&#xFE0F;</div>
                             <div>
                                 <div style="font-size:13px;font-weight:700;color:var(--fg);">PGBL / VGBL</div>
-                                <div style="font-size:11px;color:var(--fg-subtle);">Previdencia Privada</div>
+                                <div style="font-size:11px;color:var(--fg-subtle);">Previdência Privada</div>
                             </div>
                         </div>
                         <i data-lucide="chevron-down" class="gloss-chevron" style="width:16px;height:16px;color:var(--fg-subtle);transition:transform 0.25s;"></i>
                     </div>
-                    <div class="gloss-body">PGBL: deduz ate 12% da renda bruta no IR (ideal para quem faz declaracao completa). VGBL: IR so incide sobre o rendimento (ideal para declaracao simplificada). Ambos sao veiculos de longo prazo com beneficio tributario.</div>
+                    <div class="gloss-body">PGBL: deduz até 12% da renda bruta no IR (ideal para quem faz declaração completa). VGBL: IR só incide sobre o rendimento (ideal para declaração simplificada). Ambos são veículos de longo prazo com benefício tributário.</div>
                 </div>
 
                 <div class="gloss-card" onclick="toggleGloss(this)">
@@ -703,12 +720,12 @@
                             <div class="gloss-icon">&#x1F3E6;</div>
                             <div>
                                 <div style="font-size:13px;font-weight:700;color:var(--fg);">Selic</div>
-                                <div style="font-size:11px;color:var(--fg-subtle);">Taxa basica de juros da economia</div>
+                                <div style="font-size:11px;color:var(--fg-subtle);">Taxa básica de juros da economia</div>
                             </div>
                         </div>
                         <i data-lucide="chevron-down" class="gloss-chevron" style="width:16px;height:16px;color:var(--fg-subtle);transition:transform 0.25s;"></i>
                     </div>
-                    <div class="gloss-body">Definida pelo Banco Central a cada 45 dias, a Selic e a taxa base de toda a economia. Ela influencia diretamente o CDI, a poupanca e os juros dos emprestimos. O Tesouro Selic rende 100% da Selic.</div>
+                    <div class="gloss-body">Definida pelo Banco Central a cada 45 dias, a Selic é a taxa base de toda a economia. Ela influencia diretamente o CDI, a poupança e os juros dos empréstimos. O Tesouro Selic rende 100% da Selic.</div>
                 </div>
 
                 <div class="gloss-card" onclick="toggleGloss(this)">
@@ -722,15 +739,13 @@
                         </div>
                         <i data-lucide="chevron-down" class="gloss-chevron" style="width:16px;height:16px;color:var(--fg-subtle);transition:transform 0.25s;"></i>
                     </div>
-                    <div class="gloss-body">Tabela regressiva: ate 180 dias 22,5% | 181-360 dias 20% | 361-720 dias 17,5% | acima de 720 dias 15%. Quanto mais tempo voce mantem o investimento, menor a aliquota de IR.</div>
+                    <div class="gloss-body">Tabela regressiva: até 180 dias 22,5% | 181-360 dias 20% | 361-720 dias 17,5% | acima de 720 dias 15%. Quanto mais tempo você mantém o investimento, menor a alíquota de IR.</div>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
 
-<!-- FOOTER -->
 <footer>
     <div class="foot-inner">
         <div style="display:flex;align-items:center;gap:10px;">
@@ -744,7 +759,72 @@
     </div>
 </footer>
 
-<!-- MODAL DETALHE -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="fechaDrawerOverlay(event)">
+    <div class="drawer" id="drawer" onclick="event.stopPropagation()">
+        <div class="drawer-header">
+            <div>
+                <h3 id="crud-titulo" style="font-size:18px;font-weight:700;">Nova Dica</h3>
+                <p style="font-size:12px;color:var(--fg-muted);margin-top:4px;">Preencha os campos abaixo</p>
+            </div>
+            <button class="x-btn" onclick="fecharDrawer()"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
+        </div>
+        
+        <div class="drawer-body">
+            <form id="form" onsubmit="salvar(event)" style="display:flex;flex-direction:column;gap:16px;">
+                <input type="hidden" id="f-id">
+                <div>
+                    <label>Título *</label>
+                    <input class="field" id="f-titulo" type="text" required maxlength="200" placeholder="Ex: Como diversificar em renda fixa">
+                </div>
+                <div>
+                    <label>Descrição *</label>
+                    <textarea class="field" id="f-desc" required maxlength="2000" placeholder="Descreva a dica com detalhes e estratégias..."></textarea>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label>Categoria *</label>
+                        <select class="field" id="f-cat" required>
+                            <option value="">Selecionar...</option>
+                            <option value="Renda Fixa">Renda Fixa</option>
+                            <option value="Ações">Ações</option>
+                            <option value="FIIs">FIIs</option>
+                            <option value="Previdência">Previdência</option>
+                            <option value="Criptomoedas">Criptomoedas</option>
+                            <option value="Exterior">Exterior</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Risco *</label>
+                        <select class="field" id="f-risco" required>
+                            <option value="">Selecionar...</option>
+                            <option value="Baixo">Baixo</option>
+                            <option value="Médio">Médio</option>
+                            <option value="Alto">Alto</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label>Autor *</label>
+                    <input class="field" id="f-autor" type="text" required maxlength="100" placeholder="Seu nome">
+                </div>
+            </form>
+
+            <div style="margin-top:10px; padding-top:20px; border-top:1px dashed var(--border);">
+                <h4 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--fg-subtle);margin-bottom:12px;">Live Preview</h4>
+                <div id="preview-container">
+                    </div>
+            </div>
+        </div>
+
+        <div class="drawer-footer">
+            <button type="button" class="btn-cancel" onclick="fecharDrawer()">Cancelar</button>
+            <button type="submit" form="form" class="btn-save" id="btn-salvar">
+                <i data-lucide="save" style="width:14px;height:14px;"></i> <span id="btn-txt">Salvar</span>
+            </button>
+        </div>
+    </div>
+</div>
+
 <div class="overlay" id="modal-detalhe" onclick="fechaOverlay(event,'modal-detalhe')">
     <div class="modal-box" style="max-width:580px;">
         <div class="detail-header">
@@ -753,9 +833,7 @@
                     <div id="d-badges" style="display:flex;align-items:center;gap:7px;margin-bottom:12px;"></div>
                     <h2 id="d-titulo" style="font-size:20px;font-weight:700;letter-spacing:-0.02em;line-height:1.3;"></h2>
                 </div>
-                <button class="x-btn" onclick="fecha('modal-detalhe')">
-                    <i data-lucide="x" style="width:18px;height:18px;"></i>
-                </button>
+                <button class="x-btn" onclick="fecha('modal-detalhe')"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
             </div>
         </div>
         <div class="detail-body">
@@ -772,81 +850,9 @@
                 <span style="font-size:12px;color:var(--fg-subtle);">Clique para curtir esta dica</span>
             </div>
         </div>
-        <div class="modal-foot">
-            <button class="btn-cancel" onclick="fecha('modal-detalhe')">Fechar</button>
-            <button class="btn-ghost" id="d-editar" style="flex:1;justify-content:center;padding:11px;border-radius:12px;">
-                <i data-lucide="pencil" style="width:14px;height:14px;"></i> Editar
-            </button>
-            <button class="btn-danger" id="d-excluir" style="flex:0.6;padding:11px;border-radius:12px;">
-                <i data-lucide="trash-2" style="width:14px;height:14px;"></i>
-            </button>
-        </div>
     </div>
 </div>
 
-<!-- MODAL CRUD -->
-<div class="overlay" id="modal-crud" onclick="fechaOverlay(event,'modal-crud')">
-    <div class="modal-box">
-        <form id="form" onsubmit="salvar(event)">
-            <div class="modal-head">
-                <div>
-                    <h3 id="crud-titulo" style="font-size:17px;font-weight:700;">Nova Dica</h3>
-                    <p style="font-size:12px;color:var(--fg-muted);margin-top:4px;">Preencha todos os campos obrigatorios.</p>
-                </div>
-                <button type="button" class="x-btn" onclick="fecha('modal-crud')">
-                    <i data-lucide="x" style="width:18px;height:18px;"></i>
-                </button>
-            </div>
-            <input type="hidden" id="f-id">
-            <div class="modal-body">
-                <div>
-                    <label>Titulo *</label>
-                    <input class="field" id="f-titulo" type="text" required maxlength="200" placeholder="Ex: Como diversificar em renda fixa">
-                </div>
-                <div>
-                    <label>Descricao *</label>
-                    <textarea class="field" id="f-desc" required rows="4" maxlength="2000" placeholder="Descreva a dica com detalhes e estrategias..."></textarea>
-                </div>
-                <div class="grid-2">
-                    <div>
-                        <label>Categoria *</label>
-                        <select class="field" id="f-cat" required>
-                            <option value="">Selecionar...</option>
-                            <option value="Renda Fixa">Renda Fixa</option>
-                            <option value="Acoes">Acoes</option>
-                            <option value="FIIs">FIIs</option>
-                            <option value="Previdencia">Previdencia</option>
-                            <option value="Criptomoedas">Criptomoedas</option>
-                            <option value="Exterior">Exterior</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Risco *</label>
-                        <select class="field" id="f-risco" required>
-                            <option value="">Selecionar...</option>
-                            <option value="Baixo">Baixo</option>
-                            <option value="Medio">Medio</option>
-                            <option value="Alto">Alto</option>
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <label>Autor *</label>
-                    <input class="field" id="f-autor" type="text" required maxlength="100" placeholder="Seu nome">
-                </div>
-            </div>
-            <div class="modal-foot">
-                <button type="button" class="btn-cancel" onclick="fecha('modal-crud')">Cancelar</button>
-                <button type="submit" class="btn-save" id="btn-salvar">
-                    <i data-lucide="save" style="width:14px;height:14px;"></i>
-                    <span id="btn-txt">Salvar</span>
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- MODAL DELETE -->
 <div class="overlay" id="modal-del">
     <div class="modal-box" style="max-width:360px;">
         <div style="padding:32px 24px;text-align:center;">
@@ -854,7 +860,7 @@
                 <i data-lucide="trash-2" style="width:22px;height:22px;color:#f87171;"></i>
             </div>
             <h3 style="font-size:17px;font-weight:700;margin-bottom:7px;">Excluir esta dica?</h3>
-            <p style="font-size:13px;color:var(--fg-muted);line-height:1.6;margin-bottom:24px;">Essa acao e permanente e nao pode ser desfeita.</p>
+            <p style="font-size:13px;color:var(--fg-muted);line-height:1.6;margin-bottom:24px;">Essa ação é permanente e não pode ser desfeita.</p>
             <div style="display:flex;gap:10px;">
                 <button class="btn-cancel" onclick="fecha('modal-del')">Cancelar</button>
                 <button class="btn-danger" id="btn-del" onclick="confirmarDel()">Excluir</button>
@@ -863,7 +869,6 @@
     </div>
 </div>
 
-<!-- TOAST -->
 <div id="toast">
     <div class="toast-inner" id="toast-inner">
         <i id="toast-ico" style="width:16px;height:16px;"></i>
@@ -871,33 +876,33 @@
     </div>
 </div>
 
-<!-- SCROLL TOP -->
 <button id="btn-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Voltar ao topo">
     <i data-lucide="arrow-up" style="width:16px;height:16px;"></i>
 </button>
 
 <script>
 const API = 'http://localhost:8080';
-let dados = [], catAtiva = '', ordem = 'recente', idDel = null, debT = null;
+let dadosGlobais = [], catAtiva = '', ordem = 'recente', idDel = null, debT = null;
+let fCats = [], fRisks = [];
 let chart = null;
 
-const ICONS = {'Renda Fixa':'&#x1F4CA;','Acoes':'&#x1F4C8;','FIIs':'&#x1F3E2;','Previdencia':'&#x1F6E1;&#xFE0F;','Criptomoedas':'&#x20BF;','Exterior':'&#x1F30E;'};
+const ICONS = {'Renda Fixa':'&#x1F4CA;','Ações':'&#x1F4C8;','FIIs':'&#x1F3E2;','Previdência':'&#x1F6E1;&#xFE0F;','Criptomoedas':'&#x20BF;','Exterior':'&#x1F30E;'};
 const CAT_DESC = {
-    'Renda Fixa':   'CDBs, LCIs, LCAs, Tesouro Direto. Menor risco, retorno previsivel.',
-    'Acoes':        'Renda variavel com potencial de valorizacao acima da inflacao.',
-    'FIIs':         'Fundos Imobiliarios para renda passiva mensal com isencao de IR.',
-    'Previdencia':  'PGBL e VGBL para planejamento de longo prazo e beneficio fiscal.',
-    'Criptomoedas': 'Bitcoin, Ethereum e altcoins para diversificacao de alto risco.',
-    'Exterior':     'ETFs, REITs e acoes internacionais para diversificacao global.',
+    'Renda Fixa':   'CDBs, LCIs, LCAs, Tesouro Direto. Menor risco, retorno previsível.',
+    'Ações':        'Renda variável com potencial de valorização acima da inflação.',
+    'FIIs':         'Fundos Imobiliários para renda passiva mensal com isenção de IR.',
+    'Previdência':  'PGBL e VGBL para planejamento de longo prazo e benefício fiscal.',
+    'Criptomoedas': 'Bitcoin, Ethereum e altcoins para diversificação de alto risco.',
+    'Exterior':     'ETFs, REITs e ações internacionais para diversificação global.',
 };
-const badgeCls = r => ({'Baixo':'badge-baixo','Medio':'badge-medio','Alto':'badge-alto'}[r]||'badge-medio');
+const badgeCls = r => ({'Baixo':'badge-baixo','Médio':'badge-medio','Alto':'badge-alto'}[r]||'badge-medio');
 const esc = s => { const d=document.createElement('div'); d.appendChild(document.createTextNode(String(s))); return d.innerHTML; };
 
 // ════════════════ SISTEMA DE ABAS ════════════════
-const TABS = ['inicio','explorar','simulador','glossario'];
+const TABS = ['inicio','explorar','admin','simulador','glossario'];
 let currentTab = 'inicio';
 
-function irParaAba(tab, filtro) {
+function irParaAba(tab, filterCatParam = '') {
     currentTab = tab;
     TABS.forEach(t => {
         const btn   = document.getElementById('tab-' + t);
@@ -907,14 +912,17 @@ function irParaAba(tab, filtro) {
     });
     window.location.hash = tab;
     window.scrollTo({top:0, behavior:'smooth'});
-    if (tab === 'explorar' && filtro) {
-        catAtiva = filtro;
-        carregarDicas();
+    
+    if (tab === 'explorar' && filterCatParam) {
+        // Marca o checkbox lateral via JS e roda os filtros
+        document.querySelectorAll('#filter-cats input').forEach(chk => {
+            chk.checked = chk.value === filterCatParam;
+        });
+        aplicarFiltros();
     }
     lucide.createIcons();
 }
 
-// Inicializar aba pelo hash da URL
 const hashTab = window.location.hash.replace('#','');
 if (TABS.includes(hashTab)) irParaAba(hashTab);
 else irParaAba('inicio');
@@ -927,22 +935,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const btn = document.getElementById('btn-top');
         window.scrollY > 300 ? btn.classList.add('show') : btn.classList.remove('show');
     });
-    document.addEventListener('mousemove', e => {
-        document.querySelectorAll('.cat-card').forEach(card => {
-            const r = card.getBoundingClientRect();
-            card.style.setProperty('--mx', ((e.clientX-r.left)/r.width*100)+'%');
-            card.style.setProperty('--my', ((e.clientY-r.top)/r.height*100)+'%');
-        });
+    
+    // Live preview event listeners
+    document.querySelectorAll('#form input, #form select, #form textarea').forEach(el => {
+        el.addEventListener('input', atualizarPreview);
     });
 });
 
 async function init() {
-    await Promise.all([carregarDicas(), carregarStats()]);
+    await Promise.all([carregarDicasAPI(), carregarStats()]);
     healthCheck();
     setInterval(healthCheck, 30000);
 }
 
-// API Health
+// ════════════════ HEALTH CHECK ════════════════
 async function healthCheck() {
     const hBadge = document.getElementById('health-badge');
     const txt    = document.getElementById('health-txt');
@@ -970,31 +976,67 @@ async function healthCheck() {
     }
 }
 
-// API Dicas
-async function carregarDicas() {
+// ════════════════ BUSCA CENTRALIZADA DE DADOS ════════════════
+async function carregarDicasAPI() {
     mostrarLoading(true);
-    document.getElementById('tips-grid').innerHTML = '';
-    document.getElementById('vazio').style.display = 'none';
-    const busca = document.getElementById('input-busca').value.trim();
-    let url = API + '/dicas';
-    const p = new URLSearchParams();
-    if (catAtiva) p.append('categoria', catAtiva);
-    if (busca)    p.append('busca', busca);
-    if (p.toString()) url += '?' + p;
     try {
-        const r = await fetch(url);
-        dados = await r.json();
+        const r = await fetch(API + '/dicas');
+        dadosGlobais = await r.json();
         mostrarLoading(false);
-        renderDicas(ordenar(dados));
-        const t = dados.length;
+        
+        const t = dadosGlobais.length;
         document.getElementById('header-total').textContent = t + ' dica' + (t!==1?'s':'');
-        document.getElementById('resultado-contagem').textContent = t > 0 ? t + ' resultado' + (t!==1?'s':'') : '';
         animN('stat-dicas', t);
+
+        // Aplica o fluxo de renderização
+        aplicarFiltros();
     } catch {
         mostrarLoading(false);
         toast('Erro ao conectar com a API', 'err');
         document.getElementById('vazio').style.display = 'block';
     }
+}
+
+// ════════════════ LÓGICA DE FILTROS FRONTEND ════════════════
+function aplicarFiltros() {
+    fCats = Array.from(document.querySelectorAll('#filter-cats input:checked')).map(i => i.value);
+    fRisks = Array.from(document.querySelectorAll('#filter-risks input:checked')).map(i => i.value);
+    
+    let filtrados = dadosGlobais;
+
+    if (fCats.length > 0) {
+        filtrados = filtrados.filter(d => fCats.includes(d.categoria));
+    }
+    if (fRisks.length > 0) {
+        filtrados = filtrados.filter(d => fRisks.includes(d.risco));
+    }
+    
+    const busca = document.getElementById('input-busca').value.toLowerCase().trim();
+    if (busca) {
+        filtrados = filtrados.filter(d => d.titulo.toLowerCase().includes(busca) || d.descricao.toLowerCase().includes(busca));
+    }
+
+    filtrados = ordenar(filtrados);
+    renderDicas(filtrados);
+    renderAdminTable(filtrados);
+
+    const t = filtrados.length;
+    document.getElementById('resultado-contagem').textContent = t > 0 ? t + ' resultado' + (t!==1?'s':'') : 'Nenhum resultado';
+}
+
+function debounceFiltro() { clearTimeout(debT); debT = setTimeout(aplicarFiltros, 300); }
+
+function limparFiltros() { 
+    document.getElementById('input-busca').value = ''; 
+    document.querySelectorAll('.sidebar-filters input[type="checkbox"]').forEach(c => c.checked = false);
+    aplicarFiltros(); 
+}
+
+function setOrdem(o) {
+    ordem = o;
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('sort-'+o).classList.add('active');
+    aplicarFiltros();
 }
 
 function ordenar(d) {
@@ -1005,47 +1047,72 @@ function ordenar(d) {
     return a;
 }
 
-function setOrdem(o) {
-    ordem = o;
-    document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
-    document.getElementById('sort-'+o).classList.add('active');
-    renderDicas(ordenar(dados));
-}
-
+// ════════════════ RENDERIZADORES ════════════════
 function renderDicas(list) {
     const c = document.getElementById('tips-grid');
-    if (!list.length) { document.getElementById('vazio').style.display='block'; return; }
+    if (!list.length) { 
+        c.innerHTML = '';
+        document.getElementById('vazio').style.display='block'; 
+        return; 
+    }
+    document.getElementById('vazio').style.display='none';
+    
+    // Cards Limpos na aba "Explorar"
     c.innerHTML = list.map(d => {
         const data = new Date(d.criacao).toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
-        const prev = d.descricao.length>100 ? d.descricao.slice(0,100)+'...' : d.descricao;
+        const prev = d.descricao.length > 100 ? d.descricao.slice(0,100)+'...' : d.descricao;
         const voted = localStorage.getItem('voto_'+d.id) === 'true';
-        return '<div class="tip-card fade-up" onclick="verDica('+d.id+')">'
-            +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">'
-            +'<div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">'
-            +'<span class="cat-tag">'+esc(d.categoria)+'</span>'
-            +'<span class="'+badgeCls(d.risco)+'">'+d.risco+'</span>'
-            +'</div>'
-            +'<div class="tip-actions" onclick="event.stopPropagation()">'
-            +'<button class="icon-btn" onclick="editarDica('+d.id+')" title="Editar"><i data-lucide="pencil" style="width:13px;height:13px;"></i></button>'
-            +'<button class="icon-btn del" onclick="abrirDel('+d.id+')" title="Excluir"><i data-lucide="trash-2" style="width:13px;height:13px;"></i></button>'
-            +'</div></div>'
-            +'<div style="flex:1;">'
-            +'<h3 style="font-size:14px;font-weight:700;letter-spacing:-0.015em;color:var(--fg);margin-bottom:6px;line-height:1.4;">'+esc(d.titulo)+'</h3>'
-            +'<p style="font-size:12px;color:var(--fg-muted);line-height:1.65;">'+esc(prev)+'</p>'
-            +'</div>'
-            +'<div style="display:flex;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border);">'
-            +'<button class="vote-btn '+(voted?'voted':'')+'" onclick="event.stopPropagation(); toggleVoto('+d.id+', this)">'
-            +'<i data-lucide="heart" style="width:11px;height:11px;"></i> <span class="vc">'+(d.votos||0)+'</span>'
-            +'</button>'
-            +'<div style="display:flex;gap:12px;">'
-            +'<span style="font-size:11px;color:var(--fg-subtle);display:flex;align-items:center;gap:5px;"><i data-lucide="user" style="width:11px;height:11px;"></i>'+esc(d.autor)+'</span>'
-            +'<span style="font-size:11px;color:var(--fg-subtle);display:flex;align-items:center;gap:5px;"><i data-lucide="calendar" style="width:11px;height:11px;"></i>'+data+'</span>'
-            +'</div></div></div>';
+        return `<div class="tip-card fade-up" onclick="verDica(${d.id})">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+                <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+                    <span class="cat-tag">${esc(d.categoria)}</span>
+                    <span class="${badgeCls(d.risco)}">${d.risco}</span>
+                </div>
+            </div>
+            <div style="flex:1;">
+                <h3 style="font-size:14px;font-weight:700;letter-spacing:-0.015em;color:var(--fg);margin-bottom:6px;line-height:1.4;">${esc(d.titulo)}</h3>
+                <p style="font-size:12px;color:var(--fg-muted);line-height:1.65;">${esc(prev)}</p>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border);">
+                <button class="vote-btn ${voted?'voted':''}" onclick="event.stopPropagation(); toggleVoto(${d.id}, this)">
+                    <i data-lucide="heart" style="width:11px;height:11px;"></i> <span class="vc">${d.votos||0}</span>
+                </button>
+                <div style="display:flex;gap:12px;">
+                    <span style="font-size:11px;color:var(--fg-subtle);display:flex;align-items:center;gap:5px;"><i data-lucide="user" style="width:11px;height:11px;"></i>${esc(d.autor)}</span>
+                    <span style="font-size:11px;color:var(--fg-subtle);display:flex;align-items:center;gap:5px;"><i data-lucide="calendar" style="width:11px;height:11px;"></i>${data}</span>
+                </div>
+            </div>
+        </div>`;
     }).join('');
     lucide.createIcons();
 }
 
-// Stats + categorias
+function renderAdminTable(list) {
+    const tb = document.getElementById('admin-table-body');
+    if (!list.length) {
+        tb.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--fg-muted);">Nenhuma dica encontrada.</td></tr>';
+        return;
+    }
+    tb.innerHTML = list.map(d => {
+        const data = new Date(d.criacao).toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
+        return `<tr class="fade-up">
+            <td style="font-weight:600;">${esc(d.titulo)}</td>
+            <td><span class="cat-tag">${esc(d.categoria)}</span></td>
+            <td><span class="${badgeCls(d.risco)}">${d.risco}</span></td>
+            <td>${esc(d.autor)}</td>
+            <td style="color:var(--fg-muted);">${data}</td>
+            <td>
+                <div class="action-btns" style="justify-content:flex-end;">
+                    <button class="icon-btn" onclick="editarDica(${d.id})" title="Editar"><i data-lucide="pencil" style="width:14px;height:14px;"></i></button>
+                    <button class="icon-btn del" onclick="abrirDel(${d.id})" title="Excluir"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button>
+                </div>
+            </td>
+        </tr>`;
+    }).join('');
+    lucide.createIcons();
+}
+
+// ════════════════ ESTATÍSTICAS E LIVE FEED ════════════════
 async function carregarStats() {
     try {
         const r = await fetch(API + '/dicas/estatisticas');
@@ -1059,14 +1126,14 @@ async function carregarStats() {
 function renderCatGrid(stats) {
     const counts = {};
     stats.forEach(s => counts[s.categoria] = s.quantidade);
-    const cats = ['Renda Fixa','Acoes','FIIs','Previdencia','Criptomoedas','Exterior'];
+    const cats = ['Renda Fixa','Ações','FIIs','Previdência','Criptomoedas','Exterior'];
     const html = cats.map(cat =>
-        '<div class="cat-card" onclick="filtrarCat(\''+cat+'\')">'+
-        '<div class="cat-count">'+(counts[cat]||0)+'</div>'+
-        '<div class="cat-icon-wrap">'+cat.slice(0,2)+'</div>'+
-        '<h3>'+cat+'</h3>'+
-        '<p>'+(CAT_DESC[cat]||'')+'</p>'+
-        '</div>'
+        `<div class="cat-card" onclick="irParaAba('explorar', '${cat}')">
+            <div class="cat-count">${(counts[cat]||0)}</div>
+            <div class="cat-icon-wrap">${ICONS[cat]||'💡'}</div>
+            <h3>${cat}</h3>
+            <p>${(CAT_DESC[cat]||'')}</p>
+        </div>`
     ).join('');
     const gridInicio = document.getElementById('cat-grid-inicio');
     if (gridInicio) gridInicio.innerHTML = html;
@@ -1078,24 +1145,70 @@ async function renderLiveFeed() {
         const all = await r.json();
         const latest = [...all].sort((a,b)=>new Date(b.criacao)-new Date(a.criacao)).slice(0,4);
         document.getElementById('live-feed').innerHTML = latest.map(d =>
-            '<div class="live-row" onclick="verDica('+d.id+')" style="cursor:pointer;">'
-            +'<div style="flex:1;min-width:0;">'
-            +'<div style="font-size:13px;font-weight:600;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+esc(d.titulo)+'</div>'
-            +'<div style="font-size:11px;color:var(--fg-subtle);margin-top:2px;">'+d.categoria+'</div>'
-            +'</div>'
-            +'<span class="'+badgeCls(d.risco)+'" style="flex-shrink:0;">'+d.risco+'</span>'
-            +'</div>'
+            `<div class="live-row" onclick="verDica(${d.id})" style="cursor:pointer;">
+                <div style="flex:1;min-width:0;">
+                    <div style="font-size:13px;font-weight:600;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(d.titulo)}</div>
+                    <div style="font-size:11px;color:var(--fg-subtle);margin-top:2px;">${d.categoria}</div>
+                </div>
+                <span class="${badgeCls(d.risco)}" style="flex-shrink:0;">${d.risco}</span>
+            </div>`
         ).join('');
         lucide.createIcons();
     } catch {}
 }
 
-function filtrarCat(cat) {
-    catAtiva = catAtiva === cat ? '' : cat;
-    irParaAba('explorar', catAtiva || cat);
+// ════════════════ MODAIS E DRAWERS ════════════════
+function abrirDrawer() {
+    document.getElementById('form').reset();
+    document.getElementById('f-id').value = '';
+    document.getElementById('crud-titulo').textContent = 'Nova Dica';
+    document.getElementById('btn-txt').textContent = 'Salvar';
+    document.getElementById('drawer-overlay').classList.add('open');
+    document.getElementById('drawer').classList.add('open');
+    atualizarPreview();
 }
 
-// Modal detalhes
+function fecharDrawer() {
+    document.getElementById('drawer-overlay').classList.remove('open');
+    document.getElementById('drawer').classList.remove('open');
+}
+
+function fechaDrawerOverlay(e) {
+    if (e.target.id === 'drawer-overlay') fecharDrawer();
+}
+
+function atualizarPreview() {
+    const titulo = document.getElementById('f-titulo').value || 'Título da sua Dica';
+    const desc = document.getElementById('f-desc').value || 'A descrição detalhada da sua estratégia aparecerá aqui...';
+    const cat = document.getElementById('f-cat').value || 'Categoria';
+    const risco = document.getElementById('f-risco').value || 'Risco';
+    const autor = document.getElementById('f-autor').value || 'Seu Nome';
+    const prevText = desc.length > 100 ? desc.slice(0,100)+'...' : desc;
+
+    document.getElementById('preview-container').innerHTML = `
+        <div class="tip-card" style="pointer-events:none; margin:0;">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+                <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+                    <span class="cat-tag">${esc(cat)}</span>
+                    <span class="${badgeCls(risco)}">${risco}</span>
+                </div>
+            </div>
+            <div style="flex:1;">
+                <h3 style="font-size:14px;font-weight:700;letter-spacing:-0.015em;color:var(--fg);margin-bottom:6px;line-height:1.4;">${esc(titulo)}</h3>
+                <p style="font-size:12px;color:var(--fg-muted);line-height:1.65;">${esc(prevText)}</p>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border);">
+                <button class="vote-btn" tabindex="-1"><i data-lucide="heart" style="width:11px;height:11px;"></i> <span class="vc">0</span></button>
+                <div style="display:flex;gap:12px;">
+                    <span style="font-size:11px;color:var(--fg-subtle);display:flex;align-items:center;gap:5px;"><i data-lucide="user" style="width:11px;height:11px;"></i>${esc(autor)}</span>
+                    <span style="font-size:11px;color:var(--fg-subtle);display:flex;align-items:center;gap:5px;"><i data-lucide="calendar" style="width:11px;height:11px;"></i>Hoje</span>
+                </div>
+            </div>
+        </div>
+    `;
+    lucide.createIcons();
+}
+
 async function verDica(id) {
     try {
         const r = await fetch(API + '/dicas/' + id);
@@ -1105,9 +1218,7 @@ async function verDica(id) {
         document.getElementById('d-autor').textContent  = d.autor;
         document.getElementById('d-data').textContent   = new Date(d.criacao).toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
         document.getElementById('d-badges').innerHTML   = '<span class="cat-tag">'+esc(d.categoria)+'</span><span class="'+badgeCls(d.risco)+'">'+d.risco+'</span>';
-        document.getElementById('d-editar').onclick  = ()=>{ fecha('modal-detalhe'); editarDica(id); };
-        document.getElementById('d-excluir').onclick = ()=>{ fecha('modal-detalhe'); abrirDel(id); };
-
+        
         const btnVoto = document.getElementById('d-voto-btn');
         const count   = document.getElementById('d-votos');
         count.textContent = d.votos || 0;
@@ -1159,12 +1270,12 @@ async function votarModal(id, countEl, btn) {
             countEl.textContent = v+1;
             btn.style.background = 'var(--accent-dim)'; btn.style.borderColor = 'rgba(34,197,94,0.5)'; btn.style.color = 'var(--accent)';
         }
-        carregarDicas();
+        carregarDicasAPI();
     } catch { toast('Erro ao computar voto','err'); }
     finally { btn.disabled = false; }
 }
 
-// CRUD
+// ════════════════ CRUD: SALVAR, EDITAR, DELETAR ════════════════
 async function salvar(e) {
     e.preventDefault();
     const id = document.getElementById('f-id').value;
@@ -1184,9 +1295,9 @@ async function salvar(e) {
             body: JSON.stringify(payload)
         });
         if (!res.ok) throw new Error();
-        fecha('modal-crud');
+        fecharDrawer();
         toast(id ? 'Dica atualizada!' : 'Dica criada!', 'ok');
-        carregarDicas(); carregarStats();
+        carregarDicasAPI(); carregarStats();
     } catch { toast('Erro ao salvar','err'); }
     finally { btn.disabled = false; document.getElementById('btn-txt').textContent = 'Salvar'; }
 }
@@ -1201,9 +1312,13 @@ async function editarDica(id) {
         document.getElementById('f-cat').value    = d.categoria;
         document.getElementById('f-risco').value  = d.risco;
         document.getElementById('f-autor').value  = d.autor;
+        
         document.getElementById('crud-titulo').textContent = 'Editar Dica';
         document.getElementById('btn-txt').textContent = 'Atualizar';
-        abre('modal-crud');
+        
+        document.getElementById('drawer-overlay').classList.add('open');
+        document.getElementById('drawer').classList.add('open');
+        atualizarPreview();
     } catch { toast('Erro ao carregar','err'); }
 }
 
@@ -1214,27 +1329,16 @@ async function confirmarDel() {
     btn.disabled = true; btn.textContent = 'Excluindo...';
     try {
         await fetch(API+'/dicas/'+idDel, {method:'DELETE'});
-        fecha('modal-del'); toast('Dica excluida!','ok');
-        carregarDicas(); carregarStats();
+        fecha('modal-del'); toast('Dica excluída!','ok');
+        carregarDicasAPI(); carregarStats();
     } catch { toast('Erro ao excluir','err'); }
     finally { btn.disabled = false; btn.textContent = 'Excluir'; idDel = null; }
 }
 
-function abrirModal() {
-    document.getElementById('form').reset();
-    document.getElementById('f-id').value = '';
-    document.getElementById('crud-titulo').textContent = 'Nova Dica';
-    document.getElementById('btn-txt').textContent = 'Salvar';
-    abre('modal-crud');
-    setTimeout(()=>document.getElementById('f-titulo').focus(), 100);
-}
-
-// Helpers
+// Helpers Comuns
 function abre(id) { document.getElementById(id).style.display='flex'; }
 function fecha(id) { document.getElementById(id).style.display='none'; }
 function fechaOverlay(e,id) { if(e.target===e.currentTarget) fecha(id); }
-function limpar() { document.getElementById('input-busca').value=''; catAtiva=''; document.querySelectorAll('.cat-card').forEach(c=>c.classList.remove('active-cat')); carregarDicas(); }
-function debounce() { clearTimeout(debT); debT=setTimeout(carregarDicas,400); }
 function mostrarLoading(s) { document.getElementById('loading').style.display=s?'grid':'none'; }
 
 function toggleGloss(el) { el.classList.toggle('open'); }
@@ -1257,7 +1361,7 @@ function animN(id, n) {
 }
 
 document.addEventListener('keydown', e=>{
-    if(e.key==='Escape'){ ['modal-detalhe','modal-crud','modal-del'].forEach(fecha); }
+    if(e.key==='Escape'){ ['modal-detalhe','modal-del'].forEach(fecha); fecharDrawer(); }
 });
 
 // ════════════════ SIMULADOR ════════════════
@@ -1289,7 +1393,7 @@ function selectIdx(btn, idx) {
         input.value = 6; input.min = 0.5; input.max = 20; input.step = 0.5;
     } else {
         label.textContent = 'Taxa anual (% a.a.)';
-        hint.innerHTML    = 'Taxa pre-fixada anual. <strong style="color:var(--fg-muted);">Ex: 14.5 = 14,5% ao ano</strong>';
+        hint.innerHTML    = 'Taxa pré-fixada anual. <strong style="color:var(--fg-muted);">Ex: 14.5 = 14,5% ao ano</strong>';
         presets.innerHTML = '<button class="preset-btn" onclick="setTaxa(10)">10%</button><button class="preset-btn" onclick="setTaxa(12)">12%</button><button class="preset-btn" onclick="setTaxa(14)">14%</button><button class="preset-btn" onclick="setTaxa(16)">16%</button><button class="preset-btn" onclick="setTaxa(18)">18%</button>';
         input.value = 14; input.min = 1; input.max = 50; input.step = 0.5;
     }
@@ -1327,8 +1431,8 @@ async function simular() {
     const vi     = parseFloat(document.getElementById('sim-valor').value);
     const taxaAa = parseFloat(document.getElementById('sim-taxa').value);
 
-    if (!vi || vi <= 0)     { toast('Informe um valor inicial valido', 'err'); return; }
-    if (!taxaAa || taxaAa <= 0) { toast('Informe uma taxa anual valida', 'err'); return; }
+    if (!vi || vi <= 0)     { toast('Informe um valor inicial válido', 'err'); return; }
+    if (!taxaAa || taxaAa <= 0) { toast('Informe uma taxa anual válida', 'err'); return; }
 
     const btn = document.getElementById('btn-sim-txt');
     btn.textContent = 'Calculando...';
@@ -1367,7 +1471,7 @@ function renderSimResult(data, vi) {
     const evolucao = data.evolucaoMensal || [];
     const labels   = evolucao.map(e => 'M'+e.mes);
     const valores  = evolucao.map(e => e.valor);
-    labels.unshift('Inicio');
+    labels.unshift('Início');
     valores.unshift(vi);
 
     const ctx = document.getElementById('sim-chart').getContext('2d');
@@ -1435,7 +1539,7 @@ function renderSimResult(data, vi) {
 }
 
 function exportarSimulacao(vi, nome, vf) {
-    const texto = 'Simulacao InvestHub\n\nInvestindo R$ '+vi.toLocaleString('pt-BR')+' em '+nome+' por '+simPeriodo+' ano(s), o retorno projetado e de R$ '+vf.toLocaleString('pt-BR',{minimumFractionDigits:2})+'.\n\nSimule voce tambem no InvestHub!';
+    const texto = 'Simulação InvestHub\n\nInvestindo R$ '+vi.toLocaleString('pt-BR')+' em '+nome+' por '+simPeriodo+' ano(s), o retorno projetado é de R$ '+vf.toLocaleString('pt-BR',{minimumFractionDigits:2})+'.\n\nSimule você também no InvestHub!';
     navigator.clipboard.writeText(texto).then(()=>toast('Resultado copiado!','ok')).catch(()=>toast('Erro ao copiar','err'));
 }
 </script>
