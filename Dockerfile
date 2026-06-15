@@ -34,6 +34,10 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
+# Configura o locale para UTF-8 para evitar erro ao dar print de acentos (ex: "Conexão") no console
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
 # Copia binário do stage anterior
 COPY --from=builder /app/servidor ./servidor
 
