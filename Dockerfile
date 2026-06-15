@@ -1,12 +1,10 @@
 # Usando imagem oficial do Haskell com GHC 9.4 (LTS estável)
-FROM haskell:9.4.7-slim AS builder
+FROM haskell:9.4-slim-bookworm AS builder
 
 WORKDIR /app
 
-# Corrige os repositórios do Debian Buster (que foram arquivados) e instala a libpq-dev
-RUN echo "deb http://archive.debian.org/debian/ buster main" > /etc/apt/sources.list && \
-    echo "deb http://archive.debian.org/debian-security buster/updates main" >> /etc/apt/sources.list && \
-    apt-get update && apt-get install -y libpq-dev && rm -rf /var/lib/apt/lists/*
+# Instala a biblioteca do PostgreSQL (Bookworm já vem com PostgreSQL 15, compatível com a lib)
+RUN apt-get update && apt-get install -y libpq-dev && rm -rf /var/lib/apt/lists/*
 
 # Copia os arquivos de projeto primeiro (para aproveitar cache do Docker)
 COPY dicas-investimento.cabal cabal.project ./
