@@ -1,5 +1,5 @@
 # Usando imagem oficial do Haskell com GHC 9.4 (LTS estável)
-FROM haskell:9.4-slim-bookworm AS builder
+FROM haskell:9.4-slim AS builder
 
 WORKDIR /app
 
