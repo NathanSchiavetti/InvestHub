@@ -3,6 +3,9 @@ FROM haskell:9.4.7-slim AS builder
 
 WORKDIR /app
 
+# Instala a biblioteca do PostgreSQL (necessária para compilar o pacote postgresql-simple)
+RUN apt-get update && apt-get install -y libpq-dev && rm -rf /var/lib/apt/lists/*
+
 # Copia os arquivos de projeto primeiro (para aproveitar cache do Docker)
 COPY dicas-investimento.cabal cabal.project ./
 
