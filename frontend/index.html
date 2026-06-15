@@ -57,12 +57,16 @@
         }
         @keyframes aurora1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(40px,60px) scale(1.1)} }
         @keyframes aurora2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-30px,40px) scale(0.95)} }
-
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
         /* Header */
         header {
             position:sticky; top:0; z-index:50;
-            background: rgba(10,11,15,0.82); backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
+            background: rgba(10,11,15,0.98);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
         .header-inner { max-width:1200px; margin:0 auto; padding:0 24px; display:flex; align-items:center; justify-content:space-between; height:58px; gap:16px; }
 
@@ -86,11 +90,14 @@
         /* Buttons */
         .btn-accent {
             display:inline-flex; align-items:center; gap:6px;
-            background:var(--accent); color:#fff; font-weight:600; font-size:13px;
+            background:linear-gradient(135deg, #10b981 0%, #22c55e 100%); color:#000; font-weight:700; font-size:13px;
             padding:9px 18px; border-radius:999px; border:none; cursor:pointer;
-            transition: all 0.2s; text-decoration:none;
+            transition: all 0.3s; text-decoration:none; position:relative; overflow:hidden;
+            box-shadow: 0 4px 15px rgba(34,197,94,0.25);
         }
-        .btn-accent:hover { filter:brightness(1.08); transform:translateY(-1px); box-shadow:0 8px 24px rgba(34,197,94,0.3); }
+        .btn-accent::after { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent); transition:all 0.4s; }
+        .btn-accent:hover::after { left:100%; }
+        .btn-accent:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(34,197,94,0.4); }
         .btn-ghost {
             display:inline-flex; align-items:center; gap:6px;
             background:rgba(255,255,255,0.06); color:var(--fg); font-weight:500; font-size:13px;
@@ -108,7 +115,7 @@
         .hero-sub { font-size:17px; color:var(--fg-muted); line-height:1.65; max-width:480px; }
 
         /* Live card */
-        .live-card { background:rgba(17,19,24,0.9); border:1px solid var(--border-strong); border-radius:22px; padding:22px; backdrop-filter:blur(16px); box-shadow:0 32px 80px rgba(0,0,0,0.5); position:relative; overflow:hidden; }
+        .live-card { background:rgba(17,19,24,0.98); border:1px solid var(--border-strong); border-radius:22px; padding:22px; box-shadow:0 12px 40px rgba(0,0,0,0.5); position:relative; overflow:hidden; }
         .live-card::before { content:''; position:absolute; top:-2px; left:50%; transform:translateX(-50%); width:60%; height:2px; background:linear-gradient(90deg,transparent,var(--accent),transparent); }
         .live-dot { width:7px; height:7px; border-radius:50%; background:var(--accent); position:relative; display:inline-block; }
         .live-dot::after { content:''; position:absolute; inset:-3px; border-radius:50%; background:var(--accent); opacity:0.4; animation:ping 1.5s ease-out infinite; }
@@ -166,12 +173,17 @@
         .admin-table { width:100%; border-collapse:collapse; text-align:left; min-width:800px; }
         .admin-table th { padding:16px 20px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--fg-subtle); border-bottom:1px solid var(--border); background:rgba(255,255,255,0.02); }
         .admin-table td { padding:14px 20px; font-size:13px; color:var(--fg); border-bottom:1px solid var(--border); }
+        .admin-table tbody tr { transition: background 0.2s ease; }
+        .admin-table tbody tr td:first-child { transition: padding-left 0.25s ease; border-left: 2px solid transparent; }
         .admin-table tr:last-child td { border-bottom:none; }
-        .admin-table tr:hover td { background:rgba(255,255,255,0.02); }
+        .admin-table tbody tr:hover td { background:rgba(255,255,255,0.03); }
+        .admin-table tbody tr:hover td:first-child { padding-left:26px; border-left-color:var(--accent); }
         .action-btns { display:flex; gap:6px; }
-        .icon-btn { width:28px; height:28px; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--fg-subtle); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
-        .icon-btn:hover { color:var(--accent); border-color:rgba(34,197,94,0.35); background:var(--accent-dim); }
-        .icon-btn.del:hover { color:#f87171; border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.08); }
+        .icon-btn { width:28px; height:28px; border-radius:8px; border:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
+        .icon-btn.edit { color:#3b82f6; border-color:rgba(59,130,246,0.25); background:rgba(59,130,246,0.05); }
+        .icon-btn.edit:hover { background:rgba(59,130,246,0.15); border-color:rgba(59,130,246,0.5); }
+        .icon-btn.del { color:#f87171; border-color:rgba(239,68,68,0.25); background:rgba(239,68,68,0.05); }
+        .icon-btn.del:hover { background:rgba(239,68,68,0.15); border-color:rgba(239,68,68,0.5); }
 
         /* Badges */
         .cat-tag { display:inline-flex; align-items:center; font-size:11px; color:var(--fg-muted); background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:999px; padding:2px 10px; }
@@ -180,14 +192,14 @@
         .badge-alto  { font-size:11px; font-weight:600; padding:2px 10px; border-radius:999px; background:rgba(239,68,68,0.1);  color:#f87171; border:1px solid rgba(239,68,68,0.25); }
 
         /* Modals & Drawers */
-        .overlay { position:fixed; inset:0; z-index:60; background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); display:none; align-items:center; justify-content:center; padding:16px; }
+        .overlay { position:fixed; inset:0; z-index:60; background:rgba(0,0,0,0.85); display:none; align-items:center; justify-content:center; padding:16px; }
         .modal-box { background:#0d1020; border:1px solid rgba(255,255,255,0.1); border-radius:20px; width:100%; max-width:520px; overflow:hidden; }
         .modal-head { padding:22px 24px 18px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
         .modal-body { padding:22px 24px; display:flex; flex-direction:column; gap:14px; max-height:60vh; overflow-y:auto; }
         .modal-foot { padding:16px 24px; border-top:1px solid var(--border); display:flex; gap:10px; }
 
         /* ─── DRAWER LATERAL ─── */
-        .drawer-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:100; opacity:0; pointer-events:none; transition:opacity 0.3s; backdrop-filter:blur(4px); }
+        .drawer-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:100; opacity:0; pointer-events:none; transition:opacity 0.3s; }
         .drawer-overlay.open { opacity:1; pointer-events:auto; }
         .drawer { position:fixed; top:0; right:0; width:100%; max-width:460px; height:100%; background:var(--bg-card); border-left:1px solid var(--border); transform:translateX(100%); transition:transform 0.3s ease; display:flex; flex-direction:column; box-shadow:-10px 0 40px rgba(0,0,0,0.5); }
         .drawer.open { transform:translateX(0); }
@@ -214,10 +226,17 @@
 
         /* Detalhe modal */
         .detail-header { padding:24px; border-bottom:1px solid var(--border); }
-        .detail-body { padding:24px; }
+        .detail-body { padding:24px; max-height: 75vh; overflow-y: auto; }
         .meta-box { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:10px; padding:14px; }
         .meta-box dt { font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:var(--fg-subtle); margin-bottom:5px; }
         .meta-box dd { font-size:13px; font-weight:600; color:var(--fg); }
+        
+        /* Comentários */
+        .comentario-balao { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; padding:12px; font-size:13px; display:flex; flex-direction:column; gap:6px; }
+        .comentario-balao .c-header { display:flex; justify-content:space-between; align-items:center; }
+        .comentario-balao .c-autor { font-weight:700; color:var(--fg); font-size:12px; }
+        .comentario-balao .c-data { font-size:10px; color:var(--fg-subtle); }
+        .comentario-balao .c-texto { color:var(--fg-muted); line-height:1.5; }
 
         /* Footer */
         footer { border-top:1px solid var(--border); background:var(--bg-raised); padding:36px 24px; margin-top: 40px; }
@@ -291,7 +310,7 @@
 
 <header>
     <div class="header-inner">
-        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;cursor:pointer;" onclick="irParaAba('inicio')">
             <div style="width:32px;height:32px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;">
                 <i data-lucide="trending-up" style="width:16px;height:16px;color:#fff;"></i>
             </div>
@@ -755,7 +774,7 @@
             <span style="font-size:14px;font-weight:700;letter-spacing:-0.02em;">InvestHub</span>
         </div>
         <p style="font-size:12px;color:var(--fg-subtle);">Feito com Haskell + Servant + PostgreSQL + Chart.js</p>
-        <p style="font-size:12px;color:var(--fg-subtle);">2024 InvestHub - fins educacionais</p>
+        <p style="font-size:12px;color:var(--fg-subtle);">2026 InvestHub - fins educacionais</p>
     </div>
 </footer>
 
@@ -848,6 +867,23 @@
                     <span id="d-votos">0</span> votos
                 </button>
                 <span style="font-size:12px;color:var(--fg-subtle);">Clique para curtir esta dica</span>
+            </div>
+
+            <!-- Seção de Comentários -->
+            <div style="margin-top:24px; padding-top:24px; border-top:1px solid var(--border);">
+                <h4 style="font-size:13px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:6px;">
+                    <i data-lucide="message-square" style="width:14px;height:14px;color:var(--accent);"></i> Comentários
+                </h4>
+                <div id="d-comentarios-list" style="display:flex;flex-direction:column;gap:12px;max-height:220px;overflow-y:auto;margin-bottom:16px;padding-right:8px;">
+                    <!-- Preenchido via JS -->
+                </div>
+                <form id="form-comentario" style="display:flex;flex-direction:column;gap:8px;">
+                    <input class="field" id="c-autor" type="text" placeholder="Seu nome" required maxlength="100" style="font-size:12px;padding:8px 12px;">
+                    <textarea class="field" id="c-texto" placeholder="O que você achou dessa dica?" required maxlength="500" rows="2" style="font-size:12px;padding:8px 12px;min-height:50px;"></textarea>
+                    <button type="submit" class="btn-accent" style="align-self:flex-end;padding:7px 16px;font-size:11px;border-radius:8px;">
+                        Enviar Comentário
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -1103,7 +1139,7 @@ function renderAdminTable(list) {
             <td style="color:var(--fg-muted);">${data}</td>
             <td>
                 <div class="action-btns" style="justify-content:flex-end;">
-                    <button class="icon-btn" onclick="editarDica(${d.id})" title="Editar"><i data-lucide="pencil" style="width:14px;height:14px;"></i></button>
+                    <button class="icon-btn edit" onclick="editarDica(${d.id})" title="Editar"><i data-lucide="pencil" style="width:14px;height:14px;"></i></button>
                     <button class="icon-btn del" onclick="abrirDel(${d.id})" title="Excluir"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button>
                 </div>
             </td>
@@ -1228,6 +1264,9 @@ async function verDica(id) {
         } else {
             btnVoto.style.background = 'rgba(255,255,255,0.04)'; btnVoto.style.borderColor = 'var(--border)'; btnVoto.style.color = 'var(--fg-subtle)';
         }
+        
+        carregarComentarios(id);
+        
         abre('modal-detalhe'); lucide.createIcons();
     } catch {}
 }
@@ -1362,6 +1401,82 @@ function animN(id, n) {
 
 document.addEventListener('keydown', e=>{
     if(e.key==='Escape'){ ['modal-detalhe','modal-del'].forEach(fecha); fecharDrawer(); }
+});
+
+// ════════════════ COMENTÁRIOS ════════════════
+let dicaAtualId = null;
+
+async function carregarComentarios(id) {
+    dicaAtualId = id;
+    const list = document.getElementById('d-comentarios-list');
+    list.innerHTML = '<div class="skeleton" style="height:60px;"></div><div class="skeleton" style="height:60px;opacity:0.6;"></div>';
+    
+    try {
+        const r = await fetch(API + '/dicas/' + id + '/comentarios');
+        const comentarios = await r.json();
+        
+        if (!comentarios.length) {
+            list.innerHTML = '<p style="font-size:12px;color:var(--fg-subtle);text-align:center;padding:12px;">Seja o primeiro a comentar!</p>';
+            return;
+        }
+        
+        list.innerHTML = comentarios.map(c => `
+            <div class="comentario-balao fade-up">
+                <div class="c-header">
+                    <span class="c-autor"><i data-lucide="user" style="width:10px;height:10px;display:inline-block;margin-right:4px;color:var(--accent);"></i>${esc(c.autor)}</span>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <span class="c-data">${new Date(c.dataCriacao).toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})}</span>
+                        <button class="x-btn" style="padding:2px;color:#f87171;opacity:0.6;" onclick="deletarComentario(${id}, ${c.id})" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6" title="Excluir comentário">
+                            <i data-lucide="trash-2" style="width:12px;height:12px;"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="c-texto">${esc(c.texto)}</div>
+            </div>
+        `).join('');
+        lucide.createIcons();
+    } catch {
+        list.innerHTML = '<p style="font-size:12px;color:#f87171;text-align:center;">Erro ao carregar comentários.</p>';
+    }
+}
+
+async function deletarComentario(dicaId, comId) {
+    if (!confirm('Excluir este comentário permanentemente?')) return;
+    try {
+        const res = await fetch(API + '/dicas/' + dicaId + '/comentarios/' + comId, { method: 'DELETE' });
+        if (!res.ok) throw new Error();
+        toast('Comentário excluído!', 'ok');
+        carregarComentarios(dicaId);
+    } catch {
+        toast('Erro ao excluir comentário', 'err');
+    }
+}
+
+document.getElementById('form-comentario').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!dicaAtualId) return;
+    
+    const autor = document.getElementById('c-autor').value;
+    const texto = document.getElementById('c-texto').value;
+    const btn = e.target.querySelector('button');
+    
+    btn.disabled = true; btn.textContent = 'Enviando...';
+    try {
+        const res = await fetch(API + '/dicas/' + dicaAtualId + '/comentarios', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ dica_id: dicaAtualId, autor, texto })
+        });
+        if (!res.ok) throw new Error();
+        
+        document.getElementById('c-texto').value = '';
+        toast('Comentário enviado!', 'ok');
+        carregarComentarios(dicaAtualId);
+    } catch {
+        toast('Erro ao enviar comentário', 'err');
+    } finally {
+        btn.disabled = false; btn.textContent = 'Enviar Comentário';
+    }
 });
 
 // ════════════════ SIMULADOR ════════════════

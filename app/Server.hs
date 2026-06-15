@@ -114,6 +114,39 @@ handleDeletarDica conn dicId = do
             { errBody = "{ \"erro\": \"Dica não encontrada para excluir\" }" }
         else return (MensagemSucesso "Dica excluída com sucesso")
 
+handleListarComentarios :: Connection -> Int -> Handler [Comentario]
+handleListarComentarios conn dicId = do
+    existe <- liftIO $ buscarDicaPorId conn dicId
+    case existe of
+        Nothing -> throwError err404
+            { errBody = "{ \"erro\": \"Dica não encontrada\" }" }
+        Just _  -> liftIO $ listarComentarios conn dicId
+
+handleCriarComentario :: Connection -> Int -> NovoComentario -> Handler Comentario
+handleCriarComentario conn dicId novo = do
+    existe <- liftIO $ buscarDicaPorId conn dicId
+    case existe of
+        Nothing -> throwError err404
+            { errBody = "{ \"erro\": \"Dica não encontrada\" }" }
+        Just _  -> do
+            if null (ncAutor novo) || null (ncTexto novo)
+                then throwError err400
+                    { errBody = "{ \"erro\": \"Autor e texto são obrigatórios\" }" }
+                else do
+                    resultado <- liftIO $ criarComentario conn dicId novo
+                    case resultado of
+                        Nothing   -> throwError err500
+                            { errBody = "{ \"erro\": \"Falha ao criar comentário\" }" }
+                        Just c -> return c
+
+handleDeletarComentario :: Connection -> Int -> Int -> Handler MensagemSucesso
+handleDeletarComentario conn dicId comId = do
+    n <- liftIO $ deletarComentario conn dicId comId
+    if n == 0
+        then throwError err404
+            { errBody = "{ \"erro\": \"Comentário não encontrado para excluir\" }" }
+        else return (MensagemSucesso "Comentário excluído com sucesso")
+
 handleVotarDica :: Connection -> Int -> Handler DicaInvestimento
 handleVotarDica conn dicId = do
     resultado <- liftIO $ incrementarVoto conn dicId
@@ -270,6 +303,9 @@ appServer conn =
     :<|> handleCriarDica      conn
     :<|> handleAtualizarDica  conn
     :<|> handleDeletarDica    conn
+    :<|> handleListarComentarios conn
+    :<|> handleCriarComentario conn
+    :<|> handleDeletarComentario conn
     :<|> handleVotarDica      conn
     :<|> handleRemoverVoto    conn
     :<|> handleSimular

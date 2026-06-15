@@ -13,6 +13,9 @@ module Repository
     , buscarEstatisticas
     , incrementarVoto
     , decrementarVoto
+    , listarComentarios
+    , criarComentario
+    , deletarComentario
     ) where
 
 import Database.PostgreSQL.Simple
@@ -174,3 +177,39 @@ decrementarVoto conn dicId = do
     case resultados of
         []    -> return Nothing
         (d:_) -> return (Just d)
+
+sqlListarComentarios :: Query
+sqlListarComentarios =
+    "SELECT id, dica_id, autor, texto, data_criacao \
+    \ FROM comentarios \
+    \ WHERE dica_id = ? \
+    \ ORDER BY data_criacao ASC"
+
+sqlCriarComentario :: Query
+sqlCriarComentario =
+    "INSERT INTO comentarios (dica_id, autor, texto) \
+    \ VALUES (?, ?, ?) \
+    \ RETURNING id, dica_id, autor, texto, data_criacao"
+
+listarComentarios :: Connection -> Int -> IO [Comentario]
+listarComentarios conn dicId = query conn sqlListarComentarios (Only dicId)
+
+criarComentario :: Connection -> Int -> NovoComentario -> IO (Maybe Comentario)
+criarComentario conn dicId novo = do
+    resultados <- query conn sqlCriarComentario
+        ( dicId
+        , ncAutor novo
+        , ncTexto novo
+        )
+    case resultados of
+        []    -> return Nothing
+        (c:_) -> return (Just c)
+
+sqlDeletarComentario :: Query
+sqlDeletarComentario =
+    "DELETE FROM comentarios WHERE id = ? AND dica_id = ?"
+
+deletarComentario :: Connection -> Int -> Int -> IO Int
+deletarComentario conn dicId cid = do
+    n <- execute conn sqlDeletarComentario (cid, dicId)
+    return (fromIntegral n)

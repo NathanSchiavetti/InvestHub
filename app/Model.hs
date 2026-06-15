@@ -7,6 +7,8 @@
 module Model
     ( DicaInvestimento(..)
     , NovaDica(..)
+    , Comentario(..)
+    , NovoComentario(..)
     , Estatistica(..)
     , MensagemSucesso(..)
     , SimulacaoInput(..)
@@ -129,6 +131,42 @@ data MensagemSucesso = MensagemSucesso
 
 instance ToJSON MensagemSucesso
 instance FromJSON MensagemSucesso
+
+-- ---------------------------------------------------------------------------
+-- | Comentários
+-- ---------------------------------------------------------------------------
+data Comentario = Comentario
+    { comId          :: Int
+    , comDicaId      :: Int
+    , comAutor       :: String
+    , comTexto       :: String
+    , comDataCriacao :: UTCTime
+    } deriving (Generic, Show)
+
+instance ToJSON Comentario where
+    toJSON = genericToJSON defaultOptions
+        { fieldLabelModifier = stripPrefix 3 }
+
+instance FromJSON Comentario where
+    parseJSON = genericParseJSON defaultOptions
+        { fieldLabelModifier = stripPrefix 3 }
+
+instance FromRow Comentario where
+    fromRow = Comentario <$> field <*> field <*> field <*> field <*> field
+
+data NovoComentario = NovoComentario
+    { ncDicaId :: Maybe Int
+    , ncAutor  :: String
+    , ncTexto  :: String
+    } deriving (Generic, Show)
+
+instance ToJSON NovoComentario where
+    toJSON = genericToJSON defaultOptions
+        { fieldLabelModifier = stripPrefix 2 }
+
+instance FromJSON NovoComentario where
+    parseJSON = genericParseJSON defaultOptions
+        { fieldLabelModifier = stripPrefix 2 }
 
 -- ---------------------------------------------------------------------------
 -- | Simulador de Investimento

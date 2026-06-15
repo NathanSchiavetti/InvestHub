@@ -50,6 +50,23 @@ type DicasAPI =
     :<|> "dicas" :> Capture "id" Int
                  :> Delete '[JSON] MensagemSucesso
 
+    -- GET /dicas/:id/comentarios
+    :<|> "dicas" :> Capture "id" Int
+                 :> "comentarios"
+                 :> Get '[JSON] [Comentario]
+
+    -- POST /dicas/:id/comentarios
+    :<|> "dicas" :> Capture "id" Int
+                 :> "comentarios"
+                 :> ReqBody '[JSON] NovoComentario
+                 :> Post '[JSON] Comentario
+
+    -- DELETE /dicas/:id/comentarios/:cid
+    :<|> "dicas" :> Capture "id" Int
+                 :> "comentarios"
+                 :> Capture "cid" Int
+                 :> Delete '[JSON] MensagemSucesso
+
     -- PATCH /dicas/:id/voto
     :<|> "dicas" :> Capture "id" Int
                  :> "voto"
