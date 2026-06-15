@@ -11,7 +11,6 @@ RUN cabal update && cabal build --only-dependencies
 
 # Copia o código fonte
 COPY app/ ./app/
-COPY migration.sql ./
 
 # Compila o projeto em modo release
 RUN cabal build -O2 exe:dicas-investimento
@@ -32,9 +31,8 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-# Copia binário e migration do stage anterior
+# Copia binário do stage anterior
 COPY --from=builder /app/servidor ./servidor
-COPY --from=builder /app/migration.sql ./migration.sql
 
 EXPOSE 8080
 
