@@ -27,6 +27,14 @@ runMigration conn = do
             \    data_criacao TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL \
             \)"
         void $ execute_ conn
+            "CREATE TABLE IF NOT EXISTS comentarios ( \
+            \    id           SERIAL PRIMARY KEY,            \
+            \    dica_id      INT NOT NULL REFERENCES dicas_investimento(id) ON DELETE CASCADE, \
+            \    autor        VARCHAR(100) NOT NULL,         \
+            \    conteudo     TEXT NOT NULL,                 \
+            \    data_criacao TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL \
+            \)"
+        void $ execute_ conn
             "CREATE INDEX IF NOT EXISTS idx_dicas_categoria \
             \    ON dicas_investimento (LOWER(categoria))"
         void $ execute_ conn
@@ -35,6 +43,9 @@ runMigration conn = do
         void $ execute_ conn
             "CREATE INDEX IF NOT EXISTS idx_dicas_data_criacao \
             \    ON dicas_investimento (data_criacao DESC)"
+        void $ execute_ conn
+            "CREATE INDEX IF NOT EXISTS idx_comentarios_dica_id \
+            \    ON comentarios (dica_id)"
         ) :: IO (Either SomeException ())
     case result of
         Left err -> hPutStrLn stderr $ "[AVISO] Migration: " ++ show err
