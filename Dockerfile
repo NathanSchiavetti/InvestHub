@@ -1,5 +1,5 @@
 # Usando imagem oficial do Haskell com GHC 9.4 (LTS estável)
-FROM haskell:9.4-slim AS builder
+FROM haskell:9.6 AS builder
 
 WORKDIR /app
 
