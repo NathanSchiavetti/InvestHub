@@ -3,8 +3,10 @@ FROM haskell:9.4.7-slim AS builder
 
 WORKDIR /app
 
-# Instala a biblioteca do PostgreSQL (necessária para compilar o pacote postgresql-simple)
-RUN apt-get update && apt-get install -y libpq-dev && rm -rf /var/lib/apt/lists/*
+# Corrige os repositórios do Debian Buster (que foram arquivados) e instala a libpq-dev
+RUN echo "deb http://archive.debian.org/debian/ buster main" > /etc/apt/sources.list && \
+    echo "deb http://archive.debian.org/debian-security buster/updates main" >> /etc/apt/sources.list && \
+    apt-get update && apt-get install -y libpq-dev && rm -rf /var/lib/apt/lists/*
 
 # Copia os arquivos de projeto primeiro (para aproveitar cache do Docker)
 COPY dicas-investimento.cabal cabal.project ./
