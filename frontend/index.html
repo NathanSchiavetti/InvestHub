@@ -1098,10 +1098,13 @@ function renderDicas(list) {
         const data = new Date(d.criacao).toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
         const prev = d.descricao.length > 100 ? d.descricao.slice(0,100)+'...' : d.descricao;
         const voted = localStorage.getItem('voto_'+d.id) === 'true';
+        const EMJ = {'Renda Fixa':'🏦', 'Ações':'📈', 'FIIs':'🏢', 'Previdência':'👴', 'Criptomoedas':'🪙', 'Exterior':'🌎'};
+        const emoji = EMJ[d.categoria] || '💡';
+        
         return `<div class="tip-card fade-up" onclick="verDica(${d.id})">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
                 <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
-                    <span class="cat-tag">${esc(d.categoria)}</span>
+                    <span class="cat-tag">${emoji} ${esc(d.categoria)}</span>
                     <span class="${badgeCls(d.risco)}">${d.risco}</span>
                 </div>
             </div>
@@ -1249,11 +1252,14 @@ async function verDica(id) {
     try {
         const r = await fetch(API + '/dicas/' + id);
         const d = await r.json();
+        const EMJ = {'Renda Fixa':'🏦', 'Ações':'📈', 'FIIs':'🏢', 'Previdência':'👴', 'Criptomoedas':'🪙', 'Exterior':'🌎'};
+        const emoji = EMJ[d.categoria] || '💡';
+        
         document.getElementById('d-titulo').textContent = d.titulo;
         document.getElementById('d-desc').textContent   = d.descricao;
         document.getElementById('d-autor').textContent  = d.autor;
         document.getElementById('d-data').textContent   = new Date(d.criacao).toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
-        document.getElementById('d-badges').innerHTML   = '<span class="cat-tag">'+esc(d.categoria)+'</span><span class="'+badgeCls(d.risco)+'">'+d.risco+'</span>';
+        document.getElementById('d-badges').innerHTML   = '<span class="cat-tag">'+emoji+' '+esc(d.categoria)+'</span><span class="'+badgeCls(d.risco)+'">'+d.risco+'</span>';
         
         const btnVoto = document.getElementById('d-voto-btn');
         const count   = document.getElementById('d-votos');
@@ -1420,13 +1426,19 @@ async function carregarComentarios(id) {
             return;
         }
         
-        list.innerHTML = comentarios.map(c => `
+        list.innerHTML = comentarios.map(c => {
+            const colors = ['#f87171', '#fb923c', '#fbbf24', '#a3e635', '#4ade80', '#34d399', '#2dd4bf', '#38bdf8', '#818cf8', '#a78bfa', '#e879f9', '#f472b6'];
+            const cor = colors[c.autor.length % colors.length];
+            const letter = c.autor.trim().charAt(0).toUpperCase() || 'U';
+            const avatar = `<div style="width:16px;height:16px;border-radius:50%;background:${cor};color:#111;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;margin-right:5px;">${letter}</div>`;
+            
+            return `
             <div class="comentario-balao fade-up">
                 <div class="c-header">
-                    <span class="c-autor"><i data-lucide="user" style="width:10px;height:10px;display:inline-block;margin-right:4px;color:var(--accent);"></i>${esc(c.autor)}</span>
+                    <span class="c-autor" style="display:flex;align-items:center;">${avatar}${esc(c.autor)}</span>
                     <div style="display:flex;align-items:center;gap:6px;">
                         <span class="c-data">${new Date(c.dataCriacao).toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})}</span>
-                        <button class="x-btn" style="padding:2px;color:#60a5fa;opacity:0.6;" onclick="editarComentario(${id}, ${c.id}, '${esc(c.texto).replace(/'/g, "\\'")}')" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6" title="Editar comentário">
+                        <button class="x-btn" style="padding:2px;color:#60a5fa;opacity:0.6;" onclick="editarComentario(${id}, ${c.id}, decodeURIComponent('${encodeURIComponent(c.texto)}'))" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6" title="Editar comentário">
                             <i data-lucide="edit-2" style="width:12px;height:12px;"></i>
                         </button>
                         <button class="x-btn" style="padding:2px;color:#f87171;opacity:0.6;" onclick="deletarComentario(${id}, ${c.id})" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6" title="Excluir comentário">
@@ -1436,7 +1448,8 @@ async function carregarComentarios(id) {
                 </div>
                 <div class="c-texto">${esc(c.texto)}</div>
             </div>
-        `).join('');
+            `;
+        }).join('');
         lucide.createIcons();
     } catch {
         list.innerHTML = '<p style="font-size:12px;color:#f87171;text-align:center;">Erro ao carregar comentários.</p>';
