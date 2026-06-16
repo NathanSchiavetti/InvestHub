@@ -67,6 +67,13 @@ type DicasAPI =
                  :> Capture "cid" Int
                  :> Delete '[JSON] MensagemSucesso
 
+    -- PUT /dicas/:id/comentarios/:cid
+    :<|> "dicas" :> Capture "id" Int
+                 :> "comentarios"
+                 :> Capture "cid" Int
+                 :> ReqBody '[JSON] NovoComentario
+                 :> Put '[JSON] Comentario
+
     -- PATCH /dicas/:id/voto
     :<|> "dicas" :> Capture "id" Int
                  :> "voto"

@@ -31,7 +31,7 @@ runMigration conn = do
             \    id           SERIAL PRIMARY KEY,            \
             \    dica_id      INT NOT NULL REFERENCES dicas_investimento(id) ON DELETE CASCADE, \
             \    autor        VARCHAR(100) NOT NULL,         \
-            \    conteudo     TEXT NOT NULL,                 \
+            \    texto        TEXT NOT NULL,                 \
             \    data_criacao TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL \
             \)"
         void $ execute_ conn

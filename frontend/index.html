@@ -1426,6 +1426,9 @@ async function carregarComentarios(id) {
                     <span class="c-autor"><i data-lucide="user" style="width:10px;height:10px;display:inline-block;margin-right:4px;color:var(--accent);"></i>${esc(c.autor)}</span>
                     <div style="display:flex;align-items:center;gap:6px;">
                         <span class="c-data">${new Date(c.dataCriacao).toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})}</span>
+                        <button class="x-btn" style="padding:2px;color:#60a5fa;opacity:0.6;" onclick="editarComentario(${id}, ${c.id}, '${esc(c.texto).replace(/'/g, "\\'")}')" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6" title="Editar comentário">
+                            <i data-lucide="edit-2" style="width:12px;height:12px;"></i>
+                        </button>
                         <button class="x-btn" style="padding:2px;color:#f87171;opacity:0.6;" onclick="deletarComentario(${id}, ${c.id})" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6" title="Excluir comentário">
                             <i data-lucide="trash-2" style="width:12px;height:12px;"></i>
                         </button>
@@ -1449,6 +1452,24 @@ async function deletarComentario(dicaId, comId) {
         carregarComentarios(dicaId);
     } catch {
         toast('Erro ao excluir comentário', 'err');
+    }
+}
+
+async function editarComentario(dicaId, comId, textoAtual) {
+    const novoTexto = prompt('Editar comentário:', textoAtual);
+    if (novoTexto === null || novoTexto.trim() === '' || novoTexto === textoAtual) return;
+    
+    try {
+        const res = await fetch(API + '/dicas/' + dicaId + '/comentarios/' + comId, {
+            method: 'PUT',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ dica_id: dicaId, autor: '', texto: novoTexto.trim() })
+        });
+        if (!res.ok) throw new Error();
+        toast('Comentário atualizado!', 'ok');
+        carregarComentarios(dicaId);
+    } catch {
+        toast('Erro ao editar comentário', 'err');
     }
 }
 

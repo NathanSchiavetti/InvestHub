@@ -15,6 +15,7 @@ module Repository
     , decrementarVoto
     , listarComentarios
     , criarComentario
+    , atualizarComentario
     , deletarComentario
     ) where
 
@@ -213,3 +214,18 @@ deletarComentario :: Connection -> Int -> Int -> IO Int
 deletarComentario conn dicId cid = do
     n <- execute conn sqlDeletarComentario (cid, dicId)
     return (fromIntegral n)
+
+sqlAtualizarComentario :: Query
+sqlAtualizarComentario =
+    "UPDATE comentarios SET texto = ? WHERE id = ? AND dica_id = ? RETURNING id, dica_id, autor, texto, data_criacao"
+
+atualizarComentario :: Connection -> Int -> Int -> NovoComentario -> IO (Maybe Comentario)
+atualizarComentario conn dicId cid novo = do
+    resultados <- query conn sqlAtualizarComentario
+        ( ncTexto novo
+        , cid
+        , dicId
+        )
+    case resultados of
+        []    -> return Nothing
+        (c:_) -> return (Just c)

@@ -147,6 +147,18 @@ handleDeletarComentario conn dicId comId = do
             { errBody = "{ \"erro\": \"Comentário não encontrado para excluir\" }" }
         else return (MensagemSucesso "Comentário excluído com sucesso")
 
+handleAtualizarComentario :: Connection -> Int -> Int -> NovoComentario -> Handler Comentario
+handleAtualizarComentario conn dicId comId novo = do
+    if null (ncTexto novo)
+        then throwError err400
+            { errBody = "{ \"erro\": \"O texto do comentário não pode estar vazio\" }" }
+        else do
+            resultado <- liftIO $ atualizarComentario conn dicId comId novo
+            case resultado of
+                Nothing -> throwError err404
+                    { errBody = "{ \"erro\": \"Comentário não encontrado para atualizar\" }" }
+                Just c  -> return c
+
 handleVotarDica :: Connection -> Int -> Handler DicaInvestimento
 handleVotarDica conn dicId = do
     resultado <- liftIO $ incrementarVoto conn dicId
@@ -306,6 +318,7 @@ appServer conn =
     :<|> handleListarComentarios conn
     :<|> handleCriarComentario conn
     :<|> handleDeletarComentario conn
+    :<|> handleAtualizarComentario conn
     :<|> handleVotarDica      conn
     :<|> handleRemoverVoto    conn
     :<|> handleSimular
