@@ -1134,9 +1134,11 @@ function renderAdminTable(list) {
     }
     tb.innerHTML = list.map(d => {
         const data = new Date(d.criacao).toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
+        const EMJ = {'Renda Fixa':'🏦', 'Ações':'📈', 'FIIs':'🏢', 'Previdência':'👴', 'Criptomoedas':'🪙', 'Exterior':'🌎'};
+        const emoji = EMJ[d.categoria] || '💡';
         return `<tr class="fade-up">
             <td style="font-weight:600;">${esc(d.titulo)}</td>
-            <td><span class="cat-tag">${esc(d.categoria)}</span></td>
+            <td><span class="cat-tag">${emoji} ${esc(d.categoria)}</span></td>
             <td><span class="${badgeCls(d.risco)}">${d.risco}</span></td>
             <td>${esc(d.autor)}</td>
             <td style="color:var(--fg-muted);">${data}</td>
@@ -1183,15 +1185,17 @@ async function renderLiveFeed() {
         const r = await fetch(API + '/dicas');
         const all = await r.json();
         const latest = [...all].sort((a,b)=>new Date(b.criacao)-new Date(a.criacao)).slice(0,4);
-        document.getElementById('live-feed').innerHTML = latest.map(d =>
-            `<div class="live-row" onclick="verDica(${d.id})" style="cursor:pointer;">
+        document.getElementById('live-feed').innerHTML = latest.map(d => {
+            const EMJ = {'Renda Fixa':'🏦', 'Ações':'📈', 'FIIs':'🏢', 'Previdência':'👴', 'Criptomoedas':'🪙', 'Exterior':'🌎'};
+            const emoji = EMJ[d.categoria] || '💡';
+            return `<div class="live-row" onclick="verDica(${d.id})" style="cursor:pointer;">
                 <div style="flex:1;min-width:0;">
                     <div style="font-size:13px;font-weight:600;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(d.titulo)}</div>
-                    <div style="font-size:11px;color:var(--fg-subtle);margin-top:2px;">${d.categoria}</div>
+                    <div style="font-size:11px;color:var(--fg-subtle);margin-top:2px;">${emoji} ${esc(d.categoria)}</div>
                 </div>
                 <span class="${badgeCls(d.risco)}" style="flex-shrink:0;">${d.risco}</span>
             </div>`
-        ).join('');
+        }).join('');
         lucide.createIcons();
     } catch {}
 }
@@ -1223,12 +1227,14 @@ function atualizarPreview() {
     const risco = document.getElementById('f-risco').value || 'Risco';
     const autor = document.getElementById('f-autor').value || 'Seu Nome';
     const prevText = desc.length > 100 ? desc.slice(0,100)+'...' : desc;
+    const EMJ = {'Renda Fixa':'🏦', 'Ações':'📈', 'FIIs':'🏢', 'Previdência':'👴', 'Criptomoedas':'🪙', 'Exterior':'🌎'};
+    const emoji = EMJ[cat] || '💡';
 
     document.getElementById('preview-container').innerHTML = `
         <div class="tip-card" style="pointer-events:none; margin:0;">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
                 <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
-                    <span class="cat-tag">${esc(cat)}</span>
+                    <span class="cat-tag">${emoji} ${esc(cat)}</span>
                     <span class="${badgeCls(risco)}">${risco}</span>
                 </div>
             </div>
